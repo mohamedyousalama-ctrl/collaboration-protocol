@@ -18,18 +18,21 @@
 
 ### WP1 — Freeze and reconstruct v1
 **Owner:** ChatGPT
-**Status:** IN PROGRESS
+**Status:** IN PROGRESS — SOURCE REPRESENTATION FROZEN; LOCAL DECODE NOT YET COMPLETED
 
 - [x] Confirm authoritative source-workbook SHA-256 in preservation record: `3a5d4e82c2d65473b1117d70b68428efd89319386a89978871f38edf8ee8ed4a`.
 - [x] Confirm reconstructible Base64 representation is present on `main` as five ordered parts plus reconstruction instructions.
+- [x] Confirm the historical source representation remains untouched on `main`; all validation work is isolated on this research branch.
 - [ ] Reconstruct workbook into a working copy without altering the historical Base64 source.
 - [ ] Verify decoded byte size and SHA-256 against the preservation record.
 - [ ] Record workbook sheet inventory, row count, field inventory, formula inventory, and blank researcher fields.
 - [ ] Produce a machine-readable audit export for the 52 incident rows.
 
+**Execution note:** The current analysis container cannot resolve GitHub/raw GitHub network hosts. GitHub connector access confirms and reads the source parts, but the binary has not yet been transferred into the spreadsheet-analysis runtime. This is recorded as an execution-environment blocker, not treated as successful reconstruction.
+
 ### WP2 — Audit all 52 records
 **Owner:** ChatGPT
-**Status:** NOT STARTED
+**Status:** BLOCKED ON WP1 WORKING COPY
 
 For every record:
 - [ ] Check A1–A13 completeness.
@@ -43,7 +46,7 @@ Deliverable: `CORPUS_AUDIT_52.md` plus row-level audit table.
 
 ### WP3 — Locate and verify seven source conversations
 **Owner:** ChatGPT for source discovery and quote checking
-**Status:** PARTIALLY AVAILABLE / DISCOVERY REQUIRED
+**Status:** DISCOVERY STARTED
 
 Known source-window families from the preserved research record:
 - GPT — 5 records
@@ -57,22 +60,21 @@ Known source-window families from the preserved research record:
 Current repository evidence:
 - The preserved Master Knowledge File explicitly states that the **AUD raw transcript was recovered from disk for verbatim checking**.
 - The repository preserves the 52-row workbook and extraction protocol.
-- A current tree/code search has **not yet established that all seven complete original source conversations are present as independently readable transcript artifacts in Git**.
-
-Therefore no claim will be made that all seven are available until each source family is individually located and mapped.
+- Current tree/code search has **not yet established that all seven complete original source conversations are present as independently readable transcript artifacts in Git**.
+- A durable source-availability register now exists at `research/fan-corpus-validation/SOURCE_CONVERSATION_AVAILABILITY.md`.
 
 Tasks:
-- [ ] Build a source-availability matrix for GPT/AUD/CDX/W38/W39/KBD/KPF.
+- [x] Create source-availability matrix for GPT/AUD/CDX/W38/W39/KBD/KPF.
 - [ ] Locate the exact primary transcript artifact(s) for each family, if present.
 - [ ] Map every incident to source location.
 - [ ] Verify A3 and A8 verbatim quotes against source.
 - [ ] Set evidence recommendation: `CONFIRMABLE`, `UNVERIFIED_SOURCE_MISSING`, or `CONTRADICTED`.
 
-Deliverable: `SOURCE_CONVERSATION_AVAILABILITY.md` and `QUOTE_VERIFICATION_REGISTER.md`.
+Deliverables: `SOURCE_CONVERSATION_AVAILABILITY.md` and later `QUOTE_VERIFICATION_REGISTER.md`.
 
 ### WP4 — Classification recommendations
 **Owner:** ChatGPT
-**Status:** NOT STARTED
+**Status:** WAITING FOR WP2/WP3 EVIDENCE
 
 For each record that survives WP2, prepare recommendation only for:
 - C0 incident class where applicable (INTENT / COMPETENCE / PREMISE / MIXED / META)
@@ -122,9 +124,17 @@ Planned outputs:
 
 ### WP8 — Fan exchange package
 **Owner:** ChatGPT
-**Status:** PREPARE IN PARALLEL; FINALIZE AFTER WP2/WP3 STATUS IS KNOWN
+**Status:** DRAFT PACKAGE CREATED; FINAL COUNTS/EXAMPLES BLOCKED ON WP2–WP5
 
-Package should explain, without overclaiming:
+Created under `research/fan-corpus-validation/fan-exchange/`:
+- [x] `00_READ_ME_FIRST.md`
+- [x] `01_METHODS_NOTE.md`
+- [x] `02_SCHEMA_AND_CODEBOOK.md`
+- [x] `03_DCM2_CROSSWALK_TEMPLATE.md`
+- [x] `04_SANITIZED_EXAMPLES.md` — validation gate only; no unverified example inserted
+- [x] `05_LIMITATIONS_AND_EVIDENCE_STATUS.md`
+
+The package currently explains:
 1. research question and corpus origin;
 2. seven source-window families and sampling nature;
 3. LLM-assisted neutral extraction procedure;
@@ -133,16 +143,8 @@ Package should explain, without overclaiming:
 6. competence-vs-intent filtering rule;
 7. transcript/quote verification procedure;
 8. current corpus status and limitations;
-9. sanitized example records;
+9. rules for sanitized example inclusion;
 10. data-level crosswalk questions for comparison with DCM 2.0 Field & Technical Notes.
-
-Planned files under `research/fan-corpus-validation/fan-exchange/`:
-- `00_READ_ME_FIRST.md`
-- `01_METHODS_NOTE.md`
-- `02_SCHEMA_AND_CODEBOOK.md`
-- `03_DCM2_CROSSWALK_TEMPLATE.md`
-- `04_SANITIZED_EXAMPLES.md`
-- `05_LIMITATIONS_AND_EVIDENCE_STATUS.md`
 
 The raw 52-row corpus will not be represented to Fan as fully human-validated unless WP3–WP5 actually establish that status.
 
@@ -150,14 +152,14 @@ The raw 52-row corpus will not be represented to Fan as fully human-validated un
 
 | WP | Work | Status |
 |---|---|---|
-| 1 | Freeze/reconstruct v1 | IN PROGRESS |
-| 2 | Audit 52 | NOT STARTED |
-| 3 | Source conversations | PARTIAL / DISCOVERY REQUIRED |
-| 4 | Classification recommendations | NOT STARTED |
+| 1 | Freeze/reconstruct v1 | IN PROGRESS — decode transfer blocker recorded |
+| 2 | Audit 52 | BLOCKED ON WP1 WORKING COPY |
+| 3 | Source conversations | DISCOVERY STARTED; matrix created |
+| 4 | Classification recommendations | WAITING ON WP2/WP3 |
 | 5 | Researcher decisions | WAITING |
 | 6 | Independent QC | DEFERRED |
 | 7 | Freeze v1.1 | BLOCKED |
-| 8 | Fan methods exchange | PREPARE IN PARALLEL |
+| 8 | Fan methods exchange | DRAFT PACKAGE CREATED |
 
 ## Update rule
 
