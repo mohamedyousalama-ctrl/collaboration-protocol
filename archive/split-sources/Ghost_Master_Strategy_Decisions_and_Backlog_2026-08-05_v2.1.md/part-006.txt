@@ -1,0 +1,133 @@
+rby-person sensing;
+- real vehicle integration;
+- wearables and smart-home integration;
+- family release timing;
+- enterprise release timing;
+- full local-model training;
+- open standard governance;
+- final pricing;
+- final certification model;
+- clinical positioning;
+- whole-life moral advisor positioning.
+
+---
+
+# 16. NEXT TRANSITION TO EXECUTION
+
+The product is closer to execution but not yet authorized to build.
+
+The next transformation sequence is:
+
+```text
+Remaining scientific and strategy batches
+    -> Evidence synthesis
+    -> Cross-product interaction synthesis
+    -> Residual founder decisions
+    -> Founder Decision Register
+    -> Ghost Product Canon
+    -> Version charters
+    -> Shared technical reference architecture
+    -> Version-specific specifications
+    -> Master roadmap
+    -> Governed backlog
+    -> Independent audit
+    -> Founder GO
+    -> Engineering execution
+```
+
+## 16.1 Required before Ghost V0
+
+- source and terminology authority;
+- product thesis and first-value hypothesis;
+- CP Kernel boundary;
+- rights and prohibited-use floors;
+- simulation and research consent rules;
+- Work Episode, Thread, Context, Task, and Knot ontology decision;
+- simulation contract for Live Work Field, selection, Intent Action, per-target plans, Focus Studio, scoped participation, and one outward voice;
+- cross-product evidence protocol;
+- Falsification Cards for V0 hypotheses.
+
+## 16.2 Required before Ghost V1 technical specification
+
+- first buyer and costly recurring event;
+- V1 promise and magic moment;
+- V1 data sources;
+- V1 action floor;
+- Presence posture;
+- Context and memory limits;
+- storage, sync, and recovery direction;
+- first integration;
+- metrics and claim limits;
+- security floor.
+
+## 16.3 Founder execution gate
+
+Engineering begins only when Mohamed issues an explicit:
+
+- GO;
+- GO WITH CONDITIONS;
+- HOLD;
+- or REJECT AND REDESIGN.
+
+---
+
+# 17. CURRENT SUMMARY
+
+Ghost is now defined at the strategic and constitutional level more clearly than on 1 August 2026.
+
+The product direction is one unified Ghost experience with internally separated continuity, Context, CP governance, authority control, orchestration, execution, evidence, recovery, supervision, and trusted-base systems.
+
+The strongest unresolved work is no longer "What is Ghost?" It is:
+
+- selecting the first buyer and first costly recurring event;
+- finishing the scientific decisions around memory, synchronization, recovery, adaptation, provenance, and trusted updates;
+- converting accepted founder decisions into canonical specifications;
+- deciding which Kivo-derived interaction mechanisms survive independent Ghost simulation;
+- proving that one complete Ghost loop saves real time, money, attention, and AI cost without creating false authority, surveillance, cross-target leakage, or emotional dependency.
+
+The concise strategic formula remains:
+
+> Continuity gives Ghost understanding.  
+> CP gives it discipline.  
+> Tools give it power.  
+> Evidence gives it accountability.  
+> The human gives it authority.
+
+---
+
+# 18. CHANGE LOG FROM THE 1 AUGUST MASTER STATE
+
+This version adds or changes:
+
+- founder decision FD-01: staged combination;
+- founder value direction for AI-intensive operators;
+- the For-You Law;
+- Universal Action Grammar direction;
+- Intervention and Authority Controller direction;
+- one Ghost product with CP as internal governance kernel;
+- Family and Enterprise supervision directions;
+- central Presence with optional personification;
+- accepted version methodology and provisional V0-V6 ladder;
+- accepted falsification law;
+- clarified local transient raw-data policy;
+- clarified magical experience and provenance rule;
+- clarified tiered self-improvement and update governance;
+- reorganized active strategic backlog;
+- parked Kaggle strategy for later reactivation;
+- updated current phase from open workshop to strategy closure and decision reconstruction.
+
+# 19. CHANGE LOG FROM VERSION 2.0
+
+Version 2.1 adds or changes:
+
+- FD-10: Kivo as a bounded interaction proving ground;
+- cross-product evidence classes and separation laws;
+- the Live Work Field and Work Episode candidate model;
+- the rule that one human intention may compile into many separately governed target plans;
+- Kivo-derived interaction patterns, their evidence status, and ontology caution;
+- capability states for preview-only, confirmation-required, ownership-required, blocked, and unsupported behavior;
+- Falsification Cards for the Live Work Field and multi-target intent compilation;
+- backlog items S-040 through S-046;
+- V0 requirements for interaction simulation and cross-product evidence transfer;
+- explicit protection against cross-target Context leakage;
+- no change to build authorization, which remains **None**.
