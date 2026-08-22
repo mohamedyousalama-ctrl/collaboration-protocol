@@ -1,0 +1,227 @@
+r confirms individual roots or removes them for this session
+4. Confirmed roots injected into session context as pre-verified constraints
+
+**Managing Context Roots:**
+- `GET /api/context_root/:user_id` — list all active roots
+- `DELETE /api/context_root/:root_id` — deactivate a root permanently
+- `PATCH /api/context_root/:root_id` — edit root content
+
+**Klear extension events (Klear Events Store):**
+- `context_root.saved` when user saves a node as a root
+- `context_root.loaded` with root IDs at session start
+- `context_root.confirmed` per root confirmed by user
+- `context_root.skipped` per root removed for this session
+
+---
+
+### 4.9 CP System Prompt (Permanent — Every API Call)
+
+```
+You are Klear, an AI assistant operating under the Collaboration Protocol (CP) v1.0.1.
+
+CP is a governance protocol that ensures you only act on what the user has explicitly
+declared — never on what you infer, assume, or extrapolate.
+
+Your operating rules:
+1. You operate within the declared context only. Do not expand scope.
+2. You serve the declared intent only. Do not reinterpret it.
+3. If the user's message is unclear, say so — do not guess.
+4. If the user's message goes outside their declared scope, flag it — do not answer it.
+5. You do not infer latent goals, predict future intent, or assume preferences.
+6. You are an instrument of the user's declared intent, not an autonomous reasoner.
+7. Explicit user statements always override any inferred context.
+8. If a Safety Floor profile is active, you must treat its assertions as mandatory additions
+   to your response — they cannot be omitted regardless of the user's intent.
+
+The user's current session context, intent, ICD level, active nodes, and context roots
+will be provided with every message. You must stay within those boundaries at all times.
+```
+
+---
+
+### 4.10 Session Context Injection (Dynamic — Per Message)
+
+Appended to every Claude API call after the system prompt:
+
+```
+--- CURRENT SESSION STATE ---
+Context: {context.description}
+Scope includes: {context.inclusions}
+Scope excludes: {context.exclusions}
+Declared intent: {intent.declaration_text}
+Intent type: {intent.intent_type}
+ICD level: {icd_value}
+Active nodes (constraints): {nodes.map(n => n.content).join(' | ')}
+Context roots: {roots.map(r => r.content).join(' | ')}
+Session decay score: {decay_score} — Health: {health_status}
+Domain: {domain}
+Safety Floor active: {safety_floor_active}
+Safety Floor profile: {safety_floor_profile}
+--- END SESSION STATE ---
+
+User message: {user_message}
+```
+
+---
+
+### 4.11 Klear Events Store — CP Log Compliance
+
+**This section resolves the CP compliance issue with new event types.**
+
+The frozen CP v1.0.1 specification defines exactly these log event types for the Log Store:
+`context`, `intent`, `node`, `pivot`, `action`, `friction`, `guardian`, `signal`, `session`
+
+The Log Store is append-only and must contain only these event types to maintain CP v1.0.1 compliance.
+
+Klear introduces additional event types that are not in the frozen spec:
+`icd.set`, `domain.classified`, `domain.shift`, `safety_floor.injected`, `decay.calculated`, `ifi.phase1`, `ifi.phase2`, `ipp.classified`, `ipp.filtered`, `context_root.saved`, `context_root.loaded`, `context_root.confirmed`, `context_root.skipped`
+
+**Rule:** These events must NOT be written to the CP Log Store. They must be written to a separate `klear_events` table.
+
+**Two stores, two purposes:**
+
+| Store | Table | Contains | Append-only? | CP compliant? |
+|-------|-------|---------|-------------|--------------|
+| CP Log Store | `logs` | All frozen CP event types | Yes — enforced by RLS | Yes |
+| Klear Events Store | `klear_events` | All Klear extension events | Yes — by convention | N/A — Klear extension |
+
+**`klear_events` table schema:**
+```sql
+create table klear_events (
+  id uuid primary key default gen_random_uuid(),
+  session_id uuid references sessions(id),
+  user_id uuid references users(id),
+  action_id uuid,
+  event_type text not null,
+  event_subtype text,
+  payload jsonb,
+  created_at timestamptz default now()
+  -- No updated_at — append-only by convention
+);
+
+create index idx_klear_events_session on klear_events(session_id);
+create index idx_klear_events_type on klear_events(event_type);
+```
+
+The `logger.js` module must route every event to the correct store based on event type before writing.
+
+---
+
+## 5. API Endpoints
+
+### POST /api/session/start
+Creates session. Runs articulation assistance. Returns structured context + intent for user confirmation.
+
+**Request:**
+```json
+{
+  "opening_statement": "I'm writing a research paper on AI governance and need help finding sources",
+  "user_id": "uuid or null"
+}
+```
+
+**Process:**
+1. Create anonymous user if no user_id provided
+2. Load Context Roots if registered user
+3. Call Claude for articulation extraction → topic, goal, scope, exclusions
+4. Run domain classifier on articulated context
+5. Return structured articulation for user to confirm or edit
+
+**Response:**
+```json
+{
+  "session_id": "uuid",
+  "articulation": {
+    "topic": "AI governance research",
+    "goal": "Find and evaluate sources",
+    "scope": "Academic papers, 2020–2026",
+    "excludes": "News articles, opinion pieces"
+  },
+  "domain": "general",
+  "safety_floor_active": false,
+  "context_roots": [
+    { "id": "uuid", "content": "I prefer academic sources" }
+  ],
+  "icd_options": [
+    { "value": 0.2, "label": "Fast", "description": "Answer quickly, ask rarely" },
+    { "value": 0.5, "label": "Balanced", "description": "Ask when it matters" },
+    { "value": 0.8, "label": "Precise", "description": "Ask before any ambiguity" }
+  ]
+}
+```
+
+---
+
+### POST /api/session/confirm
+User confirms articulation + sets ICD. Creates Context and Intent objects. Starts session.
+
+**Request:**
+```json
+{
+  "session_id": "uuid",
+  "articulation": {
+    "topic": "AI governance research",
+    "goal": "Find and evaluate sources",
+    "scope": "Academic papers, 2020–2026",
+    "excludes": "News articles, opinion pieces"
+  },
+  "icd": 0.5,
+  "confirmed_root_ids": ["uuid1"],
+  "skipped_root_ids": ["uuid2"]
+}
+```
+
+**Response:**
+```json
+{
+  "status": "ready",
+  "context_id": "uuid",
+  "intent_id": "uuid",
+  "message": "Session started. What would you like to explore?"
+}
+```
+
+---
+
+### POST /api/session/message
+Core endpoint. Runs full CP pipeline per message.
+
+**Request:**
+```json
+{
+  "session_id": "uuid",
+  "message": "What are the most cited papers on AI alignment?"
+}
+```
+
+**Process:**
+1. Load session state (context, intent, nodes, roots, ICD, decay score, domain)
+2. Run IPP Classifier → detect all IPP types with confidence scores
+3. Apply ICD filter → determine which IPPs to surface
+4. Run Intent Decay Calculator → compute δ, update D
+5. Run Guardian Checkpoint 1 → decision based on filtered IPPs + scope + intent state
+6. If decay D > 0.4 → trigger decay friction regardless of CP1 decision
+7. If CP1 = Clarify/Refuse → create friction event, return friction card
+8. If CP1 = Allow → run domain classifier on this message → check for domain shift
+9. Call Claude API with system prompt + full context injection
+10. Run Guardian Checkpoint 2 (if trigger conditions met)
+11. If CP2 = Clarify/Refuse → create friction event, return friction card
+12. If CP2 = Allow → run Safety Floor Injector if domain is high-risk
+13. Calculate IFI Phase 1 (SA + CP)
+14. Write action to Supabase, return response
+15. Write all CP log events to `logs` table
+16. Write all Klear extension events to `klear_events` table
+
+**Response (normal):**
+```json
+{
+  "type": "response",
+  "content": "The most cited papers on AI alignment include...",
+  "action_id": "uuid",
+  "ifi_phase1": {
+    "sa": 0.88,
+    "cp": 1.0,
+    "ss": null,
+    "composite": null,
+    "pending_ss": true,
+    "cp
