@@ -1,4 +1,4 @@
-name: Reconstruct and inventory authoritative CP incident corpus v1
+name: Reconstruct, inventory, and audit authoritative CP incident corpus v1
 
 on:
   push:
@@ -7,13 +7,14 @@ on:
     paths:
       - '.github/workflows/reconstruct-cp-incident-v1.yml'
       - 'research/fan-corpus-validation/tools/reconstruct_authoritative_v1.py'
+      - 'research/fan-corpus-validation/tools/wp2_audit.py'
       - 'research/fan-corpus-validation/recovered-source/CP_Incident_Database_v1.xlsx.b64.part-*'
 
 permissions:
   contents: write
 
 jobs:
-  reconstruct:
+  reconstruct-and-audit:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout research branch
@@ -25,14 +26,19 @@ jobs:
       - name: Reconstruct exact v1, verify identity, and inventory workbook
         run: python3 research/fan-corpus-validation/tools/reconstruct_authoritative_v1.py
 
-      - name: Commit verified working copy and audit inputs
+      - name: Generate reproducible WP2 row audit
+        run: python3 research/fan-corpus-validation/tools/wp2_audit.py
+
+      - name: Commit verified working copy and audit outputs
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add research/fan-corpus-validation/work/
+          git add research/fan-corpus-validation/work/ \
+                  research/fan-corpus-validation/CORPUS_AUDIT_52.md \
+                  research/fan-corpus-validation/corpus-audit/ROW_AUDIT_52.tsv
           if git diff --cached --quiet; then
             echo "No generated changes to commit."
           else
-            git commit -m "research: verify and inventory authoritative 52-record corpus v1 [skip ci]"
+            git commit -m "research: generate authoritative v1 inventory and WP2 52-row audit [skip ci]"
             git push origin HEAD:research/fan-corpus-validation-2026-08-22
           fi
