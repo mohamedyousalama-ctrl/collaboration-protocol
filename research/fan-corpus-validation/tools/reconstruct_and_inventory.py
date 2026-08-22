@@ -1,4 +1,13 @@
 #!/usr/bin/env python3
+"""Inspect the Base64 workbook payload currently present in Git.
+
+Important evidence rule: the preservation record declares a 31,471-byte workbook
+with SHA-256 3a5d..., while the actual Git Base64 parts may or may not reconstruct
+to that identity. This tool never upgrades a mismatched payload to authoritative
+v1. It records the mismatch, then inventories the available payload if it is a
+valid XLSX so the research team can assess recoverability without hiding the
+chain-of-custody defect.
+"""
 from __future__ import annotations
 
 import base64
@@ -23,9 +32,10 @@ PARTS = [
     SRC / "CP_Incident_Database_v1.xlsx.b64.part-002b",
     SRC / "CP_Incident_Database_v1.xlsx.b64.part-003",
 ]
+EXPECTED_B64_CHARS = 41964
 EXPECTED_SIZE = 31471
 EXPECTED_SHA256 = "3a5d4e82c2d65473b1117d70b68428efd89319386a89978871f38edf8ee8ed4a"
-XLSX = OUT / "CP_Incident_Database_v1.reconstructed.xlsx"
+PAYLOAD = OUT / "CP_Incident_Database_v1.git_payload.xlsx"
 
 NS_MAIN = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
 NS_REL_DOC = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
@@ -59,17 +69,14 @@ def read_shared_strings(zf: zipfile.ZipFile) -> list[str]:
     if "xl/sharedStrings.xml" not in zf.namelist():
         return []
     root = ET.fromstring(zf.read("xl/sharedStrings.xml"))
-    out = []
-    for si in root.findall("m:si", N):
-        out.append("".join((t.text or "") for t in si.iter(f"{{{NS_MAIN}}}t")))
-    return out
+    return ["".join((t.text or "") for t in si.iter(f"{{{NS_MAIN}}}t")) for si in root.findall("m:si", N)]
 
 
-def decode_cell(c: ET.Element, shared: list[str]) -> tuple[str, str | None, str | None]:
-    ctype = c.attrib.get("t")
-    style = c.attrib.get("s")
+def decode_cell(c: ET.Element, shared: list[str]) -> tuple[str, str, str]:
+    ctype = c.attrib.get("t", "")
+    style = c.attrib.get("s", "")
     f = c.find("m:f", N)
-    formula = f.text if f is not None else None
+    formula = "" if f is None or f.text is None else f.text
     if ctype == "inlineStr":
         is_el = c.find("m:is", N)
         value = "" if is_el is None else "".join((t.text or "") for t in is_el.iter(f"{{{NS_MAIN}}}t"))
@@ -88,11 +95,11 @@ def decode_cell(c: ET.Element, shared: list[str]) -> tuple[str, str | None, str 
     return value, formula, style
 
 
-def load_sheets(zf: zipfile.ZipFile) -> list[dict]:
+def load_sheet_meta(zf: zipfile.ZipFile) -> list[dict]:
     wb = ET.fromstring(zf.read("xl/workbook.xml"))
     rels = ET.fromstring(zf.read("xl/_rels/workbook.xml.rels"))
     rel_map = {rel.attrib["Id"]: rel.attrib["Target"] for rel in rels.findall("p:Relationship", N)}
-    sheets = []
+    out = []
     for s in wb.findall("m:sheets/m:sheet", N):
         rid = s.attrib[f"{{{NS_REL_DOC}}}id"]
         target = rel_map[rid]
@@ -102,12 +109,12 @@ def load_sheets(zf: zipfile.ZipFile) -> list[dict]:
             path = target
         else:
             path = "xl/" + target.lstrip("/")
-        sheets.append({"name": s.attrib.get("name", ""), "sheetId": s.attrib.get("sheetId", ""), "rid": rid, "path": path})
-    return sheets
+        out.append({"name": s.attrib.get("name", ""), "sheetId": s.attrib.get("sheetId", ""), "path": path})
+    return out
 
 
-def parse_sheet(zf: zipfile.ZipFile, sheet: dict, shared: list[str]) -> dict:
-    root = ET.fromstring(zf.read(sheet["path"]))
+def parse_sheet(zf: zipfile.ZipFile, meta: dict, shared: list[str]) -> dict:
+    root = ET.fromstring(zf.read(meta["path"]))
     cells, formulas = [], []
     max_row = max_col = 0
     for c in root.findall(".//m:sheetData/m:row/m:c", N):
@@ -116,44 +123,48 @@ def parse_sheet(zf: zipfile.ZipFile, sheet: dict, shared: list[str]) -> dict:
             continue
         row, col = parse_ref(ref)
         value, formula, style = decode_cell(c, shared)
-        max_row, max_col = max(max_row, row), max(max_col, col)
-        cell = {"sheet": sheet["name"], "ref": ref, "row": row, "col": col, "value": value, "formula": formula or "", "style": style or "", "type": c.attrib.get("t", "")}
-        cells.append(cell)
+        max_row = max(max_row, row)
+        max_col = max(max_col, col)
+        item = {"sheet": meta["name"], "ref": ref, "row": row, "col": col, "value": value, "formula": formula, "style": style, "type": c.attrib.get("t", "")}
+        cells.append(item)
         if formula:
-            formulas.append(cell)
+            formulas.append(item)
     merged = [x.attrib.get("ref", "") for x in root.findall("m:mergeCells/m:mergeCell", N)]
-    return {**sheet, "cells": cells, "formulas": formulas, "merged": merged, "max_row": max_row, "max_col": max_col, "nonempty_cells": sum(1 for c in cells if c["value"] or c["formula"])}
+    return {**meta, "cells": cells, "formulas": formulas, "merged": merged, "max_row": max_row, "max_col": max_col, "nonempty_cells": sum(1 for c in cells if c["value"] or c["formula"])}
 
 
-def matrix(sheet_data: dict) -> list[list[str]]:
-    rows = [[""] * sheet_data["max_col"] for _ in range(sheet_data["max_row"])]
-    for c in sheet_data["cells"]:
+def matrix(sheet: dict) -> list[list[str]]:
+    rows = [[""] * sheet["max_col"] for _ in range(sheet["max_row"])]
+    for c in sheet["cells"]:
         rows[c["row"] - 1][c["col"] - 1] = c["value"]
     return rows
 
 
-def score_incident_header(row: list[str]) -> int:
-    text = " | ".join(v.strip().upper() for v in row if v.strip())
-    markers = ["A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9", "A10", "A11", "A12", "A13", "INCIDENT"]
+def header_score(row: list[str]) -> int:
+    text = " | ".join((v or "").strip().upper() for v in row if (v or "").strip())
+    markers = [
+        "INCIDENT", "LOCATION", "TASK CONTEXT", "USER WORDS", "POSSIBLE INTERPRETATIONS",
+        "INTERPRETATION CHOSEN", "WAS USER ASKED", "ASSUMPTION", "FIRST VISIBLE SIGNAL",
+        "TURNS UNTIL DETECTION", "CONSEQUENCE", "RESOLUTION", "PRIOR CONTEXT", "CONFIDENCE",
+        "IPP TYPE", "MATERIALITY", "CONTEXT FACTOR", "TRUE INTENT", "VALIDATION FLAG",
+    ]
     return sum(1 for m in markers if m in text)
 
 
-def choose_incident_sheet(sheets: list[dict]) -> tuple[dict, int]:
+def find_incident_table(sheets: list[dict]) -> tuple[dict, int, int]:
     candidates = []
-    for s in sheets:
-        rows = matrix(s)
-        for idx, row in enumerate(rows[:15], start=1):
-            candidates.append((score_incident_header(row), s["max_row"], s["max_col"], s, idx))
+    for sheet in sheets:
+        rows = matrix(sheet)
+        for idx, row in enumerate(rows[:20], start=1):
+            candidates.append((header_score(row), sheet["max_row"], sheet["max_col"], sheet, idx))
     candidates.sort(key=lambda x: (x[0], x[1], x[2]), reverse=True)
     score, _, _, sheet, row = candidates[0]
-    if score < 3:
-        raise RuntimeError("Could not identify incident table header reliably")
-    return sheet, row
+    return sheet, row, score
 
 
-def normalized_header(v: str, idx: int) -> str:
+def clean_header(v: str, idx: int) -> str:
     v = re.sub(r"\s+", " ", (v or "").strip())
-    return v if v else f"UNNAMED_{idx}"
+    return v or f"UNNAMED_{idx}"
 
 
 def main() -> None:
@@ -161,18 +172,74 @@ def main() -> None:
     if missing:
         raise SystemExit("Missing Base64 parts: " + ", ".join(missing))
 
-    stream = "".join(p.read_text(encoding="utf-8").strip() for p in PARTS)
-    decoded = base64.b64decode(stream, validate=True)
-    XLSX.write_bytes(decoded)
-    size = len(decoded)
-    sha = hashlib.sha256(decoded).hexdigest()
-    if size != EXPECTED_SIZE or sha != EXPECTED_SHA256:
-        raise SystemExit(f"Verification failed: size={size} sha={sha}; expected size={EXPECTED_SIZE} sha={EXPECTED_SHA256}")
+    part_info = []
+    pieces = []
+    for p in PARTS:
+        raw = p.read_bytes()
+        text = raw.decode("utf-8").strip()
+        pieces.append(text)
+        part_info.append({
+            "name": p.name,
+            "repository_bytes": len(raw),
+            "trimmed_chars": len(text),
+            "sha256": hashlib.sha256(raw).hexdigest(),
+        })
 
-    with zipfile.ZipFile(XLSX) as zf:
-        shared = read_shared_strings(zf)
-        sheet_meta = load_sheets(zf)
-        sheets = [parse_sheet(zf, s, shared) for s in sheet_meta]
+    stream = "".join(pieces)
+    decoded = base64.b64decode(stream, validate=True)
+    PAYLOAD.write_bytes(decoded)
+    actual_size = len(decoded)
+    actual_sha = hashlib.sha256(decoded).hexdigest()
+    identity_verified = actual_size == EXPECTED_SIZE and actual_sha == EXPECTED_SHA256 and len(stream) == EXPECTED_B64_CHARS
+    identity_status = "MATCH" if identity_verified else "MISMATCH"
+
+    zip_valid = zipfile.is_zipfile(PAYLOAD)
+    sheets = []
+    parse_error = None
+    if zip_valid:
+        try:
+            with zipfile.ZipFile(PAYLOAD) as zf:
+                shared = read_shared_strings(zf)
+                sheets = [parse_sheet(zf, meta, shared) for meta in load_sheet_meta(zf)]
+        except Exception as exc:  # preserve evidence instead of hiding parser failure
+            parse_error = f"{type(exc).__name__}: {exc}"
+
+    # Always write identity report, even if workbook parsing fails.
+    identity = {
+        "status": identity_status,
+        "identity_verified": identity_verified,
+        "expected_base64_chars": EXPECTED_B64_CHARS,
+        "actual_base64_chars": len(stream),
+        "expected_bytes": EXPECTED_SIZE,
+        "actual_bytes": actual_size,
+        "expected_sha256": EXPECTED_SHA256,
+        "actual_sha256": actual_sha,
+        "zip_valid": zip_valid,
+        "parse_error": parse_error,
+        "parts": part_info,
+    }
+    (OUT / "git_payload_identity.json").write_text(json.dumps(identity, indent=2) + "\n", encoding="utf-8")
+
+    if not sheets:
+        report = [
+            "# CP Incident Database v1 — Git Payload Reconstruction",
+            "",
+            f"**Identity verdict: {identity_status}**",
+            "",
+            f"- Expected Base64 chars: `{EXPECTED_B64_CHARS}`",
+            f"- Actual Base64 chars: `{len(stream)}`",
+            f"- Expected bytes: `{EXPECTED_SIZE}`",
+            f"- Actual bytes: `{actual_size}`",
+            f"- Expected SHA-256: `{EXPECTED_SHA256}`",
+            f"- Actual SHA-256: `{actual_sha}`",
+            f"- Valid ZIP container: `{zip_valid}`",
+            f"- Parse error: `{parse_error}`",
+            "",
+            "The Git payload is not promoted to authoritative v1 unless the declared byte identity matches.",
+        ]
+        (OUT / "GIT_PAYLOAD_RECONSTRUCTION_AND_INVENTORY.md").write_text("\n".join(report) + "\n", encoding="utf-8")
+        print(json.dumps(identity, indent=2))
+        return
 
     with (OUT / "workbook_cells.tsv").open("w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=["sheet", "ref", "row", "col", "value", "formula", "style", "type"], delimiter="\t")
@@ -187,11 +254,10 @@ def main() -> None:
             for c in s["formulas"]:
                 w.writerow({"sheet": s["name"], "ref": c["ref"], "formula": c["formula"], "value": c["value"]})
 
-    incident_sheet, header_row = choose_incident_sheet(sheets)
+    incident_sheet, header_row, score = find_incident_table(sheets)
     rows = matrix(incident_sheet)
-    headers = [normalized_header(v, i + 1) for i, v in enumerate(rows[header_row - 1])]
+    headers = [clean_header(v, i + 1) for i, v in enumerate(rows[header_row - 1])]
     data_rows = [r for r in rows[header_row:] if any((v or "").strip() for v in r)]
-
     with (OUT / "incident_rows.tsv").open("w", encoding="utf-8", newline="") as f:
         w = csv.writer(f, delimiter="\t")
         w.writerow(headers)
@@ -202,45 +268,92 @@ def main() -> None:
         blank_counts[h] = sum(1 for r in data_rows if idx >= len(r) or not (r[idx] or "").strip())
 
     summary = {
-        "expected_sha256": EXPECTED_SHA256,
-        "actual_sha256": sha,
-        "expected_bytes": EXPECTED_SIZE,
-        "actual_bytes": size,
-        "base64_chars": len(stream),
+        **identity,
         "sheet_count": len(sheets),
         "incident_sheet": incident_sheet["name"],
         "incident_header_row": header_row,
+        "incident_header_score": score,
         "incident_data_rows": len(data_rows),
         "incident_column_count": len(headers),
         "headers": headers,
         "blank_counts": dict(blank_counts),
-        "sheets": [{"name": s["name"], "path": s["path"], "max_row": s["max_row"], "max_col": s["max_col"], "nonempty_cells": s["nonempty_cells"], "formula_count": len(s["formulas"]), "merged_ranges": s["merged"]} for s in sheets],
+        "sheets": [
+            {
+                "name": s["name"], "path": s["path"], "max_row": s["max_row"], "max_col": s["max_col"],
+                "nonempty_cells": s["nonempty_cells"], "formula_count": len(s["formulas"]), "merged_ranges": s["merged"],
+            }
+            for s in sheets
+        ],
     }
     (OUT / "workbook_inventory.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
     lines = [
-        "# CP Incident Database v1 — Reconstruction and Workbook Inventory", "",
-        "## Byte-level verification", "",
-        f"- Reconstructed file: `{XLSX.relative_to(ROOT)}`",
-        f"- Expected bytes: `{EXPECTED_SIZE}`",
-        f"- Actual bytes: `{size}`",
+        "# CP Incident Database v1 — Git Payload Reconstruction and Inventory",
+        "",
+        f"**Identity verdict: {identity_status}**",
+        "",
+        "## Declared identity vs current Git payload",
+        "",
+        f"- Expected Base64 stream: `{EXPECTED_B64_CHARS}` characters",
+        f"- Current Git Base64 stream: `{len(stream)}` characters",
+        f"- Expected decoded size: `{EXPECTED_SIZE}` bytes",
+        f"- Current Git decoded size: `{actual_size}` bytes",
         f"- Expected SHA-256: `{EXPECTED_SHA256}`",
-        f"- Actual SHA-256: `{sha}`",
-        "- Verification: **PASS**", f"- Concatenated Base64 stream length: `{len(stream)}` characters", "",
-        "The historical Base64 source parts were read-only inputs. They were not edited.", "",
-        "## Workbook structure", "", f"Workbook contains **{len(sheets)} worksheets**.", "",
-        "| Sheet | Used range | Non-empty cells | Formulas | Merged ranges |", "|---|---:|---:|---:|---:|",
+        f"- Current Git SHA-256: `{actual_sha}`",
+        f"- Valid XLSX/ZIP payload: `{zip_valid}`",
+        "",
+        "**Evidence interpretation:** A mismatched but parseable payload may be inspected for recovery, but it is not the cryptographically declared historical v1 workbook.",
+        "",
+        "## Source parts",
+        "",
+        "| Part | Repo bytes | Trimmed Base64 chars | SHA-256 |",
+        "|---|---:|---:|---|",
+    ]
+    for p in part_info:
+        lines.append(f"| {p['name']} | {p['repository_bytes']} | {p['trimmed_chars']} | `{p['sha256']}` |")
+    lines += [
+        "",
+        "## Workbook structure of the current Git payload",
+        "",
+        f"Workbook contains **{len(sheets)} worksheets**.",
+        "",
+        "| Sheet | Used range | Non-empty cells | Formulas | Merged ranges |",
+        "|---|---:|---:|---:|---:|",
     ]
     for s in sheets:
         used = f"A1:{num_to_col(s['max_col'])}{s['max_row']}" if s["max_row"] and s["max_col"] else "empty"
         lines.append(f"| {s['name']} | {used} | {s['nonempty_cells']} | {len(s['formulas'])} | {len(s['merged'])} |")
-    lines += ["", "## Incident table detection", "", f"- Incident worksheet: **{incident_sheet['name']}**", f"- Header row: **{header_row}**", f"- Non-empty data rows after header: **{len(data_rows)}**", f"- Columns: **{len(headers)}**", "", "### Column headers", ""]
+    lines += [
+        "",
+        "## Incident-table detection",
+        "",
+        f"- Candidate incident worksheet: **{incident_sheet['name']}**",
+        f"- Candidate header row: **{header_row}**",
+        f"- Header detection score: **{score}**",
+        f"- Non-empty rows after header: **{len(data_rows)}**",
+        f"- Columns: **{len(headers)}**",
+        "",
+        "### Column headers",
+        "",
+    ]
     lines.extend(f"{i}. `{h}`" for i, h in enumerate(headers, start=1))
-    lines += ["", "## Blank cells by incident-table column", "", "| Column | Blank rows |", "|---|---:|"]
+    lines += ["", "## Blank cells by candidate incident column", "", "| Column | Blank rows |", "|---|---:|"]
     for h in headers:
         lines.append(f"| {h.replace('|', '\\|')} | {blank_counts[h]} |")
-    lines += ["", "## Generated machine-readable artifacts", "", "- `workbook_inventory.json` — exact structural summary.", "- `workbook_cells.tsv` — all represented worksheet cells with formulas and styles.", "- `formula_inventory.tsv` — every formula cell and cached value.", "- `incident_rows.tsv` — incident-table export used for WP2 audit.", "", "No scientific classification has been changed by this reconstruction step."]
-    (OUT / "WORKBOOK_RECONSTRUCTION_AND_INVENTORY.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    lines += [
+        "",
+        "## Generated artifacts",
+        "",
+        "- `CP_Incident_Database_v1.git_payload.xlsx` — decoded current Git payload; **not authoritative v1 unless identity MATCHES**.",
+        "- `git_payload_identity.json` — byte-level identity evidence.",
+        "- `workbook_inventory.json` — structural inventory.",
+        "- `workbook_cells.tsv` — all represented worksheet cells.",
+        "- `formula_inventory.tsv` — formula inventory.",
+        "- `incident_rows.tsv` — candidate incident-table export for recoverability audit.",
+        "",
+        "No researcher classification is changed by this tool.",
+    ]
+    (OUT / "GIT_PAYLOAD_RECONSTRUCTION_AND_INVENTORY.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(json.dumps(summary, indent=2, ensure_ascii=False))
 
 
