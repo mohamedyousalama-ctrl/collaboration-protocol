@@ -1,0 +1,40 @@
+ementById('logs-content').innerHTML = '';
+                    LogStore.entries.forEach(entry => this.addLogEntry(entry, true));
+                    LogStore.append({ event_type: 'storage', event_subtype: 'imported', object_id: null, context_id: Session.activeContextId, intent_id: Session.activeIntentId, agent_id: null, user_id: 'user_01', details: 'Session imported from ' + file.name, reason: null });
+                    this.addMessage('storage', 'Session imported from ' + file.name + '.\n\n- Contexts: ' + ContextStore.contexts.size + '\n- Logs: ' + LogStore.entries.length);
+                    this.updateStatus(); this.updateNodes(); this.updatePivots(); this.updateAgents(); this.updateStateInspector(); this.showStorageStats();
+                } catch (err) { this.addMessage('system', 'Import failed: ' + err.message); }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        },
+        sendSignal() { const i = document.getElementById('signal-input'); const t = i.value.trim(); if (!t) return; i.value = ''; InteractionLoop.processSignal(t); },
+        confirm() { InteractionLoop.processSignal('confirmed'); },
+        /* FIX 2 (DPT-19/L2): Added intent.revised logging when Revise button clicked */
+        revise() { 
+            if (Session.pendingVerification) { 
+                LogStore.append({ event_type: 'intent', event_subtype: 'revised', object_id: Session.pendingVerification.type, context_id: Session.activeContextId, intent_id: Session.activeIntentId, agent_id: null, user_id: 'user_01', details: 'User revised pending ' + Session.pendingVerification.type + ' verification', reason: null });
+                Session.pendingVerification = null; 
+                Session.systemState = 'idle'; 
+                Session.persist(); 
+                this.addMessage('system', 'Verification cleared.'); 
+                this.updateStatus(); 
+            } else { 
+                this.addMessage('system', 'Nothing to revise.'); 
+            } 
+        },
+        abandon() {
+            if (Session.pendingVerification) {
+                LogStore.append({ event_type: 'intent', event_subtype: 'abandoned', object_id: Session.pendingVerification.type, context_id: Session.activeContextId, intent_id: Session.activeIntentId, agent_id: null, user_id: 'user_01', details: 'User abandoned ' + Session.pendingVerification.type, reason: null });
+                Session.pendingVerification = null; Session.systemState = 'idle'; Session.persist();
+                FrictionStore.getActive().forEach(f => { f.state = 'resolved'; f.resolution = 'user_abandoned'; f.resolved_at = timestamp(); FrictionStore.update(f.friction_id, f); LogStore.append({ event_type: 'friction', event_subtype: 'resolved', object_id: f.friction_id, context_id: Session.activeContextId, intent_id: Session.activeIntentId, agent_id: null, user_id: 'user_01', details: 'Friction resolved: abandoned', reason: null }); });
+                this.addMessage('system', 'Abandoned.'); this.updateStatus();
+            } else { this.addMessage('system', 'Nothing to abandon.'); }
+        },
+        askAgent() { const i = document.getElementById('signal-input'); let t = i.value.trim(); if (!t) t = 'What should I do next?'; i.value = ''; InteractionLoop.handleAgentRequest(t); }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => { UI.init(); });
+    </script>
+</body>
+</html>

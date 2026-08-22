@@ -1,0 +1,312 @@
+sification:  SignalClassification | null
+    action_request:         ActionRequest | null
+}
+
+SignalClassification {
+    clarity:            enum [clear, ambiguous]
+    intent_presence:    enum [action_requested, no_action]
+    context_fit:        enum [in_scope, out_of_scope]
+}
+
+ActionRequest {
+    action_id:          string
+    action_type:        enum [generate, modify, retrieve, communicate, external]
+    description:        string
+    intent_id:          string
+    context_id:         string
+    agent_id:           string | null
+}
+```
+
+---
+
+## 2.3 Guardian Outputs
+
+```
+GuardianDecision {
+    decision:           enum [Allow, Clarify, Refuse]
+    reason:             string
+    friction_trigger:   FrictionTrigger | null
+}
+
+FrictionTrigger {
+    trigger_type:       enum [ambiguous_signal, unverified_intent, scope_boundary,
+                              permission_violation, high_risk_action, missing_context,
+                              conflict_detected]
+    trigger_description: string
+}
+```
+
+---
+
+## 2.4 Post-Classification Rules (Checkpoint 1)
+
+| Rule | Condition | Decision | Friction |
+|------|-----------|----------|----------|
+| PC-1 | `clarity == ambiguous` | Clarify | `ambiguous_signal` |
+| PC-2 | `context_fit == out_of_scope` | Clarify | `scope_boundary` |
+| PC-3 | `clarity == clear` AND `intent_presence == no_action` | Allow | null |
+| PC-4 | `clarity == clear` AND `intent_presence == action_requested` | Allow | null |
+
+**Evaluation order:** PC-1 → PC-2 → PC-3 → PC-4 (first match wins)
+
+---
+
+## 2.5 Pre-Execution Rules (Checkpoint 2)
+
+| Rule | Condition | Decision | Friction |
+|------|-----------|----------|----------|
+| PE-1 | Intent does not exist | Refuse | `unverified_intent` |
+| PE-2 | `intent.state` NOT IN [verified, active] | Refuse | `unverified_intent` |
+| PE-3 | `action.context_id` ≠ `intent.context_id` | Refuse | `scope_boundary` |
+| PE-4 | `context.state` ≠ open | Refuse | `scope_boundary` |
+| PE-5 | Agent not in `context.allowed_agents` | Refuse | `permission_violation` |
+| PE-6 | `agent.state` ≠ active | Refuse | `permission_violation` |
+| PE-7 | Advisory agent + restricted action | Refuse | `permission_violation` |
+| PE-8 | Explanation-only agent + non-communicate | Refuse | `permission_violation` |
+| PE-9 | `action_type == external` | Clarify | `high_risk_action` |
+| PE-10 | Active unresolved friction exists | Refuse | `conflict_detected` |
+| PE-11 | All checks pass | Allow | null |
+
+**Evaluation order:** PE-1 → PE-11 (first match wins)
+
+---
+
+## 2.6 Guardian Constraints
+
+| Constraint | Enforcement |
+|------------|-------------|
+| No internal state | No fields persisted between invocations |
+| Cannot write to stores | No write operations |
+| Cannot create objects | Returns trigger; Friction Manager creates |
+| Cannot modify objects | All access is read-only |
+| Decisions logged by caller | Guardian does not write to LogStore |
+| Cannot skip rules | Evaluation order is fixed |
+
+---
+
+# PHASE 3 — SINGLE HAPPY-PATH FLOW
+
+One complete session: one context, one intent, one action, no failures.
+
+---
+
+## 3.1 Initial State
+
+All stores empty.
+
+---
+
+## 3.2 Turn 1 — Create Context and Intent
+
+**User:** "I want to start a literature review on AI transparency in healthcare."
+
+**Processing:**
+1. Signal captured
+2. Classification: `clear`, `action_requested`, `in_scope`
+3. Guardian Checkpoint 1: Allow (PC-4)
+4. Context created: `ctx_001`
+5. Intent created: `int_001` (state: `declared`)
+
+**Logs:**
+```
+log_001: Guardian Allow (post_classification)
+log_002: Context created (ctx_001)
+log_003: Intent created (int_001)
+```
+
+---
+
+## 3.3 Turn 2 — Verify Intent
+
+**User:** "Confirmed."
+
+**Processing:**
+1. Signal captured
+2. Classification: `clear`, `no_action`, `in_scope`
+3. Guardian Checkpoint 1: Allow (PC-3)
+4. Intent verified: `int_001` (state: `verified` → `active`)
+
+**Logs:**
+```
+log_004: Guardian Allow (post_classification)
+log_005: Intent verified (int_001)
+log_006: Intent state changed verified → active
+```
+
+---
+
+## 3.4 Turn 3 — Request Action
+
+**User:** "Lock in 'Clinician trust and adoption' as a key theme."
+
+**Processing:**
+1. Signal captured
+2. Classification: `clear`, `action_requested`, `in_scope`
+3. Guardian Checkpoint 1: Allow (PC-4)
+
+**Logs:**
+```
+log_007: Guardian Allow (post_classification)
+```
+
+---
+
+## 3.5 Turn 4 — Execute Action
+
+**User:** "Confirmed."
+
+**Processing:**
+1. Action created: `act_001` (state: `pending`)
+2. Guardian Checkpoint 2: Allow (PE-11)
+3. Node created: `node_001`
+4. Action executed: `act_001` (state: `executed`)
+
+**Logs:**
+```
+log_008: Action requested (act_001)
+log_009: Guardian Allow (pre_execution)
+log_010: Node created (node_001)
+log_011: Action executed (act_001)
+```
+
+---
+
+## 3.6 Final State
+
+| Store | Contents |
+|-------|----------|
+| ContextStore | ctx_001 (open) |
+| IntentStore | int_001 (active) |
+| NodeStore | node_001 (active) |
+| ActionStore | act_001 (executed) |
+| FrictionStore | (empty) |
+| LogStore | 11 entries |
+
+---
+
+## 3.7 Traceability Chain
+
+```
+user_01 → ctx_001 → int_001 (verified) → act_001 (allowed) → node_001
+```
+
+---
+
+# PHASE 4 — ONE FAILURE PATH
+
+Failure mode: **Unverified Intent**
+
+---
+
+## 4.1 Setup
+
+User creates context and intent, but does NOT verify intent before requesting action.
+
+---
+
+## 4.2 Turn 1 — Create Context and Intent
+
+**User:** "I need to write a grant proposal for AI ethics research."
+
+**Processing:**
+1. Context created: `ctx_002`
+2. Intent created: `int_002` (state: `declared`)
+
+**Logs:**
+```
+log_001: Guardian Allow (post_classification)
+log_002: Context created (ctx_002)
+log_003: Intent created (int_002, state: declared)
+```
+
+---
+
+## 4.3 Turn 2 — Skip Verification, Request Action
+
+**User:** "Just start writing the introduction section."
+
+**Processing:**
+1. Signal captured
+2. Classification: `clear`, `action_requested`, `in_scope`
+3. Guardian Checkpoint 1: Allow (PC-4)
+4. Action created: `act_002` (state: `pending`)
+5. Guardian Checkpoint 2: **REFUSE** (PE-2: intent.state == declared)
+6. Action blocked: `act_002` (state: `blocked`)
+7. FrictionEvent created: `fric_001` (trigger: `unverified_intent`)
+
+**Logs:**
+```
+log_004: Guardian Allow (post_classification)
+log_005: Action requested (act_002)
+log_006: Guardian Refuse (pre_execution) — FAILURE POINT
+log_007: Action blocked (act_002)
+log_008: FrictionEvent triggered (fric_001)
+```
+
+**System Response:**
+> "I cannot proceed. Your intent has not been verified. Please confirm your intent first."
+
+---
+
+## 4.4 Turn 3 — User Verifies Intent
+
+**User:** "Yes, confirmed."
+
+**Processing:**
+1. Intent verified: `int_002` (state: `verified` → `active`)
+2. FrictionEvent resolved: `fric_001` (resolution: `user_confirmed`)
+
+**Logs:**
+```
+log_009: Intent verified (int_002)
+log_010: Intent state changed verified → active
+log_011: FrictionEvent resolved (fric_001)
+```
+
+---
+
+## 4.5 Final State
+
+| Store | Contents |
+|-------|----------|
+| ContextStore | ctx_002 (open) |
+| IntentStore | int_002 (active) |
+| NodeStore | (empty) |
+| ActionStore | act_002 (blocked) |
+| FrictionStore | fric_001 (resolved) |
+| LogStore | 11 entries |
+
+---
+
+## 4.6 Failure Traceability
+
+```
+user_02 → act_002 → Guardian PE-2 → int_002.state == declared → REFUSE → fric_001 → user confirms → resolved
+```
+
+**CP invariants preserved:**
+- No action executed without verified intent ✓
+- Guardian blocked correctly ✓
+- Friction surfaced the issue ✓
+- All events logged ✓
+
+---
+
+# PHASE 5 — MANUAL RUNTIME TEST
+
+Step-by-step execution showing state before/after each step.
+
+---
+
+## 5.1 Test Scenario
+
+| Parameter | Value |
+|-----------|-------|
+| User | user_03 |
+| Task | Create context, verify intent, execute action |
+| Expected | Successful execution with full traceability |
+
+---
+
+## 5.2 Step-by-Step Executio

@@ -1,0 +1,165 @@
+# Klear — Implementation Specification
+**Version:** 2.1
+**CP Compliance:** v1.0.1
+**Research Basis:** CP Research Package v2.0, Safety Floor Specification, IntentHealth Execution Plan
+**Author:** Mohamed Salama
+**Status:** Active — Build Reference
+
+---
+
+## Version History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 1.0 | Apr 2026 | Initial specification |
+| 2.0 | Apr 2026 | Added 11 improvements from research files |
+| 2.1 | Apr 2026 | Fixed 8 errors found in audit: architecture order, SS scale, IFI two-phase, domain classifier scope, IPP prompt, counterfactual trigger, Context Root save mechanism, CP log compliance |
+
+---
+
+## Changelog: v1.0 → v2.0
+
+| # | Improvement | Source |
+|---|-------------|--------|
+| 1 | IPP 6-type taxonomy classifier replaces keyword matching | CP Research Package §5.2 |
+| 2 | ICD user-controlled dial (0.0–1.0) | CP Research Package §5.3 |
+| 3 | IFI score calculated and shown per response | CP Research Package §5.4 |
+| 4 | Context Roots for cross-session persistence | IntentHealth Execution Plan |
+| 5 | Domain classifier + Safety Floor for high-risk topics | Safety Floor Specification |
+| 6 | Intent Decay session health indicator | CP Research Package §5.5 |
+| 7 | Articulation assistance at session start | CP Research Package §5.1 |
+| 8 | Pivot Traceability "Trace" button per response | CP Protocol Law 6 |
+| 9 | Klear Profiles — Organizational Intent Signatures | CP Research Package Project B |
+| 10 | Counterfactual probing post-response | CP Research Package §5.1.2 |
+| 11 | CP Compliance Report export | CP Research Package Project A |
+
+## Fixes: v2.0 → v2.1
+
+| # | Issue | Fix |
+|---|-------|-----|
+| 1 | Architecture diagram: ICD Filter appeared before IPP Classifier | Corrected order: IPP Classifier runs first, ICD Filter applies to results |
+| 2 | SS scale inconsistency: 1–7 in diagram, 1–5 elsewhere | Standardized to 1–5 stars throughout |
+| 3 | IFI two-phase calculation not stated explicitly | Added explicit two-phase description in §4.6 |
+| 4 | Domain classifier: runs once or per message — unresolved | Specified: session start + per-message re-evaluation |
+| 5 | IPP classification prompt missing | Full prompt added to §4.2 |
+| 6 | Counterfactual button trigger condition missing | Trigger rules added to §6.6 and §4.2 |
+| 7 | Context Root saving mechanism missing | Added §4.8 save flow + API endpoint §5 |
+| 8 | New log event types violated frozen CP Log Store | Added §4.11 Klear Events Store — separate from CP Log Store |
+
+---
+
+## 1. Product Overview
+
+Klear is a multi-purpose AI assistant (Q&A, research, document analysis, code) powered by Claude and governed by the Collaboration Protocol (CP) v1.0.1. Every interaction is mediated by CP — intent is explicitly declared, the Guardian enforces boundaries, friction surfaces ambiguity before it becomes a wrong answer, and every decision is traceable.
+
+**Core promise to users:** Klear only does what you actually declared. Nothing is inferred silently. Every answer is traceable to your verified intent.
+
+**User tiers:**
+- **Anonymous** — full CP session, no persistence across sessions
+- **Registered** — Context Roots, session history, IFI trends, Compliance Report export, Klear Profiles
+
+---
+
+## 2. Architecture Overview
+
+```
+Browser (React)
+    │
+    │  user message
+    ▼
+Backend (Node.js + Express)
+    │
+    ├── [1] IPP Classifier (6-type taxonomy)        ← RUNS FIRST
+    │       Scope / Temporal / Entity / Authority / Form / Abstraction
+    │       Returns: [{ type, confidence, clarification_question }]
+    │
+    ├── [2] ICD Filter                              ← RUNS ON IPP RESULTS
+    │       Read user's ICD setting (0.0–1.0)
+    │       Surface only IPPs where confidence > (1 - ICD)
+    │       Output: filtered IPP list to surface
+    │
+    ├── [3] CP Guardian Checkpoint 1 (programmatic)
+    │       PC-1: filtered IPPs exist? → friction (ambiguous_signal)
+    │       PC-2: signal out of declared scope? → friction (scope_boundary)
+    │       PC-3: no verified intent in session? → friction (unverified_intent)
+    │       PC-4: all clear → Allow
+    │
+    ├── [4] Intent Decay Calculator (parallel with Checkpoint 1)
+    │       Semantic distance: current message vs declared intent
+    │       Update session decay score D
+    │       If D > 0.4 → trigger decay friction card
+    │
+    ├── [5] Domain Classifier (runs at session start + re-evaluated per message)
+    │       Detect: health / legal / financial / general
+    │       If domain shifts mid-session → activate new Safety Floor profile
+    │
+    ├── [6] Claude API call (if checkpoint 1 = Allow)
+    │       System prompt: CP-aware permanent prompt
+    │       Context injection: full session state
+    │
+    ├── [7] CP Guardian Checkpoint 2 (Claude-as-Guardian, conditional)
+    │       Runs if: borderline IPP confidence (0.3–0.5) OR decay spike > 0.2
+    │       Returns: allow / clarify / refuse + sa_score + cp_score
+    │
+    ├── [8] Safety Floor Injector (if domain = high-risk)
+    │       Appends domain safety assertions to response
+    │       Runs regardless of Guardian decision
+    │
+    ├── [9] IFI Phase 1 Calculator (immediate — after checkpoint 2)
+    │       SA: from Guardian checkpoint 2 sa_score
+    │       CP: active nodes satisfied / total active nodes
+    │       Composite: pending SS — stored as partial IFI
+    │
+    └── Response → Browser (if Allow)
+            OR Friction card → Browser (if Clarify)
+            OR Blocked message → Browser (if Refuse)
+
+    [IFI Phase 2 — async, after user submits SS rating]
+    POST /api/session/satisfaction
+        SS: normalized from user 1–5 star rating
+        Final IFI = 0.4(SA) + 0.3(CP) + 0.3(SS)
+        Stored in ifi_scores table
+    │
+    ▼
+Supabase
+    ├── CP Log Store (append-only) — guardian, friction, signal, action events only
+    └── Klear Events Store — ifi, decay, domain, safety_floor, context_root events
+```
+
+---
+
+## 3. Technology Stack
+
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| Frontend | React (Vite) | Chat UI, friction cards, IFI display, trace panel |
+| Backend | Node.js + Express | CP Guardian, IPP classifier, IFI calc, Claude API |
+| Database | Supabase (PostgreSQL) | All 6 CP stores + Klear extension tables |
+| AI Engine | Anthropic Claude API | Response generation + Guardian checkpoint 2 + IPP classification |
+| Auth | Supabase Auth | Anonymous sessions + email magic link |
+| Hosting (FE) | Vercel | Frontend deployment |
+| Hosting (BE) | Railway | Backend deployment |
+
+---
+
+## 4. CP Implementation
+
+### 4.1 Session Start — Articulation Assistance + Intent & Context Declaration
+
+Session start is a three-step flow designed to maximize intent clarity before the first AI call.
+
+**Step 1 — Opening prompt shown to user:**
+> "What are you working on today, and what kind of help do you need?"
+
+**Step 2 — Articulation Assistance:**
+After the user submits their opening statement, before confirming:
+1. Backend calls Claude to extract structured context + intent + detected scope boundaries
+2. User is shown an editable articulation card:
+
+```
+┌─────────────────────────────────────────────────────┐
+│  Here's what I understood:                          │
+│                                                     │
+│  Topic:   [AI governance research]          [Edit]  │
+│  Goal:    [Find and evaluate sources]       [Edit]  │
+│  Scope:   [Academic papers, 2020–2026]      [Edit] 

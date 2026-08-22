@@ -1,0 +1,67 @@
+
+    const InteractionLoop = {
+        processSignal(text) {
+            UI.addMessage('user', text);
+            /* FIX 5 (L1): Added signal.received logging for all incoming signals */
+            LogStore.append({ event_type: 'signal', event_subtype: 'received', object_id: generateId('sig'), context_id: Session.activeContextId, intent_id: Session.activeIntentId, agent_id: null, user_id: 'user_01', details: 'Signal: ' + text.substring(0, 100), reason: null });
+            if (Session.systemState === 'awaiting_confirmation') return this.handleConfirmation(text);
+            if (Session.systemState === 'awaiting_clarification') return this.handleClarification(text);
+            const ctx = Session.activeContextId ? ContextStore.get(Session.activeContextId) : null;
+            const c = SignalClassifier.classify(text, ctx);
+            if (c.agent_request) return this.handleAgentRequest(text);
+            const gd = CPGuardian.evaluatePostClassification(c);
+            LogStore.append({ event_type: 'guardian', event_subtype: 'post_classification', object_id: generateId('sig'), context_id: Session.activeContextId, intent_id: Session.activeIntentId, agent_id: null, user_id: 'user_01', details: 'Guardian: ' + gd.decision, reason: gd.reason });
+            if (gd.decision === 'Clarify') { const f = createFrictionEvent(Session.activeContextId, gd.friction_trigger.trigger_type, gd.friction_trigger.trigger_description); FrictionStore.create(f); LogStore.append({ event_type: 'friction', event_subtype: 'triggered', object_id: f.friction_id, context_id: Session.activeContextId, intent_id: Session.activeIntentId, agent_id: null, user_id: null, details: 'Friction: ' + f.trigger_type, reason: f.trigger_description }); Session.systemState = 'awaiting_clarification'; Session.persist(); UI.addMessage('friction', gd.friction_trigger.trigger_description + '\n\nPlease clarify.'); UI.updateStatus(); return; }
+            if (c.intent_presence === 'action_requested') return this.handleActionRequest(text);
+            UI.addMessage('system', 'Acknowledged: "' + text + '"');
+        },
+        async handleAgentRequest(text) {
+            if (!Session.activeContextId) { UI.addMessage('system', 'Create a context first.'); return; }
+            if (!Session.activeAgentId) { UI.addMessage('system', 'No agent. Create context with agent enabled.'); return; }
+            const int = Session.activeIntentId ? IntentStore.get(Session.activeIntentId) : null;
+            if (!int || !['verified', 'active'].includes(int.state)) { UI.addMessage('system', 'Verify intent first.'); return; }
+            const ctx = ContextStore.get(Session.activeContextId);
+            const act = createAction(Session.activeIntentId, Session.activeContextId, 'communicate', 'Agent response', text, Session.activeAgentId);
+            ActionStore.create(act);
+            LogStore.append({ event_type: 'action', event_subtype: 'requested', object_id: act.action_id, context_id: Session.activeContextId, intent_id: Session.activeIntentId, agent_id: Session.activeAgentId, user_id: 'user_01', details: 'Agent action requested', reason: text });
+            const gd = CPGuardian.evaluatePreExecution({ action_id: act.action_id, intent_id: act.intent_id, context_id: act.context_id, agent_id: act.agent_id, action_type: act.action_type });
+            LogStore.append({ event_type: 'guardian', event_subtype: 'pre_execution', object_id: act.action_id, context_id: Session.activeContextId, intent_id: Session.activeIntentId, agent_id: Session.activeAgentId, user_id: null, details: 'Guardian: ' + gd.decision, reason: gd.reason });
+            if (gd.decision !== 'Allow') { act.state = 'blocked'; ActionStore.update(act.action_id, { state: 'blocked' }); LogStore.append({ event_type: 'action', event_subtype: 'blocked', object_id: act.action_id, context_id: Session.activeContextId, intent_id: Session.activeIntentId, agent_id: Session.activeAgentId, user_id: null, details: 'Blocked', reason: gd.reason }); UI.addMessage('guardian-refuse', 'Blocked: ' + gd.reason); UI.updateStatus(); return; }
+            UI.addMessage('system', 'Agent processing...');
+            try {
+                const resp = await AdvisoryAgent.generateResponse(Session.activeAgentId, text, ctx, int);
+                LogStore.append({ event_type: 'agent', event_subtype: 'response', object_id: act.action_id, context_id: Session.activeContextId, intent_id: Session.activeIntentId, agent_id: Session.activeAgentId, user_id: null, details: 'Agent responded', reason: 'Input: ' + text });
+                act.state = 'executed'; act.outputs = resp; act.executed_at = timestamp(); act.executed_by = Session.activeAgentId; ActionStore.update(act.action_id, act);
+                LogStore.append({ event_type: 'action', event_subtype: 'executed', object_id: act.action_id, context_id: Session.activeContextId, intent_id: Session.activeIntentId, agent_id: Session.activeAgentId, user_id: null, details: 'Agent action executed', reason: null });
+                UI.addMessage('agent', resp);
+            } catch (e) { act.state = 'failed'; ActionStore.update(act.action_id, { state: 'failed' }); UI.addMessage('system', 'Agent error: ' + e.message); }
+            UI.updateStatus();
+        },
+        handleActionRequest(text) {
+            if (!Session.activeContextId) {
+                Session.pendingVerification = { type: 'context_and_intent', data: { description: text.match(/(?:about|on|for)\s+(.+?)(?:\.|$)/i)?.[1] || text.substring(0, 80), intentText: text } };
+                Session.systemState = 'awaiting_confirmation'; Session.persist();
+                UI.addMessage('verification', '**Proposed Context:**\n- ' + Session.pendingVerification.data.description + '\n\n**Proposed Intent:**\n- ' + text + '\n\nConfirm?');
+                UI.updateStatus(); return;
+            }
+            const int = Session.activeIntentId ? IntentStore.get(Session.activeIntentId) : null;
+            if (!int || !['verified', 'active'].includes(int.state)) {
+                Session.pendingVerification = { type: 'intent', data: { text: text, type: /create|generate|write/i.test(text) ? 'generate' : 'explore' } };
+                Session.systemState = 'awaiting_confirmation'; Session.persist();
+                UI.addMessage('verification', '**Proposed Intent:**\n- ' + text + '\n- Type: ' + Session.pendingVerification.data.type + '\n\nConfirm?');
+                UI.updateStatus(); return;
+            }
+            if (/lock in|commit/i.test(text)) {
+                const content = text.replace(/^(lock in|commit)\s*/i, '').replace(/\s*(as a .+)$/i, '').trim();
+                Session.pendingVerification = { type: 'node', data: { content: content, type: /decision/i.test(text) ? 'decision' : /constraint/i.test(text) ? 'constraint' : 'fact' } };
+                Session.systemState = 'awaiting_confirmation'; Session.persist();
+                UI.addMessage('verification', '**Proposed Node:**\n- Content: ' + content + '\n- Type: ' + Session.pendingVerification.data.type + '\n\nConfirm?');
+                UI.updateStatus(); return;
+            }
+            if (/mark .+ for later|pivot/i.test(text)) {
+                const pt = text.replace(/^(mark|pivot)\s*/i, '').replace(/\s*(for later|as pivot).*$/i, '').trim();
+                const pivot = createPivot(Session.activeContextId, generateId('anchor'), 'text', pt);
+                NodeStore.createPivot(pivot);
+                LogStore.append({ event_type: 'pivot', event_subtype: 'created', object_id: pivot.pivot_id, context_id: Session.activeContextId, intent_id: Session.activeIntentId, agent_id: null, user_id: 'user_01', details: 'Pivot: ' + pt, reason: null });
+                UI.addMessage('system', 'Pivot added: ' + pt);
+                UI.updatePivots(); UI.upda

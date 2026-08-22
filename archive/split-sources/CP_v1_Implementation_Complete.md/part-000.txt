@@ -1,0 +1,183 @@
+# Collaboration Protocol (CP) v1.0 — Complete Implementation Specification
+
+**Status:** Frozen  
+**Version:** 1.0  
+**Date:** 2025-01-26  
+**Scope:** System Design + Build Order Execution
+
+---
+
+# TABLE OF CONTENTS
+
+1. [Step 1 — Formal Data Models](#step-1--formal-data-models)
+2. [Step 2 — CP Interaction Loop](#step-2--cp-interaction-loop)
+3. [Step 3 — Simulated User Session](#step-3--simulated-user-session)
+4. [Step 4 — Failure Handling](#step-4--failure-handling)
+5. [Step 5 — Observability & Logs](#step-5--observability--logs)
+6. [Step 6 — CP System Architecture](#step-6--cp-system-architecture)
+7. [Phase 1 — State Skeleton](#phase-1--state-skeleton)
+8. [Phase 2 — Guardian Rules](#phase-2--guardian-rules-read-only-enforcement)
+9. [Phase 3 — Single Happy-Path Flow](#phase-3--single-happy-path-flow)
+10. [Phase 4 — One Failure Path](#phase-4--one-failure-path)
+11. [Phase 5 — Manual Runtime Test](#phase-5--manual-runtime-test)
+12. [Final Summary](#final-summary)
+
+---
+
+# STEP 1 — FORMAL DATA MODELS
+
+Seven CP objects formally defined with fields, states, and constraints.
+
+---
+
+## 1.1 Context
+
+**Definition:**  
+A bounded, explicit container that defines the scope, constraints, active goals, allowed agents, and permissions within which reasoning and actions are permitted.
+
+**Fields:**
+| Field | Type | Description |
+|-------|------|-------------|
+| `context_id` | string | Unique identifier |
+| `parent_context_id` | string \| null | Reference to parent context (null if root) |
+| `description` | string | Human-readable description of what this context covers |
+| `scope` | object | Explicit inclusion/exclusion boundaries defining what is inside this context and what is outside |
+| `constraints` | list of strings | Explicit rules governing this context |
+| `active_goals` | list of strings | What the user is trying to accomplish within this context |
+| `active_intents` | list of intent_id | Intent object references currently associated with this context |
+| `allowed_agents` | list of agent_id | Agents permitted to operate here |
+| `state` | enum | Current lifecycle state |
+| `created_at` | timestamp | When created |
+| `created_by` | string | User identifier |
+
+**Allowed States:**
+- `open` — Active, accepting signals and actions
+- `committed` — Frozen for reference; no new intents may be declared and no new actions may be executed
+- `archived` — Historical record only
+
+**Constraints:**
+- Context must be declared or confirmed by user before use
+- Context transitions must be observable and logged
+- No implicit context merging is allowed
+- Child contexts inherit parent constraints unless explicitly overridden with user approval
+
+---
+
+## 1.2 Intent
+
+**Definition:**  
+An explicit, verified declaration of what the user wants the system to do, under defined constraints, before execution. Intent is not inferred from text or behavior.
+
+**Fields:**
+| Field | Type | Description |
+|-------|------|-------------|
+| `intent_id` | string | Unique identifier |
+| `context_id` | string | Reference to the Context this intent belongs to |
+| `intent_type` | enum | Category of intent |
+| `declaration_text` | string | The user's explicit statement of what they want |
+| `declaration_origin` | enum | How the intent was initially captured |
+| `scope` | object | Explicit boundaries: topic, depth, sources, authority, risk tolerance |
+| `confidence_level` | string \| null | User-declared certainty (not system-inferred) |
+| `state` | enum | Current lifecycle state |
+| `created_at` | timestamp | When created |
+| `verified_at` | timestamp \| null | When verified (null if not yet verified) |
+| `executed_at` | timestamp \| null | When executed (null if not yet executed) |
+
+**Allowed Intent Types:**
+- `explore` — Gather information, no action
+- `decide` — Reach a conclusion or choice
+- `generate` — Produce content or artifact
+- `act` — Execute an action with external effect
+- `verify` — Confirm or validate something
+
+**Allowed Declaration Origins:**
+- `user_typed` — User wrote it directly
+- `user_confirmed` — System proposed, user approved
+- `user_revised` — User edited a prior version
+
+**Allowed States:**
+- `draft` — User is forming intent, not yet declared
+- `declared` — User has stated intent, not yet verified
+- `verified` — System has confirmed intent with user
+- `active` — Intent is governing current operations
+- `executed` — Action based on intent has been completed
+- `revised` — Intent has been modified by user
+- `abandoned` — User has explicitly canceled intent
+- `locked` — Intent is frozen and cannot be changed
+
+**Constraints:**
+- Intent ≠ text ≠ behavior (the words alone do not constitute intent)
+- No action without verified intent
+- Intent cannot be rewritten retroactively by system or user after execution
+- Intent must reference exactly one Context
+- Only user can transition intent between states
+
+---
+
+## 1.3 Node
+
+**Definition:**  
+A foundational, user-committed structural unit representing a stable piece of meaning or work. Nodes are not interpretive, emotional, or inferred. They constrain future reasoning within their scope.
+
+**Fields:**
+| Field | Type | Description |
+|-------|------|-------------|
+| `node_id` | string | Unique identifier |
+| `context_id` | string | Reference to the Context this node belongs to |
+| `content` | string | The substantive information or structure the node represents |
+| `commitment_type` | enum | What kind of commitment this node represents |
+| `scope` | string | Boundaries defining what this node governs |
+| `mutability_rule` | string | Conditions under which this node may be edited |
+| `state` | enum | Current lifecycle state |
+| `created_at` | timestamp | When created |
+| `created_by` | string | User identifier |
+
+**Allowed Commitment Types:**
+- `fact` — A stated piece of information treated as true within this context
+- `decision` — A choice that has been made
+- `constraint` — A rule or boundary that governs future work
+- `artifact` — A produced output (document, plan, etc.)
+
+**Allowed States:**
+- `active` — Node is in effect and constraining reasoning
+- `revised` — Node has been explicitly edited by user (prior version logged)
+- `archived` — Node is no longer active but preserved for history
+
+**Constraints:**
+- Nodes are user-owned; system cannot create nodes without user commitment
+- Nodes persist across turns within their context
+- Nodes are immutable unless explicitly edited by user
+- Editing a node requires explicit user action and logs the prior version
+- Nodes are not interpretations; they represent explicit commitments only
+
+---
+
+## 1.4 Pivot
+
+**Definition:**  
+A second-order, user-declared annotation signaling perceived importance or directional change. Pivots mark significance without implying intent, commitment, or action. They annotate existing structures but do not constrain reasoning or trigger execution.
+
+**Fields:**
+| Field | Type | Description |
+|-------|------|-------------|
+| `pivot_id` | string | Unique identifier |
+| `context_id` | string | Reference to the Context this pivot exists within |
+| `anchor_id` | string | Reference to the object being annotated |
+| `anchor_type` | enum | Type of object being annotated |
+| `pivot_text` | string | User's annotation or marker of significance |
+| `declared_by_user` | boolean | Confirms user explicitly created this pivot |
+| `state` | enum | Current lifecycle state |
+| `created_at` | timestamp | When created |
+
+**Allowed Anchor Types:**
+- `node`
+- `text`
+- `pivot`
+
+**Allowed States:**
+- `active` — Pivot is visible and associated with its anchor
+- `dismissed` — User has explicitly removed or hidden the pivot
+- `archived` — Pivot is no longer active but preserved for history
+
+**Constraints:**
+- Pivots annotat

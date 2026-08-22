@@ -1,0 +1,132 @@
+dix A: Reviewer Objection Matrix
+
+Anticipated objections and prepared responses for peer review:
+
+| Objection | Response |
+|-----------|----------|
+| **"This is just prompt engineering"** | Prompt engineering addresses input quality; CP governs interaction timing and ambiguity resolution authority. These are orthogonal interventions. |
+| **"This limits AI autonomy"** | Autonomy is user-governed via ICD. Users can choose full autonomy (ICD=0) or full control (ICD=1). CP provides the mechanism, not the mandate. |
+| **"Too theoretical without implementation"** | All constructs are operationalized with measurement protocols. Studies are specified for replication. This follows standard pre-implementation research practice. |
+| **"Not scalable"** | Explicit intent scales better than implicit correction. Post-hoc revision cycles are costlier than upfront clarification. |
+| **"Users don't want this much control"** | ICD is adjustable and user-chosen. The claim is not that all users want high control, but that the option should exist and its effects are measurable. |
+| **"How is this different from HITL?"** | HITL addresses task oversight; CP addresses semantic authority. HITL asks "should the AI do this?"; CP asks "what does the user mean by this?" |
+| **"IPPs are too subjective"** | Study 2 directly tests IPP reliability. If κ > 0.7, subjectivity is bounded within acceptable research standards. |
+| **"No real-world validation"** | Acknowledged as a limitation. Phase 3 addresses this explicitly. The contribution is the framework and initial validation, not full deployment. |
+| **"Safety framing is overblown"** | We cite specific harms: accountability gaps, untraceable decisions, user disempowerment. These are documented problems in AI deployment literature. |
+| **"This is just speculation"** | It is falsifiable speculation with ready-to-run validation protocols. That distinguishes it from pure opinion. |
+
+---
+
+# Appendix B: Quick-Start Study Protocol
+
+Complete protocol for conducting first empirical study in 30 days.
+
+## B.1 Materials Checklist
+- Prolific account with $1,500 balance
+- Survey platform (Qualtrics, Google Forms, or Typeform)
+- Screen recording capability (optional but recommended)
+- Spreadsheet for transcript coding
+- IPP Codebook (see Appendix C)
+
+## B.2 Task Set (10 Tasks with Known Ambiguity)
+
+1. **"Write a recommendation letter for my colleague"** — Ambiguous: tone, length, specific achievements
+2. **"Summarize this article"** — Ambiguous: length, audience, key points selection
+3. **"Help me plan a meeting"** — Ambiguous: format, attendees, duration, agenda depth
+4. **"Analyze this data"** — Ambiguous: analysis type, visualization, depth
+5. **"Draft an email to my team"** — Ambiguous: tone, formality, call-to-action
+6. **"Create a project proposal"** — Ambiguous: scope, format, detail level
+7. **"Explain how machine learning works"** — Ambiguous: audience expertise, depth, examples
+8. **"Write a social media post about our product"** — Ambiguous: platform, tone, length
+9. **"Help me prepare for a job interview"** — Ambiguous: role level, company type, question focus
+10. **"Review my code and suggest improvements"** — Ambiguous: focus areas, style preferences, priority
+
+## B.3 Post-Task Survey Questions
+
+1. "In your own words, what decisions did the AI make on your behalf?" (open-ended)
+2. "Were there any points where the AI could have asked for clarification but didn't?" (Y/N + explanation)
+3. "Rate how well the output matched your intent" (1-7 scale)
+4. "Rate your sense of control over the interaction" (1-7 scale)
+
+## B.4 Coding Procedure
+
+1. Two coders independently review each transcript
+2. For each AI response, identify all implicit assumptions
+3. Classify each assumption by IPP type (Scope, Temporal, Entity, Authority, Form, Abstraction)
+4. Compare user-reported assumptions to coder-identified assumptions
+5. Calculate inter-rater reliability (Cohen's κ)
+6. Resolve disagreements through discussion; document resolution rationale
+
+---
+
+# Appendix C: Construct Measurement Instruments
+
+## C.1 IPP Annotation Codebook
+
+**Definition:**
+An Intent Pivot Point is any moment in an interaction where the AI could reasonably interpret the user's intent in two or more materially different ways.
+
+**Decision Rules:**
+1. Would a different interpretation change the output meaningfully? If no, not an IPP.
+2. Is the correct interpretation explicitly stated by the user? If yes, not an IPP.
+3. Could a reasonable person interpret this differently? If yes, potential IPP.
+
+**Classification:**
+- **SCOPE:** Boundaries of the request are ambiguous
+- **TEMPORAL:** Time reference is ambiguous
+- **ENTITY:** Which entity is referenced is ambiguous
+- **AUTHORITY:** Whose perspective to adopt is ambiguous
+- **FORM:** Output format or structure is ambiguous
+- **ABSTRACTION:** Level of detail is ambiguous
+
+## C.2 Intent Fidelity Index (IFI) Instrument
+
+**Semantic Alignment (Expert Rating):**
+Rate the correspondence between the user's stated intent and the AI output:
+1 = No correspondence; 4 = Moderate correspondence; 7 = Perfect correspondence
+
+**Constraint Preservation:**
+List all constraints stated by user. For each, mark: Satisfied / Violated / Not Applicable
+Score = (Satisfied) / (Satisfied + Violated) × 100
+
+**Subjective Satisfaction:**
+"The AI output matches what I actually wanted" — 1 (Strongly Disagree) to 7 (Strongly Agree)
+
+## C.3 ICD Perception Scale
+
+Post-task items (7-point Likert):
+1. "I felt in control of the AI's interpretation of my request"
+2. "The AI asked for clarification when needed"
+3. "I could have directed the AI differently if I wanted to"
+4. "The AI made decisions that should have been mine to make" (reverse-scored)
+
+---
+
+# Appendix D: Complete Literature Reference List
+
+Essential citations for literature review integration:
+
+## Human-Automation Interaction
+- Parasuraman, R., & Riley, V. (1997). Humans and automation: Use, misuse, disuse, abuse. *Human Factors*, 39(2), 230-253.
+- Parasuraman, R., Sheridan, T. B., & Wickens, C. D. (2000). A model for types and levels of human interaction with automation. *IEEE Transactions on Systems, Man, and Cybernetics*, 30(3), 286-297.
+- Sheridan, T. B., & Verplank, W. L. (1978). Human and computer control of undersea teleoperators. *MIT Technical Report*.
+- Endsley, M. R. (2017). From here to autonomy: Lessons learned from human-automation research. *Human Factors*, 59(1), 5-27.
+
+## Shared Mental Models
+- Mathieu, J. E., Heffner, T. S., Goodwin, G. F., Salas, E., & Cannon-Bowers, J. A. (2000). The influence of shared mental models on team process and performance. *Journal of Applied Psychology*, 85(2), 273-283.
+- Cannon-Bowers, J. A., & Salas, E. (2001). Reflections on shared cognition. *Journal of Organizational Behavior*, 22(2), 195-202.
+
+## Explainable AI
+- Miller, T. (2019). Explanation in artificial intelligence: Insights from the social sciences. *Artificial Intelligence*, 267, 1-38.
+- Gunning, D., et al. (2019). XAI—Explainable artificial intelligence. *Science Robotics*, 4(37).
+
+## Human-AI Teaming
+- Bansal, G., et al. (2021). Does the whole exceed its parts? The effect of AI explanations on complementary team performance. *CHI 2021*.
+- Lai, V., & Tan, C. (2019). On human predictions with explanations and predictions of machine learning models. *FAT* 2019*.
+
+## Trust in Automation
+- Lee, J. D., & See, K. A. (2004). Trust in automation: Designing for appropriate reliance. *Human Factors*, 46(1), 50-80.
+
+## Prompt Engineering & Interaction
+- Liu, P., et al. (2023). Pre-train, prompt, and predict: A systematic survey of prompting methods in NLP. *ACM Computing Surveys*.
+- White, J., et al. (2023). A prompt pattern catalog to enhance prompt engineering with ChatGPT. *arXiv preprin

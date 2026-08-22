@@ -1,0 +1,99 @@
+\n\n--- PAGE 1 ---\n
+The Collaboration Protocol:
+Silent Intent Inference as an Accountability Challenge in
+Human-LLM Interaction
+Mohamed Salama
+Independent Researcher
+Mohamed.you.salama@gmail.com
+January 2026
+Abstract
+Human-AI collaboration challenges persist even when AI systems are technically capable.
+We argue these challenges may often stem from Silent Intent Inferencea structural pattern
+where AI resolves semantic ambiguity without explicit user authorization. We propose framing
+this not as mere interaction friction but as a potential accountability challenge: it may create
+oversight gaps, dicult-to-trace decisions, and gradual reduction of user agency.
+We introduce the Collaboration Protocol (CP), a theoretical framework for preserving
+human semantic authority through four operationalized constructs: (1) Intent Control Degree (ICD), a user-adjustable parameter (0.01.0) governing how ambiguity is resolved; (2)
+Intent Pivot Points (IPP), semantic locations where meaning may branch, with a six-type
+taxonomy; (3) Intent Fidelity Index (IFI), a composite metric measuring intent preservation
+across interactions; and (4) Context Roots (CR), a mechanism for anchoring ambiguity in
+interaction history, enabling multi-turn and multi-session intent tracking.
+The framework introduces the Semantic Materiality Proxy (SMP) for objective ambiguity classication and the Context Factor (CF) for modeling how prior interactions aect
+current ambiguity. Each construct includes specic measurement procedures enabling empirical validation. We propose a phased research agenda: quantifying silent inference prevalence
+in current LLM systems, validating ICD eects on collaboration quality, and establishing IPP
+annotation reliability. This paper establishes a falsiable theoretical foundationthe constructs
+and hypotheses are designed to be empirically tested and potentially refuted by the research
+community.
+Keywords: Human-LLM Interaction, Silent Intent Inference, Intent Alignment, Semantic Authority, Collaboration Protocol, Human-in-the-Loop AI, Context Roots, AI Governance
+1 Introduction
+1.1 Motivation
+Modern AI systems routinely produce outputs that are technically correct, linguistically coherent,
+and aligned with training objectivesyet still wrong for the user. This gap cannot be explained
+solely by model alignment, prompt quality, or user error. Instead, it reects a deeper protocollevel failure: AI systems silently resolve ambiguity without verifying human intent. We term this
+phenomenon Silent Intent Inference.
+1\n\n--- PAGE 2 ---\n
+1.2 Illustrative Failure Case
+Consider the following observed interaction:
+User: What is the capital of Egypt?
+AI: Cairo
+User: How many population?
+AI: 112 million
+Post-hoc analysis reveals that the AI inferred the second question referred to Egypt (population
+∼112 million) rather than Cairo (population ∼22 million), based on conversational proximity rather
+than explicit user intent. While this inference was reasonable, it was unauthorized.
+This interaction demonstrates four critical phenomena: (1) ambiguity existed in the user's query;
+(2) a semantic pivot point occurred where meaning could branch; (3) the AI silently selected an
+interpretation without surfacing alternatives; and (4) the output violated user intent despite being
+factually defensible.
+This pattern generalizes across domains:
+Healthcare. A patient asks an AI assistant: What are my treatment options for this condition? The AI provides a comprehensive list of all medical interventions. But the patient wanted
+options covered by their insurance, or options with minimal side eects, or options their doctor
+had recommended. The AI silently resolved options to mean all technically possible optionsa
+reasonable interpretation, but one the patient never authorized.
+Legal. A small business owner asks: Is this contract fair? The AI analyzes the terms and
+responds armatively. But fair to whom? Fair compared to what standard? The AI assumed the
+user wanted a bilateral fairness assessment against industry norms. The user wanted to know if the
+contract was fair to them specically, given their weak negotiating position. The silent inference
+produced a technically accurate but practically misleading response.
+Creative. A user requests: Write a story about a hero. The AI produces a 500-word fantasy
+narrative with a male protagonist. But the user imagined a realistic contemporary setting, a female
+protagonist, and a 2,000-word length. The AI made silent decisions about genre, tone, length,
+character demographics, and narrative structurenone of which the user specied, all of which the
+AI resolved without asking.
+In each case, the AI performed well by conventional metrics: responses were coherent, relevant,
+and grounded in the query. Yet each response failed the user's actual intent. The failures were not
+capability failures but protocol failuresthe system lacked a mechanism to surface its interpretive
+choices before committing to them.
+1.3 Contributions
+This paper makes the following contributions:
+1. We name and dene Silent Intent Inference as a structural accountability challenge in
+human-AI interaction, distinct from model capability limitations.
+2. We introduce three operationalized constructsIntent Control Degree (ICD), Intent Pivot
+Points (IPP), and Intent Fidelity Index (IFI)each with specic measurement protocols.
+3. We propose seven Protocol Laws governing intent-preserving interaction between humans and
+AI systems.
+4. We provide falsiable hypotheses and ready-to-run validation studies, enabling the research community to empirically test the framework's claims.
+2\n\n--- PAGE 3 ---\n
+1.4 Scope and Boundaries
+This paper establishes a theoretical framework; it does not report empirical ndings. The proposed
+constructs are operationalizable and testable, but validation requires the studies we describe. We
+do not claim universal correctness, nor do we propose model-level architectural modications. The
+framework addresses text-based human-LLM interaction; other modalities are outside scope.
+2 Related Work
+The Collaboration Protocol addresses a gap at the intersection of ve established research streams.
+2.1 Human-Automation Interaction
+Foundational work on levels of automation [Sheridan & Verplank, 1978, Parasuraman et al., 2000]
+established taxonomies for allocating tasks between humans and machines. These frameworks address who does what but not who decides whatthe semantic authority question central to our
+work.
+Parasuraman & Riley [1997] identied patterns of automation misuse, disuse, and abuse, demonstrating that failures often stem from inappropriate trust calibration rather than capability mismatch. Our Intent Control Degree construct extends this insight by providing a mechanism for
+users to calibrate trust through explicit control over ambiguity resolution.
+Endsley [2017] identies situation awareness as a key challenge in automation. Silent Intent
+Inference may degrade situation awareness by resolving ambiguity invisiblyusers cannot be aware
+of decisions they were never shown.
+Gap: Existing frameworks focus on task allocation but do not address semantic authority.
+2.2 Shared Mental Models
+Research on shared mental models [Mathieu et al., 2000, Cannon-Bowers & Salas, 2001] demonstrates that team performance depends on aligned understanding. Human-AI teams face a unique
+challenge: the AI's mental model is opaque and cannot be directly inspected.
+The Collaboration Protocol addresses this by externalizing the points at which human and AI
+understanding may diverge (Intent Pivot Points), making implicit dierences explicit and actionable.
+Gap: Sha

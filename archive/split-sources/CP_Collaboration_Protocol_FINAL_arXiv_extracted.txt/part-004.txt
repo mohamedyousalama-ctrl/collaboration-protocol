@@ -1,0 +1,124 @@
+ structure
+Search H for prior mentions of p or semantically similar phrases
+return {source, anchor_text, condence, staleness, type}
+ComputeContextFactor(CR):
+if CR.type = null: return 1.0 // No prior context
+if CR.condence > 0.8 and CR.staleness < 0.2: return 0.5
+if CR.has_conicts: return 1.5 // Contradictory contexts
+return 0.75 + 0.5 × CR.staleness // Interpolate based on staleness
+Figure 1: IPP Detection Algorithm with Context Roots. This algorithm extends the Semantic Materiality Proxy by incorporating Context Rootsprior interaction history that may resolve
+or amplify ambiguity. The Context Factor (CF) adjusts materiality based on whether prior context
+exists, is reliable, or conicts. Session history H includes intra-session turns, cross-session references, and environmental context.
+ICD Range System Behavior
+0.00.3 AI resolves ambiguity freely; minimal clarication
+0.40.6 AI conrms major pivot points
+0.70.9 AI conrms most pivot points
+1.0 No ambiguity resolved without explicit conrmation
+Table 6: Intent Control Degree Levels
+Key principle: ICD is always user-chosen, never system-imposed. The framework provides
+the mechanism; users decide their preferred level. Systems may suggest an ICD based on detected
+task characteristics (e.g., document type, domain, ambiguity density), but users retain authority to
+accept, modify, or ignore such suggestions.
+Boundary Conditions. ICD governs ambiguity handling, not overall AI autonomy. A low ICD
+does not grant permission for the AI to violate explicit constraints or ignore stated requirementsit
+13\n\n--- PAGE 14 ---\n
+only permits autonomous resolution of genuinely ambiguous elements. ICD operates orthogonally
+to safety constraints, which remain inviolable regardless of ICD setting.
+0.0 0.3 0.6 0.9 1.0
+AI Autonomy Balanced Human Control
+AI resolves freely
+Speed prioritized
+Major IPPs surfaced
+Minor resolved
+All IPPs surfaced
+Max delity
+Quick drafts,
+casual chat
+Reports,
+analysis
+Legal, medical,
+creative vision
+Figure 2: The Intent Control Degree Spectrum. Visual description: A horizontal gradient
+bar transitions from blue (left, representing AI autonomy) to red (right, representing human control). The spectrum is divided into three zones: AI Autonomy (0.00.3), Balanced (0.40.6), and
+Human Control (0.71.0). Below each zone, behavioral descriptions and example tasks are shown.
+Interpretation: Users select their preferred ICD level based on task stakes, complexity, and personal
+preference. The framework makes no normative claim that higher ICD is universally betterquick
+drafts may warrant low ICD, while legal documents warrant high ICD.
+4.1.7 Intent Fidelity Index (IFI)
+Intent Fidelity Index measures how well output preserves original intent:
+IFI = 0.4(SA) + 0.3(CP) + 0.3(SS) (3)
+Where SA = expert-rated semantic alignment (17, normalized), CP = proportion of stated
+constraints satised (01), and SS = user satisfaction rating (17, normalized).
+Weight Justication. The proposed weights reect a theoretical prioritization grounded in
+the framework's core premise: intent delity is primarily about meaning preservation. Semantic
+Accuracy (SA) receives the highest weight (0.4) because it captures whether the output means
+what the user intendedthe fundamental measure of intent delity. Constraint Preservation (CP)
+and Subjective Satisfaction (SS) receive equal weights (0.3 each) as complementary validity checks:
+CP veries that explicit requirements were honored, while SS captures holistic user judgment that
+may detect intent violations missed by formal measures.
+This weighting scheme treats SA as necessary but not sucient: an output could be semantically
+aligned yet violate explicit constraints (low CP) or feel o to users in ways experts miss (low SS).
+The equal weighting of CP and SS reects uncertainty about their relative importance, which varies
+by domaintechnical tasks may weight CP higher, while creative tasks may weight SS higher.
+We emphasize that these weights are provisional. Study 4 in our validation agenda includes
+weight sensitivity analysis, and we anticipate domain-specic calibration. The framework's contribution is the structure of IFI (three complementary components), not the specic numerical weights,
+which remain empirically renable.
+4.2 Protocol Laws
+The Collaboration Protocol establishes seven governing principles:
+14\n\n--- PAGE 15 ---\n
+Law 1: Maximum Capacity. AI systems operate at full capacity unless explicitly constrained
+by human intent.
+Law 2: Intent Fidelity. No output is valid unless it preserves highest achievable delity to human
+intent.
+Law 3: Articulation Supremacy. Intent articulation is human-owned. AI may assist but must
+not decide intent.
+Law 4: Human Ownership of Ambiguity. Ambiguity belongs to the human by default.
+Law 5: AI Non-Assumption. AI must not silently resolve intent-critical ambiguity.
+Law 6: Human Override. Humans may intervene at any Intent Pivot Point.
+Law 7: Reversibility. All intent transformations must be reversible by the human.
+4.3 Interaction Flow
+A CP-compliant interaction follows six stages (illustrated in Figure 3):
+1. Intent Expression: User articulates outcome and constraints
+2. Pivot Detection: System identies IPPs in user input
+3. Pivot Surfacing: System presents IPPs per user's ICD setting
+4. Pivot Resolution: User resolves ambiguity (or delegates at low ICD)
+5. Generation: AI produces output respecting resolved intent
+6. Correction: Output presented with override capability preserved
+1. Intent
+Expression
+2. Pivot
+Detection
+3. Pivot
+Surfacing
+4. Pivot
+Resolution
+5. Generation 6. Correction
+Opportunity
+iterate if needed
+(ltered by
+user's ICD)
+Externalized decisions
+(vs. silent in standard AI)
+Figure 3: The Collaboration Protocol Interaction Flow. Visual description: A owchart
+showing six color-coded boxes connected by arrows: (1) Intent Expression (blue), (2) Pivot Detection (yellow), (3) Pivot Surfacing (orange), (4) Pivot Resolution (green), (5) Generation (purple),
+and (6) Correction Opportunity (gray). A dashed arrow loops from stage 6 back to stage 1 for iteration. A brace below stages 24 highlights these as Externalized decisions (vs. silent in standard
+AI). Interpretation: The key CP contribution is externalizing stages 24, which in standard AI
+interactions occur invisibly within generation. Users may iterate if corrections are needed.
+15\n\n--- PAGE 16 ---\n
+4.4 Compliance Criteria
+A system is CP-compliant if it: exposes IPPs according to user's ICD setting; respects user choices
+at all surfaced pivots; allows human override at any stage; prevents silent resolution of intent-critical
+ambiguity; and maintains traceable logs of intent transformations.
+5 Proposed Validation Studies
+We propose four studies to validate the framework's core claims.
+5.1 Study 1: Silent Inference Prevalence
+Research Question: How frequently do current AI systems engage in Silent Intent Inference?
+Hypotheses: H1a: Silent inferences occur in >60% of complex tasks. H1b: Users are unaware
+in >70% of cases.
+Method: 200 knowledge workers complete 5 complex tasks (recommendation letter, project proposal, data analysis, creative brief, technical explanation) using ChatGPT or Claude. Four trained
+annotators identify assumptions using IPP codebook. Post-task survey captures user-reported assumptions.
+Analysis: Silent Inference Rate = coded assumptions / total interactions. Awareness Rate =
+user-identied / coder-identied assumptions. Inter-rater reliability via Cohen's κ.
+5.2 Power Analysis and Sample Size Justication
+Sample sizes for Studies 1, 3, and 4 were determined via a priori power analysis [Cohen, 1992].
+Bas

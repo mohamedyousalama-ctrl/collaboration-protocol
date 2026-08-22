@@ -1,0 +1,181 @@
+│ Collaboration Protocol (CP)                 │
+│ [THE INVENTION]                             │
+│ • Context    • Intent    • Guardian         │
+│ • Friction   • Nodes     • Responsibility   │
+└───────────────────▲─────────────────────────┘
+                    │ runtime host
+┌───────────────────┴─────────────────────────┐
+│ UI / LLMs / Agents / Tools                  │
+└─────────────────────────────────────────────┘
+```
+
+**Figure 2 Caption:** CP operates as an execution-time mediation layer, composable with external governance above and agnostic to implementation details below.
+
+---
+
+## 5. METHOD / EXECUTION FLOW
+
+### 5.1 Ordered Method Steps
+
+The method comprises the following ordered steps:
+
+**Step 1:** Receive user signal within a defined context
+
+**Step 2:** Classify signal for clarity, intent presence, and context fit
+
+**Step 3:** Guardian Checkpoint 1 — Post-Classification evaluation
+
+**Step 4:** If Clarify decision → Trigger friction event, await user resolution
+
+**Step 5:** Require explicit intent declaration or confirmation from user
+
+**Step 6:** Verify intent state (user must confirm; words alone do not constitute intent)
+
+**Step 7:** Construct candidate action based on verified intent
+
+**Step 8:** Guardian Checkpoint 2 — Pre-Execution evaluation
+
+**Step 9:** If Refuse decision → Block action, log reason, halt execution
+
+**Step 10:** If Allow decision → Execute action, log completion
+
+**Step 11:** Emit output with trace metadata (context_id, intent_id, action_id, timestamps)
+
+### 5.2 Guardian Post-Classification Rules
+
+At Checkpoint 1 (Post-Classification), the Guardian evaluates:
+
+- **PC-1:** If signal is ambiguous → Clarify
+- **PC-2:** If signal is out of scope → Clarify
+- **PC-3:** If signal requests action without context → Clarify
+- **PC-4:** If signal is clear and no action requested → Allow
+
+### 5.3 Guardian Pre-Execution Rules
+
+At Checkpoint 2 (Pre-Execution), the Guardian evaluates:
+
+- **PE-1:** If no intent exists → Refuse
+- **PE-2:** If intent is not verified or active → Refuse
+- **PE-3:** If intent does not match action → Refuse
+- **PE-4:** If context is not open → Refuse
+- **PE-5:** If agent is not in context's allowed list → Refuse
+- **PE-6:** If agent is not active → Refuse
+- **PE-7:** If agent type prohibits action type → Refuse
+- **PE-8:** If action exceeds agent permissions → Refuse
+- **PE-9:** If action violates context constraints → Refuse
+- **PE-10:** If unresolved friction exists → Refuse
+- **PE-11:** If all checks pass → Allow
+
+### 5.4 Friction Trigger Types
+
+The system defines seven friction trigger types:
+
+| Trigger Type | Condition |
+|--------------|-----------|
+| `ambiguous_signal` | User input could not be classified with confidence |
+| `unverified_intent` | Action requested without verified intent |
+| `scope_boundary` | Operation would exceed context boundaries |
+| `permission_violation` | Agent attempted action outside its permissions |
+| `high_risk_action` | Action type requires additional confirmation |
+| `missing_context` | Required context information is absent |
+| `conflict_detected` | Request conflicts with existing node, intent, or constraint |
+
+### 5.5 Friction Resolution Types
+
+The system defines five friction resolution types:
+
+| Resolution Type | Meaning |
+|-----------------|---------|
+| `user_clarified` | User provided additional information |
+| `user_confirmed` | User explicitly confirmed intent to proceed |
+| `user_revised` | User changed their request |
+| `user_abandoned` | User chose not to proceed |
+| `system_blocked` | System prevented action due to unresolved constraint |
+
+**Friction Constraint:** Friction cannot be silently dismissed by the system. Only user action resolves friction.
+
+### 5.6 Responsibility Chain
+
+The method maintains an unbroken responsibility chain:
+
+```
+User Signal → CP Verification → AI Suggestion → User Commitment → Action
+```
+
+**Chain Properties:**
+- Every link is logged with timestamp and actor identification
+- No link may be skipped or compressed
+- The chain must be reconstructible from logs alone
+- User commitment is the only mechanism that advances signals to actions
+
+**Accountability Rule:** If any link in the chain cannot be reconstructed, the system has failed its accountability guarantee.
+
+**Figure 3 Caption:** The responsibility chain defines the unbroken path from user signal to system action. Every link is logged; no link may be skipped.
+
+---
+
+## 6. RUNTIME CONSTRAINT ENFORCEMENT
+
+### 6.1 Gate Decisions
+
+The Guardian issues exactly one of three decisions at each checkpoint:
+
+| Decision | Meaning | System Response |
+|----------|---------|-----------------|
+| **Allow** | All constraints satisfied | Proceed to next stage |
+| **Clarify** | Ambiguity or boundary concern | Trigger friction, request user input |
+| **Refuse** | Constraint violation or missing verification | Block action, log reason |
+
+### 6.2 Checkpoint Placement
+
+- **Checkpoint 1 (Post-Classification):** Located after signal classification, before execution layer. Determines routing based on signal clarity and intent presence.
+
+- **Checkpoint 2 (Pre-Execution):** Located after action construction, before actual execution. Final verification that all constraints are satisfied.
+
+### 6.3 Guardian Constraints
+
+- Guardian is read-only; cannot modify state
+- Guardian can only observe and judge
+- All decisions logged with reasons
+- Guardian evaluation is deterministic given current state
+
+### 6.4 Friction as Enforcement
+
+- Friction is a signal, not a punishment
+- Friction gates commitment and action, not thinking or exploration
+- Every friction event must be logged regardless of resolution outcome
+- Resolution requires explicit user action
+- System cannot auto-resolve friction
+
+**Figure 5 Caption:** The Guardian evaluates constraints at two checkpoints: post-classification (routing decisions) and pre-execution (final gate). All decisions are logged with reasons.
+
+**Figure 8 Caption:** Friction introduces deliberate pause at critical decision points. It gates commitment and action, not thinking. Resolution requires explicit user action, and all friction events are logged.
+
+---
+
+## 7. EXAMPLES AND USE CASES
+
+All examples produce binary outcomes that do not depend on subjective assessment.
+
+### 7.1 Example 1: Ambiguous Signal Detection
+
+- **Input:** User submits "maybe" or "hmm" or signal containing fewer than 3 characters
+- **System behavior:** Signal classified as ambiguous by Signal Classifier
+- **Expected outcome:** Friction event triggered with `trigger_type: ambiguous_signal`
+- **Measurement:** Binary — friction triggered or not triggered
+- **Success criterion:** Friction event appears in logs with correct trigger type
+
+### 7.2 Example 2: Scope Boundary Enforcement
+
+- **Input:** User submits signal containing "off topic", "by the way", "unrelated", or "different subject"
+- **System behavior:** Signal classified as out of scope
+- **Expected outcome:** Friction event triggered with `trigger_type: scope_boundary`
+- **Measurement:** Binary — friction triggered or not triggered
+- **Success criterion:** Friction event appears in logs with correct trigger type
+
+### 7.3 Example 3: Unverified Intent Blocking
+
+- **Input:** User requests action before intent verification
+- **System behavior:** Guardian evaluates at Checkpoint 2
+- **Expected outcome:** Guardian refuses with PE-1 or PE-2; action blocked
+- **Measurement:** Binary — action blocked or not bl

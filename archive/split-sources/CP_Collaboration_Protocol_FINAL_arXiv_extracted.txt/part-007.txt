@@ -1,0 +1,92 @@
+uncement email
+warrants ICD 0.20.4 (low stakes, easily revised, speed valued). The protocol provides the mechanism for calibration; users provide the judgment about appropriate levels.
+Clarication Modalities. Pivot surfacing need not mean disruptive prompts. Alternatives
+include: (1) highlighting ambiguous phrases in user input before generation begins, inviting preemptive clarication; (2) inline annotation during output, marking assumptions for post-hoc review; (3)
+adaptive learning of user tolerance, adjusting which tiers trigger explicit surfacing. These design
+variations are beyond current scope but represent tractable implementation research.
+User Authority with System Guidance. ICD remains under user control at all times.
+However, CP-compliant systems may suggest ICD levels based on detected task characteristics
+(document type, domain indicators, ambiguity density). Users may accept, modify, or ignore such
+suggestions. This preserves human sovereignty while enabling helpful defaults.
+Implementation Feasibility. ICD could integrate with existing UI patterns: a slider in
+ChatGPT's custom instructions, a preset selector in Claude's system prompt conguration, or an
+inline toggle within conversation interfaces. Latency considerations suggest IPP detection could
+operate in two modes: (1) pre-generation scan ( 100-500ms overhead) that identies ambiguous
+elements before output begins, and (2) progressive disclosure where potential IPPs are highlighted
+in real-time as the user types. Modern inference infrastructure can accommodate such overhead for
+high-ICD tasks where users have explicitly requested thorough ambiguity handling.
+6.8 Addressing Potential Objections
+This adds friction. ICD is user-chosen. Users preferring speed select low ICD. The claim is not
+that all users want high control, but that the option should exist and its eects are measurable.
+This is just better prompting. Prompting addresses input quality; CP addresses how
+systems handle residual ambiguity. Even perfect prompts are underspecied; the protocol governs
+what happens next.
+How is this dierent from human-in-the-loop? HITL addresses task oversight (should
+AI do this?); CP addresses semantic authority (what does the user mean?). They are complementary, not redundant.
+IPPs are too subjective. Study 2 directly tests this. If κ > 0.7, subjectivity is bounded
+within acceptable research standards.
+6.9 Future Directions
+Near-term extensions include eld studies with knowledge workers, domain-specic validation
+(legal, medical, nancial), and longitudinal trust calibration research.
+Intent Decay: Partial Solution, Open Problem. A critical phenomenon requiring further
+research is intent decaythe gradual loss, distortion, or drift of original user intent over extended
+interactions. We identify six contributing factors and assess how the current framework addresses
+each:
+1. Accumulated inference errors: Small silent assumptions compound across turns. CP addresses this through IPP surfacing, which prevents silent accumulation by making inferences
+explicit at decision points.
+22\n\n--- PAGE 23 ---\n
+2. Context window limitations: AI systems may forget earlier constraints as conversations
+extend. CP partially addresses this through Intent Signatures, which provide portable intent
+persistence across sessions, though token-level context limits remain a model architecture constraint beyond protocol scope.
+3. User drift: Users' own goals may evolve mid-task without explicit acknowledgment. CP partially
+addresses this through the Human Override Principle (Law 6), which enables redirection, though
+the framework does not actively detect user-side drift.
+4. Constraint erosion: Stated constraints may be deprioritized as interactions progress. CP
+addresses this through the Intent Fidelity Index, which quanties constraint preservation, and
+the Reversibility Principle, which enables recovery when erosion is detected.
+5. Semantic shift: The same words may carry dierent meanings as context evolves. CP partially
+addresses this through IPP surfacing for major semantic branches, though subtle drift may pass
+undetected.
+6. Feedback loop distortion: AI outputs may shape subsequent user inputs, creating circular
+inuence. CP does not address thismodeling how AI outputs inuence user intent formation
+remains beyond current scope.
+In summary, the Collaboration Protocol provides structural safeguards that substantially mitigate intent decay risk, but does not provide a formal mathematical model of decay dynamics. We
+propose the following sketch for future formalization:
+D(t) = D0 · e
+λt
+· (1 − α · ICD) ·
+P(t)
+P0
+(4)
+Where D(t) = cumulative intent decay at turn t; D0 = baseline decay rate; λ = decay acceleration factor; ICD = user's Intent Control Degree; α = ICD eectiveness coecient; P(t) =
+cumulative unresolved pivot count; P0 = baseline pivot count normalization constant. This equation is speculative and requires empirical calibration; we present it to indicate the form a future
+theoretical model might take.
+Cross-Cultural Considerations. Ambiguity tolerance varies across cultures. High-context
+cultures (e.g., Japan, Brazil, Arab countries) may accept more implicit communication, potentially
+tolerating lower ICD settings. Low-context cultures (e.g., Germany, Scandinavia) may prefer explicit
+disambiguation. Future research should validate whether ICD preferences systematically dier
+across cultural contexts and whether IPP taxonomies require cultural adaptation.
+Medium-term directions include extending the protocol to multi-agent congurations (humanAI-AI, human-human-AI), developing real-time IPP detection algorithms suitable for production
+deployment, and the cross-cultural validation mentioned above.
+Long-term implications may include regulatory standards for AI intent governance and legal
+recognition of meaning ownership as a user right. The framework provides conceptual foundations
+for such policy development.
+Domain-Specic Calibration. Domain-specic calibration studiesdetermining optimal Semantic Materiality Proxy weights (α, β, γ) for legal, medical, nancial, and creative contexts
+represent a natural extension of this framework.
+Multi-Session Development Environments. The framework extends naturally to complex
+workows requiring multiple specialized contexts, such as software development. IPP detection
+could manage context boundaries across workspaces (e.g., recognizing when a user's intent shifts
+23\n\n--- PAGE 24 ---\n
+from backend to frontend development), preserving relevant context in separate sessions while surfacing scope-crossing decisions that aect multiple domains. This application represents a promising
+direction for intent-aware development tools.
+7 Conclusion
+Silent Intent Inference is a structural pattern in modern human-AI interactionan accountability challenge creating oversight gaps, dicult-to-trace decisions, and potential reduction in user
+agency. Current systems often resolve ambiguity invisibly, shifting semantic authority from humans
+to machines.
+This paper introduces the Collaboration Protocol, a framework preserving human semantic authority through explicit governance mechanisms. We dene four operationalized constructs (Intent,
+ICD, IPP, IFI), specify seven protocol laws, and design four validation studies.
+The contribution is a falsiable framework: if the proposed studies fail to conrm hypotheses,
+the theory requires revision; if they succeed, the path to intent-governed human-AI collaboration
+becomes clearer.
+The Collaboration Protocol does not limit AI capabilityit channels capability through human
+intent. In an era of increasingly 

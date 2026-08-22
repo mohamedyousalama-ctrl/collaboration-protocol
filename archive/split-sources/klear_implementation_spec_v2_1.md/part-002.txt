@@ -1,0 +1,178 @@
+l]` `[Update my intent]` `[Continue anyway]`
+
+Resolution paths:
+- `[Refocus]` → `user_confirmed` (original intent re-activated)
+- `[Update my intent]` → opens articulation card → new intent declared → `user_revised`
+- `[Continue anyway]` → `user_confirmed` with note that drift is acknowledged
+
+**Klear extension events (Klear Events Store):**
+- `decay.calculated` with δ, session D, and health_status per message
+
+---
+
+### 4.5 Guardian — Checkpoint 2 (Claude-as-Guardian, Conditional)
+
+Runs after Claude generates a response, before showing it to the user.
+
+**Trigger conditions (any one sufficient):**
+- Any IPP was detected with confidence in the range 0.3–0.5 (borderline — passed CP1 but uncertain)
+- Intent decay δ spiked by > 0.2 on this message specifically
+- Claude's response length is more than 3x the average response length for this session
+
+**Implementation:** Second Claude API call:
+
+```
+You are the CP Guardian for Klear. Evaluate whether the AI response
+aligns with the user's declared intent and context.
+
+Declared context: {context.description}
+Scope includes: {context.inclusions}
+Scope excludes: {context.exclusions}
+Declared intent: {intent.declaration_text}
+Intent type: {intent.intent_type}
+Active node constraints: {nodes.map(n => n.content).join(', ')}
+ICD setting: {icd_value}
+
+AI response to evaluate:
+{claude_response}
+
+Return ONLY valid JSON — no preamble, no explanation:
+{
+  "decision": "allow" | "clarify" | "refuse",
+  "reason": "one sentence explanation",
+  "sa_score": 0.0,
+  "cp_score": 0.0
+}
+
+Decision rules:
+- allow: response stays within declared scope and serves declared intent
+- clarify: response partially drifts or is ambiguous about scope
+- refuse: response clearly goes outside declared context or contradicts intent
+
+Score rules:
+- sa_score: 0.0–1.0 — how well the response semantically matches the declared intent
+- cp_score: 0.0–1.0 — proportion of active node constraints satisfied by the response
+- If no active nodes exist, cp_score = 1.0
+```
+
+**When Checkpoint 2 is skipped:**
+- SA is estimated heuristically: 0.8 if Checkpoint 1 returned Allow with no borderline IPPs
+- CP is calculated programmatically from node satisfaction
+- Both stored as estimates; flagged in the IFI record as `cp2_skipped: true`
+
+**CP log events (Log Store):**
+- `guardian.pre_execution` with decision, reason, sa_score, cp_score, cp2_skipped
+
+---
+
+### 4.6 IFI Calculator — Two-Phase Calculation
+
+IFI is calculated in two phases because SS (Subjective Satisfaction) requires the user to rate the response after seeing it, while SA and CP can be calculated immediately.
+
+**Formula:** `IFI = 0.4(SA) + 0.3(CP) + 0.3(SS)`
+
+| Component | Source | Timing | Range |
+|-----------|--------|--------|-------|
+| SA — Semantic Alignment | Guardian CP2 `sa_score` (or heuristic) | Immediate | 0.0–1.0 |
+| CP — Constraint Preservation | Active nodes satisfied / total nodes | Immediate | 0.0–1.0 |
+| SS — Subjective Satisfaction | User 1–5 star rating, normalized: `(rating-1)/4` | Async — after user rates | 0.0–1.0 |
+
+**Phase 1 — Immediate (runs after Guardian Checkpoint 2):**
+1. SA = `sa_score` from Guardian CP2 (or heuristic 0.8 if CP2 skipped)
+2. CP = satisfied nodes / total active nodes (or 1.0 if no nodes)
+3. Partial IFI record stored: `{ sa, cp, ss: null, composite: null, pending_ss: true }`
+4. IFI badge shown to user as "IFI –.–" (pending) until SS submitted
+
+**Phase 2 — Async (runs after user submits star rating via `/api/session/satisfaction`):**
+1. SS = (star_rating - 1) / 4 → normalized to 0.0–1.0
+2. Final composite: `IFI = 0.4(SA) + 0.3(CP) + 0.3(SS)`
+3. IFI record updated with SS and composite
+4. Badge updates to "IFI 0.84" with color coding
+
+**SS default:** If user does not rate within the session, SS defaults to 0.5 at session close. Composite IFI is then finalized with SS = 0.5.
+
+**IFI display thresholds:**
+- IFI ≥ 0.80 → **High fidelity** (green)
+- IFI 0.60–0.79 → **Moderate fidelity** (amber)
+- IFI < 0.60 → **Low fidelity** (red) — suggest session refinement
+
+**Klear extension events (Klear Events Store):**
+- `ifi.phase1` with sa, cp, pending_ss: true
+- `ifi.phase2` with ss, composite after rating submitted
+
+---
+
+### 4.7 Domain Classifier + Safety Floor
+
+**Runs twice per interaction:**
+1. **At session start** — classifies the declared context to select initial Safety Floor profile
+2. **Per message** — re-evaluates each user message to detect domain shifts mid-session
+
+**Domain shift handling:**
+- If domain shifts mid-session (e.g. user starts asking medical questions in a general session), a new Safety Floor profile activates immediately
+- User is notified: "Your question touches on health information. Safety disclosures will now appear with responses."
+- The shift is logged and the new profile applies to all subsequent responses
+
+**Domain profiles:**
+
+| Domain | Activation trigger | Safety Floor content |
+|--------|-------------------|---------------------|
+| **Health** | Medical symptoms, medications, diagnoses, treatments | Emergency criteria, clinician consultation recommendation, "educational only" disclaimer |
+| **Legal** | Legal advice, rights, contracts, litigation | "Not legal advice", jurisdiction disclaimer, lawyer consultation recommendation |
+| **Financial** | Investment advice, financial decisions, tax | "Not financial advice", professional consultation recommendation, risk disclaimer |
+| **General** | All other topics | No Safety Floor — standard CP governance only |
+
+**Safety Floor behavior:**
+- Appended to every response once activated — cannot be suppressed by any user action
+- Independent of ICD setting, IPP resolution, and Guardian decisions
+- Version-stamped in response and in log
+- Non-dismissible in UI
+
+**Safety Floor card in UI:**
+
+```
+┌─────────────────────────────────────────────────────┐
+│  ⚕ Health information notice                       │
+│  This response is educational only. Always consult │
+│  a qualified healthcare professional for medical    │
+│  decisions. Seek emergency care if symptoms worsen. │
+│  Safety Floor v1.0 — Required disclosure           │
+└─────────────────────────────────────────────────────┘
+```
+
+**Klear extension events (Klear Events Store):**
+- `domain.classified` at session start with domain and profile
+- `domain.shift` if domain changes mid-session
+- `safety_floor.injected` with profile name and version per response
+
+---
+
+### 4.8 Context Roots (Registered Users)
+
+Context Roots are persistent declared constraints that carry across sessions without re-declaration.
+
+**What becomes a Context Root:**
+- Any active node in a session that the user explicitly saves via the "Save to my profile" button
+- Automatically suggested after 3+ sessions when Klear detects the same constraint declared in multiple sessions
+
+**Saving a Context Root — UI flow:**
+1. During or after a session, user clicks "Save to profile" on any active node
+2. Confirmation shown: "Save '[constraint text]' as a permanent context root?"
+3. User confirms → node saved to `context_roots` table
+4. Root appears in user's Profile Manager
+
+**Saving a Context Root — API:**
+`POST /api/context_root/save`
+```json
+{
+  "user_id": "uuid",
+  "node_id": "uuid",
+  "content": "I prefer academic sources over news articles",
+  "source_session_id": "uuid"
+}
+```
+
+**Loading Context Roots at session start:**
+1. Registered user's active Context Roots fetched at session start
+2. Shown in articulation card: "Your saved context: [X, Y, Z] — still applies?"
+3. Use

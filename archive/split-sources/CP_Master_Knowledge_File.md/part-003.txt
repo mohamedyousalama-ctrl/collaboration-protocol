@@ -1,0 +1,4 @@
+ield interviews supply the human half of the same mechanism: when the AI's interpretive decision leaves no trace, the human absorbs the loss — 79% of the time, even when they blame the machine. The research program's endgame: the IFI-Bench standard, so that the question "did the AI understand what you meant, and who authorized its guess?" gets a number every model must answer to.
+
+---
+*End of Master Knowledge File v1.0 — compiled by Claude for Mohamed Salama, 30 July 2026. Update this file as classification completes, Fan responds, endorsement lands, and JAIR rules.*

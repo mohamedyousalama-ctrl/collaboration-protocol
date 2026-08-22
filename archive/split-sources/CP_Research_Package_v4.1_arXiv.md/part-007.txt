@@ -1,0 +1,182 @@
+m behavior, not aspirational goals
+- **Inspectable:** Human-readable documentation of inference rules
+- **Verifiable:** Testable against observed behavior
+- **Separate:** Distinct from human intent by design
+
+## G.3 Critical Clarification
+
+Human and agent intent **never conflict** by design. Conflict arises only between agent interpretations of articulated pivots. AIP does not grant agents autonomous intent—it documents how agents process human intent.
+
+## G.4 Research Questions (Deferred)
+- How should AIP be formally specified?
+- How can AIP-human intent alignment be measured?
+- What governance mechanisms ensure AIP fidelity?
+
+## G.5 Why Deferred
+AIP requires validated core constructs (IPP, ICD) before meaningful specification. Premature formalization risks building on unvalidated foundations. No anthropomorphism or agent cognition claims are made.
+
+---
+
+# Appendix H: Multi-Agent Orchestration — Deferred
+
+## H.1 Concept Summary
+
+When multiple AI agents collaborate on a task, intent must be preserved across agent handoffs. Multi-agent orchestration extends CP to ensure that intent fidelity is maintained when Agent A passes work to Agent B.
+
+## H.2 Key Challenges
+- **Intent translation:** How is intent represented between agents?
+- **Pivot propagation:** How are IPP decisions communicated?
+- **Authority boundaries:** Which agent resolves which ambiguities?
+- **Human oversight:** How does human maintain semantic authority across agent chain?
+
+## H.3 Demonstrated Principle
+
+Explicit intent flow enables scalable agent coordination. Architecture-level intent mapping prevents conflict growth across agent chains.
+
+## H.4 Why Deferred
+Multi-agent scenarios add complexity that could obscure core construct validation. Single-agent studies must succeed before multi-agent extension. No implementation or standardization claims are made.
+
+---
+
+# Appendix I: Intent Decay Mathematical Model — Deferred
+
+## I.1 Concept Summary
+
+**Intent decay** refers to cumulative divergence between original intent and system output caused by compounded assumptions. A mathematical model would formalize how decay propagates.
+
+## I.2 Modeling Intuition
+- Each silent inference introduces deviation δ
+- Deviation compounds across n steps
+- Total decay D = f(δ₁, δ₂, ... δₙ)
+- CP reduces decay by minimizing silent inferences at critical pivots
+
+## I.3 Visualization Approach
+
+This work **visualizes** decay conceptually rather than claiming a finalized mathematical model. Formal modeling requires empirical data.
+
+## I.4 Research Questions (Deferred)
+- What functional form best describes decay? (Linear? Exponential? Logarithmic?)
+- How does IPP intervention affect decay rate?
+- Can optimal ICD be derived from decay minimization?
+
+## I.5 Why Deferred
+Mathematical modeling requires empirical decay data from validated studies. Model fitting cannot precede data collection.
+
+---
+
+# Appendix J: Legal Framework: Meaning Ownership — Deferred
+
+## J.1 Concept Summary
+
+**Meaning ownership** refers to the legal right of users to define acceptable interpretations of their expressed intent. This establishes a legal foundation for the Collaboration Protocol's core principle.
+
+## J.2 Legal Alignment
+
+Meaning ownership aligns with:
+- **Existing consent principles:** Users must consent to how their data/intent is processed
+- **Explainability requirements:** GDPR Art. 22 requires explanation of automated decisions
+- **Accountability law trajectories:** Emerging AI liability frameworks emphasize process accountability
+
+## J.3 Proposed Legal Primitives
+
+| Primitive | Definition | Legal Basis |
+|-----------|------------|-------------|
+| **Right to Intent Preservation** | AI systems must preserve user-stated intent | Extension of data protection |
+| **Right to Pivot Notification** | Users must be informed of semantic branching points | Extension of explainability |
+| **Right to Override** | Users may redirect AI at any point | Extension of consent withdrawal |
+| **Right to Audit** | Users may inspect how their intent was transformed | Extension of access rights |
+
+## J.4 Why Deferred
+Legal framework development requires:
+- Established academic credibility (validated constructs)
+- Policy partner engagement (regulatory bodies)
+- Legal scholarship integration (law faculty collaboration)
+
+Policy influence follows from, not precedes, empirical validation.
+
+---
+
+# PART VI: REALISTIC ASSESSMENT
+
+---
+
+# Appendix K: What This Framework Achieves (Without Empirical Data)
+
+## K.1 A Well-Positioned, Falsifiable Theoretical Framework Paper
+
+You would have a coherent, self-contained theoretical contribution suitable for:
+
+**Top HCI venues as a position/vision/framework paper:**
+- CHI (especially alt.chi or late-breaking)
+- TOCHI
+- Interactions
+- CSCW
+
+**AI ethics & governance venues:**
+- AIES
+- FAccT
+- AI & Society
+- Minds and Machines
+
+**AI safety/alignment workshops:**
+- NeurIPS safety track
+- ICML/AAAI workshops
+- LessWrong / Alignment Forum long-form pieces
+
+## K.2 Why This Paper Would Stand Out
+
+The paper would stand out for:
+
+1. **Clearly naming and bounding a problem** ("Silent Intent Inference" as protocol-level safety risk)
+
+2. **Operationalizing constructs** (IPP taxonomy + decision rules, ICD scale, IFI composite metric) in unusually concrete detail for a purely theoretical piece
+
+3. **Providing seven crisp "protocol laws"** that function like design principles
+
+4. **Offering a ready-to-run replication recipe** (study designs, annotation codebook, measurement instruments)
+
+This level of operationalization + falsifiability is **rare in pure-framework papers** and would earn respect even from empiricists.
+
+## K.3 Priority & Intellectual Ownership of Concepts
+
+Assuming publication/preprint in early 2026, you establish priority on:
+
+| Concept | Status in Literature (2024-early 2026) |
+|---------|----------------------------------------|
+| **"Silent Intent Inference"** (as named structural safety failure) | Not in wide circulation; related ideas exist but this framing is novel |
+| **"Intent Pivot Points" (IPP)** with six-type taxonomy | Specific taxonomy appears original |
+| **"Intent Control Degree" (ICD)** as user-choosable continuous parameter | Continuous user-controlled framing is distinctive |
+| **"Intent Fidelity Index" (IFI)** as specific composite score | Specific formula is novel |
+| **"Meaning Ownership"** as framing for semantic authority / consent-like right | Consent-like framing for AI intent is distinctive |
+
+**You would become "the person who wrote the Silent Intent Inference / Collaboration Protocol paper"**—a recognizable reference point for later empirical or systems work.
+
+## K.4 Strong Foundation for Future Work
+
+You would have:
+
+- **A detailed research execution agenda already written** (phases, prioritized claims, budgets, collaborator list)
+
+- **Pre-emptive reviewer objection matrix** → dramatically reduces revision pain later
+
+- **Ready pilot protocols, codebooks, survey items, and composite metrics** that can be reused with almost no rewriting
+
+- **Two concrete applied extensions** (Project A: regulatory intent auditing, Project B: organizational intent signatures) that function as white-paper-like proposals attractive to:
+  - Policy labs
+  - Regulators (EU AI Office, NIST, UK AISI)
+  - Enterprise research groups
+
+This turns the document into a **launch platform** rather than just a standalone paper.
+
+---
+
+# Appendix L: Important Boundaries — What You Would NOT Achieve (Without Empirical Work)
+
+## L.1 Claims You Cannot Make
+
+Without empirical data, you would **not** have:
+
+| Claim | Status |
+|-------|--------|
+| Demonstrated that silent intent inference is actually prevalent (>60%) | **Unproven hypothesis** |
+| Demonstrated that users are unaware of inferences (>70%) | **Unpro

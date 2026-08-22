@@ -1,0 +1,186 @@
+t*.
+- Clark, L., et al. (2019). What makes a good conversation? Challenges in designing truly conversational agents. *CHI 2019*.
+
+## AI Safety & Governance
+- Amodei, D., et al. (2016). Concrete problems in AI safety. *arXiv preprint*.
+- Brundage, M., et al. (2020). Toward trustworthy AI development: Mechanisms for supporting verifiable claims. *arXiv preprint*.
+
+---
+
+# PART IV: APPLIED EXTENSIONS
+
+> **Note:** The following projects represent practical application pathways for the Collaboration Protocol. They are presented as funded research directions and institutional adoption proposals, not as current empirical claims. They demonstrate the policy relevance and organizational value of the CP framework.
+
+---
+
+# Appendix E: Project A — Regulatory Auditing of Intent Compliance
+
+## E.1 Overview
+
+A governance framework enabling regulators to audit AI systems based on **intent handling**, not just outputs. This shifts regulatory focus from what AI produces to how AI resolves human meaning—a more fundamental and auditable layer of accountability.
+
+## E.2 Core Concept
+
+Current AI regulation focuses primarily on:
+- Output harm (toxic content, discrimination)
+- Data handling (privacy, consent)
+- Model properties (bias, accuracy)
+
+Project A introduces a new regulatory primitive: **Intent Compliance**—the degree to which an AI system respects human semantic authority during interaction.
+
+## E.3 Components
+
+### E.3.1 Regulatory AIP Agent
+A standardized audit agent that:
+- Monitors AI systems for CP compliance
+- Logs all Intent Pivot Point resolutions
+- Flags silent inferences above threshold
+- Generates compliance reports
+
+### E.3.2 Public-Value Intent Signature
+Regulatory bodies define:
+- Minimum ICD requirements for high-risk domains
+- Mandatory pivot surfacing for specific decision types
+- Required intent audit trails for accountability
+
+### E.3.3 Mandatory Halt Rules
+For high-risk ambiguity situations:
+- System must pause and surface pivots
+- Human confirmation required before proceeding
+- Automatic escalation if user does not respond
+
+## E.4 Target Applications
+
+| Domain | Intent Compliance Need | Example |
+|--------|----------------------|---------|
+| **Healthcare** | Treatment recommendations must preserve patient intent | AI suggesting medication must confirm patient constraints |
+| **Finance** | Investment advice must respect risk tolerance | AI must surface risk-level pivots before recommendations |
+| **Public Infrastructure** | Citizen services must respect stated needs | Benefits applications must confirm eligibility interpretations |
+| **Safety-Critical AI** | Autonomous systems must preserve operator intent | Self-driving vehicles must surface route interpretation pivots |
+
+## E.5 Regulatory Value
+
+| Traditional Approach | Intent Compliance Approach |
+|---------------------|---------------------------|
+| Audits outputs for harm | Audits process for unauthorized inference |
+| Model-specific testing | Model-agnostic protocol compliance |
+| Post-hoc accountability | Real-time intent preservation |
+| Binary pass/fail | Continuous ICD measurement |
+
+## E.6 Implementation Pathway
+
+1. **Phase 1 (Research):** Validate CP constructs through academic studies
+2. **Phase 2 (Pilot):** Partner with regulatory sandbox (e.g., UK FCA, EU AI Sandbox)
+3. **Phase 3 (Standard):** Develop formal intent compliance certification
+4. **Phase 4 (Adoption):** Integration into AI Act, NIST framework, sector-specific regulation
+
+## E.7 Research Contribution
+
+Project A introduces **intent compliance as a regulatory primitive**—a new dimension of AI accountability that complements existing output-focused and data-focused regulations.
+
+---
+
+# Appendix F: Project B — Organizational Intent Signatures
+
+## F.1 Overview
+
+Formal intent profiles governing AI behavior within organizations. Intent becomes a **reusable, auditable organizational asset** rather than ad-hoc prompt-level logic.
+
+## F.2 Core Concept
+
+Organizations currently manage AI through:
+- Individual prompts (inconsistent, non-scalable)
+- System prompts (limited, opaque)
+- Fine-tuning (expensive, rigid)
+
+Project B introduces **Organizational Intent Signatures**—formal specifications of how AI should interpret and resolve ambiguity on behalf of the organization.
+
+## F.3 Functions
+
+### F.3.1 Output Quality Control
+- Define minimum quality thresholds
+- Specify required review pivots
+- Establish consistency standards across AI-generated content
+
+### F.3.2 Ethical Enforcement
+- Encode organizational values as intent constraints
+- Define prohibited interpretations
+- Establish escalation rules for ethical pivots
+
+### F.3.3 Brand Consistency
+- Specify voice, tone, and style constraints
+- Define brand-aligned interpretations for ambiguous requests
+- Ensure consistent customer experience across AI touchpoints
+
+### F.3.4 Regulatory Alignment
+- Embed compliance requirements as intent constraints
+- Automatic flagging of regulatory-relevant pivots
+- Audit trail generation for compliance documentation
+
+## F.4 Deployment Modes
+
+| Mode | Description | Example |
+|------|-------------|---------|
+| **Internal Governance** | AI serving employees follows organizational intent | Legal AI assistant respects firm's risk tolerance |
+| **External Compliance** | AI demonstrates intent compliance to auditors | Financial advisor AI shows regulatory pivot handling |
+| **Public-Facing Systems** | Customer-facing AI follows brand intent signature | Customer service AI maintains consistent brand voice |
+
+## F.5 Technical Architecture
+
+```
+Organizational Intent Signature
+├── Core Values (immutable)
+│   ├── Ethical boundaries
+│   ├── Legal constraints
+│   └── Brand principles
+├── Domain Policies (configurable)
+│   ├── Department-specific rules
+│   ├── Role-based constraints
+│   └── Task-type guidelines
+├── ICD Defaults (adjustable)
+│   ├── Default control levels by task type
+│   ├── Escalation thresholds
+│   └── Override permissions
+└── Audit Configuration
+    ├── Logging requirements
+    ├── Review triggers
+    └── Compliance reporting
+```
+
+## F.6 Organizational Value
+
+| Without Intent Signatures | With Intent Signatures |
+|--------------------------|----------------------|
+| Inconsistent AI behavior | Consistent, auditable behavior |
+| Prompt-level management | Policy-level governance |
+| Individual responsibility | Organizational accountability |
+| Ad-hoc quality control | Systematic quality assurance |
+| Compliance uncertainty | Demonstrable compliance |
+
+## F.7 Implementation Pathway
+
+1. **Phase 1 (Design):** Develop Intent Signature specification format
+2. **Phase 2 (Pilot):** Partner with 3-5 organizations for beta testing
+3. **Phase 3 (Tooling):** Build Intent Signature management platform
+4. **Phase 4 (Adoption):** Enterprise deployment and certification program
+
+## F.8 Research Contribution
+
+Project B transforms intent from **ephemeral prompt logic** to **durable organizational infrastructure**—enabling scalable, consistent, and accountable AI deployment across enterprises.
+
+---
+
+# PART V: FUTURE INVESTIGATION VAULT
+
+> **Note:** The following concepts are important extensions of the Collaboration Protocol but are explicitly deferred from the initial research program. They are preserved here for future investigation once core constructs are validated.
+
+---
+
+# Appendix G: Agent Intent Profiles (AIP) — Deferred
+
+## G.1 Concept Summary
+
+An **Agent Intent Profile** is a machine-readable specification of how an AI agent interprets, prioritizes, and resolves intent. Unlike human intent (which is authoritative), AIP is operational, inspectable, and verifiable.
+
+## G.2 Proposed Characteristics
+- **Operational:** Defines actual syste

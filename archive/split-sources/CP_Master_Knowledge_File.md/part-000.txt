@@ -1,0 +1,70 @@
+# THE COLLABORATION PROTOCOL — MASTER KNOWLEDGE FILE
+### The complete record of Mohamed Salama's research program: theory, inventions, evidence, correspondence, and strategy
+**Compiled: 30 July 2026 | Version 1.0 | Single source of truth**
+
+---
+
+# PART I — THE RESEARCHER AND THE MISSION
+
+**Mohamed Salama** is an independent researcher (no institutional affiliation) building academic credibility through publication. His strategic position, agreed after evaluating ten options: **become the person who defines how intent fidelity is measured and governed** — not by building better LLMs (a game reserved for billion-dollar labs), but by owning the vocabulary, the metrics, the governance framework, and eventually the benchmark by which all systems are judged.
+
+**Publication status:**
+- Theory paper **under review at JAIR** (Journal of Artificial Intelligence Research): *"The Collaboration Protocol: Silent Intent Inference as an Accountability Challenge in Human-LLM Interaction"* (26 pages, LaTeX, incl. IPP detection algorithm at lines 287–312)
+- **SocArXiv rejected** the preprint (their 90-day blanket pause on AI-topic papers, Nov 2025 policy) — not a quality judgment
+- **arXiv cs.HC** is the correct preprint home; **endorsement being sought** via LinkedIn outreach (ready-to-send message prepared; keywords list prepared)
+- Related broader works: *The Intent Economy* (book) and the CP Core Specification V0
+
+---
+
+# PART II — THE CORE PROBLEM (THE DISCOVERY)
+
+## Silent Intent Inference (SII)
+**Mohamed's naming and formalization.** When a human gives an AI an instruction whose words permit more than one reading, the AI picks one interpretation and proceeds **without telling the human a choice was made**. The decision is invisible; no record exists; the human discovers the divergence only when the output disappoints — or never.
+
+The reframe that makes this novel: prior work treated misinterpretation as a **quality** problem (better models will guess better). Mohamed frames it as an **accountability and governance** problem: *who authorized the AI to decide what you meant, and where is the record of that decision?* Even a perfect guesser exercises unauthorized semantic authority.
+
+**The downstream harm (sharpened via Fan correspondence):** because the interpretive decision leaves no trace, there is no accountability object between "the AI erred" and "I pay for it" — so losses default to the user regardless of who they believe caused the error.
+
+---
+
+# PART III — THE INVENTIONS (ALL MOHAMED'S ORIGINAL CONSTRUCTS)
+
+## 3.1 The four core constructs
+| Construct | Definition (plain) | Formal role |
+|---|---|---|
+| **IPP — Intent Pivot Point** | The exact semantic location where the user's words could branch into different meanings and the AI must choose | The unit of analysis; the site where SII occurs |
+| **ICD — Intent Control Degree** | A 0.0–1.0 dial for how much ambiguity-resolution authority the user delegates to the AI (0 = AI guesses freely; 1 = every material ambiguity surfaced) | The governance parameter |
+| **IFI — Intent Fidelity Index** | Measure of how well output matches what the user actually meant. **IFI = 0.4(SA) + 0.3(CP) + 0.3(SS)** — Semantic Alignment, Constraint Preservation, Subjective Satisfaction | The outcome metric |
+| **Context Roots (CR)** | Prior-conversation anchors that bind interpretation of the current instruction | The memory/binding construct |
+
+## 3.2 Supporting machinery
+- **Semantic Materiality Proxy (SMP):** classifier for which ambiguities *matter* — would the different readings lead to substantially different outcomes? Only material IPPs deserve interruption. (Simulated inter-rater κ = 0.61–0.81.)
+- **Context Factor (CF):** multiplier for how history modifies ambiguity — 1.0 no relevant prior context; 1.25 weak/stale context; 1.5 conflicting context.
+- **IPP Detection Algorithm:** the computational recipe for spotting IPPs during generation (paper lines 287–312; simulated latency 22–489 ms; a production variant runs inside Klear).
+- **IPP Logging:** the accountability mechanism — every resolved ambiguity generates a record: what was ambiguous, which readings existed, which was chosen, whether the user was asked. *A flight recorder for meaning; version control for interpretation.* This is the "missing accountability object" that Fan's field data shows users lack.
+- **Intent Signatures:** captured user interaction patterns enabling faster alignment on new tasks without repeated setup (portability construct; Tier-2 claim).
+
+## 3.3 The Seven Protocol Laws (the constitution)
+1. **Maximum Capacity Law** — AI works at full ability unless deliberately limited; control it, don't cripple it.
+2. **Intent Fidelity Law** — output is valid only if true to what the human meant.
+3. **Articulation Supremacy Law** — saying what you mean is the human's job; AI may assist, never decide.
+4. **Human Ownership of Ambiguity** — unclear space belongs to the human by default.
+5. **AI Non-Assumption Principle** — no silent resolution of material ambiguity (the law SII violates).
+6. **Human Override Principle** — human can intervene at any IPP, even mid-generation.
+7. **Reversibility & Revocation** — every interpretation must be undoable.
+
+Structure: Laws 1–2 set the goal; 3–5 assign ownership of meaning; 6–7 guarantee escape hatches. One question answered: *who is in charge of meaning? Always the human.*
+
+## 3.4 Health-domain extension (the self-correction that strengthened everything)
+The IntentHealth Comparator pilots (Sessions IHC-MML1GT83 / IHC-MML2BEG3, March 2026) produced an **anomaly against the framework's own interest**: CP-Claude scored higher IFI (0.81 vs 0.51) but external clinical rating judged the *lower*-IFI cardiac-first response more medically appropriate for a 38-year-old smoker with exertional chest symptoms. **Intent fidelity and clinical safety can diverge.** Instead of hiding this, Mohamed built:
+- **Safety Floor (SF):** fifth construct — clinically validated, version-controlled safety assertions appended to every health response, bypassing ICD entirely; not user-suppressible. Profiles: SF-CARDIAC, SF-RESPIRATORY, SF-GENERAL-QUIT, SF-EMERGENCY, SF-BASELINE.
+- **SCS — Safety Compliance Score:** (SF assertions present)/(required) ∈ [0,1].
+- **IFI-Health:** **IFI-H = 0.35(SA) + 0.25(CP) + 0.25(SS) + 0.15(SCS)** — a response with perfect fidelity but zero safety caps at 0.60: a structural penalty personalization cannot buy back.
+- **Law 8 — Domain Safety Non-Negotiability:** in safety-critical domains (health, legal, financial) the Safety Floor is appended regardless of ICD, IPP path, or user constraints. The narrow, principled exception to human intent authority.
+- **SF audit log entries:** SF_ACTIVATED / SF_INJECTED / SF_VIOLATION.
+- Retroactive pilot scoring: CP advantage preserved under IFI-H (0.76 & 0.79 vs 0.48 & 0.55).
+*Status caution: SCS pilot values were post-hoc estimates; the "arXiv addendum" citation is aspirational until the theory paper is actually on arXiv.*
+
+## 3.5 Constructs discovered FROM the corpus (new, July 2026)
+- **STANDING-INSTRUCTION IPP (new taxonomy class):** instructions that must re-fire at every future occurrence ("rebase immediately before *every* push") systematically decay into one-time instructions treated as already satisfied. Proven by independent recurrence in 3+ windows.
+- **Resolution-by-Disclosure (third resolution strategy):** between asking and silence — the model computes multiple readings, discloses them and its choice, and proceeds. Two independent instances (AUD-017, W38-007); two sub-variants: disclose-and-proceed vs disclose-and-wait. At mid-ICD this may dominate both asking (cheaper) and silence (safer). A publisha

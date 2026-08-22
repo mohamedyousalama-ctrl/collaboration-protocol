@@ -1,0 +1,291 @@
+every step
+
+---
+
+## 2.2 Loop Stages
+
+**Stage 1 — Signal Capture**
+- System receives user input (text, selection, gesture)
+- Input is treated as a **signal**, not as intent or instruction
+- No interpretation or execution occurs at this stage
+
+**Stage 2 — Signal Classification**
+- System assesses the signal for:
+  - Clarity (is meaning unambiguous?)
+  - Intent presence (does signal contain or imply a request for action?)
+  - Context fit (does signal belong to current context?)
+- Classification outcomes:
+  - `clear` — Signal is unambiguous and fits context
+  - `ambiguous` — Signal requires clarification
+  - `out_of_scope` — Signal does not fit current context
+
+**Stage 3 — Decision Point**
+
+| Classification | System Response |
+|----------------|-----------------|
+| `clear` + no action requested | Proceed to response (no gate) |
+| `clear` + action requested | Proceed to Intent Verification (Stage 4) |
+| `ambiguous` | Trigger FrictionEvent → Clarification Path |
+| `out_of_scope` | Trigger FrictionEvent → Scope Boundary Path |
+
+**Stage 4 — Intent Verification**
+- If an action is requested, system must verify intent before proceeding
+- Verification requires explicit user confirmation
+- System presents:
+  - Proposed intent (declaration_text, intent_type, scope)
+  - Context in which intent will operate
+  - Action that will result
+- User may: `confirm`, `revise`, or `abandon`
+- Only upon `confirm` does intent transition to `verified`
+
+**Stage 5 — Gate Decision**
+
+| Condition | Gate Decision |
+|-----------|---------------|
+| Intent verified + within context + agent permitted | **Allow** |
+| Intent verified + boundary concern or risk | **Clarify** (FrictionEvent) |
+| Intent not verified OR constraint violation | **Refuse** (Block + log reason) |
+
+**Stage 6 — Action Execution**
+- If gate decision is `Allow`, action proceeds
+- Action is logged with full traceability
+- User is informed that action occurred
+
+**Stage 7 — Loop Reset**
+- System returns to Stage 1, awaiting next signal
+- All state changes are preserved and logged
+
+---
+
+## 2.3 Clarification Path
+
+Triggered when signal is `ambiguous`:
+
+1. System generates FrictionEvent (`trigger_type: ambiguous_signal`)
+2. System asks user for clarification (not leading, not inferring)
+3. User responds
+4. System re-enters Stage 2 with new input
+5. FrictionEvent is resolved and logged
+
+---
+
+## 2.4 Block Path
+
+Triggered when action cannot proceed:
+
+1. System generates FrictionEvent (appropriate `trigger_type`)
+2. System informs user why action is blocked
+3. Action state set to `blocked`
+4. User may: revise intent, provide missing context, or abandon
+5. FrictionEvent is resolved and logged
+6. If user revises, system re-enters Stage 4
+
+---
+
+## 2.5 Interaction Loop Diagram (Textual)
+
+```
+User Signal
+    │
+    ▼
+[Signal Capture]
+    │
+    ▼
+[Signal Classification]
+    │
+    ▼
+┌─────────────────────────────────────┐
+│ Clear, no action → Respond          │
+│ Clear, action → Intent Verification │
+│ Ambiguous → Clarification Path      │
+│ Out of scope → Scope Boundary Path  │
+└─────────────────────────────────────┘
+    │
+    ▼
+[Intent Verification]
+    │
+    ▼
+[Gate Decision: Allow / Clarify / Refuse]
+    │
+    ▼
+[Action Execution] (if allowed)
+    │
+    ▼
+[Log & Reset]
+    │
+    ▼
+Await next signal
+```
+
+---
+
+## 2.6 Constraints on the Loop
+
+- System never infers intent from signal alone
+- System never executes without passing through Gate Decision
+- Every FrictionEvent must be logged
+- Every action must reference a verified intent
+- User is always informed of gate decisions and their reasons
+
+---
+
+# STEP 3 — SIMULATED USER SESSION
+
+A complete walkthrough demonstrating CP in action with a researcher beginning a literature review.
+
+---
+
+## 3.1 Scenario Description
+
+| Parameter | Value |
+|-----------|-------|
+| User | Academic researcher |
+| Task | Begin a literature review on "AI transparency in healthcare" |
+| Goal | Create context, declare intent, commit a node, execute one action |
+
+---
+
+## 3.2 Session Transcript
+
+### Turn 1 — User Signal
+
+> User: "I want to start working on a literature review about AI transparency in healthcare."
+
+**System Processing:**
+
+| Stage | Result |
+|-------|--------|
+| Signal Capture | Input received as signal |
+| Signal Classification | `clear`, action requested |
+| Decision Point | Proceed to Intent Verification |
+
+**System Response:**
+
+> "I understand you want to begin a literature review on AI transparency in healthcare. Before we proceed, I need to confirm:
+> 
+> **Proposed Context:**  
+> - Name: Literature Review — AI Transparency in Healthcare  
+> - Scope (inclusions): AI systems in clinical settings; transparency research  
+> - Scope (exclusions): Non-healthcare AI; policy/regulation unless directly about transparency  
+> 
+> **Proposed Intent:**  
+> - Type: `explore`  
+> - Declaration: Begin literature review on AI transparency in healthcare  
+> 
+> Do you confirm?"
+
+---
+
+### Turn 2 — User Confirmation
+
+> User: "Confirmed. But also exclude anything before 2018."
+
+**System Response:**
+
+> "Understood. Scope exclusions updated to include publications before 2018. Context and intent are now confirmed."
+
+**State Changes:**
+- Context created: `ctx_001`, state: `open`
+- Intent created: `int_001`, state: `verified`, type: `explore`
+
+**Log Entries:**
+```
+[LOG] Context created: ctx_001
+[LOG] Intent created: int_001 | Type: explore | State: verified
+```
+
+---
+
+### Turn 3 — User Signal (Exploration)
+
+> User: "What are the main themes in recent AI transparency research in healthcare?"
+
+**System Response:**
+
+> "Based on recent literature, the main themes include:
+> 1. Explainability methods for clinical decision support systems  
+> 2. Clinician trust and adoption of AI recommendations  
+> 3. Patient-facing transparency and informed consent  
+> 4. Regulatory requirements for transparency  
+> 5. Trade-offs between accuracy and interpretability  
+> 
+> Would you like to capture one as a structural node?"
+
+---
+
+### Turn 4 — User Signal (Node Commitment)
+
+> User: "Let's lock in 'Clinician trust and adoption' as a key theme."
+
+**System Response:**
+
+> "You're asking to commit a structural node:
+> 
+> **Proposed Node:**  
+> - Content: Clinician trust and adoption of AI recommendations  
+> - Commitment type: `fact`  
+> - Scope: Key theme for this literature review  
+> 
+> Do you confirm?"
+
+---
+
+### Turn 5 — User Confirmation
+
+> User: "Confirmed."
+
+**State Changes:**
+- Node created: `node_001`, state: `active`
+- Action executed: `act_001`, type: `generate`
+
+**System Response:**
+
+> "Node committed:
+> - Node ID: node_001  
+> - Content: Clinician trust and adoption of AI recommendations  
+> - Status: Active"
+
+**Log Entries:**
+```
+[LOG] Node created: node_001 | Commitment: fact | State: active
+[LOG] Action executed: act_001 | Type: generate | Output: node_001
+```
+
+---
+
+### Turn 6 — User Signal (Pivot)
+
+> User: "Mark patient-facing transparency as something to explore later."
+
+**System Response:**
+
+> "Pivot annotation added:
+> - Text: Patient-facing transparency and informed consent  
+> - Status: Active (annotation only; does not constrain)"
+
+**Log Entry:**
+```
+[LOG] Pivot created: piv_001 | State: active
+```
+
+---
+
+### Turn 7 — Session Close
+
+> User: "Save this and let me come back later."
+
+**System Response:**
+
+> "Session preserved:
+> - Context: Literature Review — AI Transparency in Healthcare (open)  
+> - Verified Intent: 1 (active)  
+> - Committed Nodes: 1  
+> - Active Pivots: 1"
+
+---
+
+## 3.3 Session Summary
+
+| Object | Count | Details |
+|--------|-------|---------|
+| Context | 

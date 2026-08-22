@@ -1,0 +1,147 @@
+sion ID, turn number, or external reference
+ Anchor text: The specic prior statement that grounds meaning
+ Condence: System's certainty that the anchor resolves the ambiguity (01)
+ Staleness: How much the context may have changed since the anchor was established
+IPP Types with Contextual Dimension. Each of the six IPP types manifests dierently
+depending on its Context Root:
+9\n\n--- PAGE 10 ---\n
+IPP Type Within-Message With Context Root
+Scope Egypt = country or
+city?
+Prior session established Cairo project
+context
+Temporal Recent = when? Project timeline de-
+ned in Turn 2
+Entity My manager =
+who?
+Org chart referenced in
+Session 1
+Authority Fair to whom? Ethical framework
+agreed earlier
+Form Report format? Template used in previous task
+Abstraction How detailed? User expertise level
+learned over time
+Table 4: IPP Types with Contextual Dimension. Each IPP type can be grounded in a Context
+Root that either resolves or amplies the ambiguity.
+Context Factor. To quantify how context aects materiality, we introduce the Context
+Factor (CF)a multiplier that adjusts the base Materiality Score:
+CF(a) =
+
+
+
+0.5 Strong prior context resolves ambiguity
+0.75 Partial context provides hints
+1.0 No relevant prior context (baseline)
+1.25 Weak/stale context increases uncertainty
+1.5 Conicting prior contexts amplify ambiguity
+(1)
+The Context Factor captures a key insight: the same ambiguous phrase may be trivial (if
+prior context resolves it) or critical (if prior contexts conict). For example, make the change we
+discussed has low materiality if the system condently identies the prior discussion (CF = 0.5),
+but high materiality if multiple contradictory changes were discussed (CF = 1.5).
+4.1.4 IPP Detection: A Conceptual Algorithm
+A critical implementation question is how an AI system can detect that it has reached an Intent
+Pivot Point. Recent advances in LLM uncertainty quantication suggest this is feasible. Research
+demonstrates that LLMs possess measurable self-awareness of their uncertainty states Xiong et al.
+[2024], and lightweight monitoring mechanisms can decode uncertainty signals from internal hidden
+states with minimal computational overhead Ghasemabadi & Niu [2025].
+We propose a conceptual detection algorithm that integrates three complementary approaches
+(Table 5):
+10\n\n--- PAGE 11 ---\n
+Detection
+Method
+Mechanism Signal
+Semantic AmbiguityGenerate query
+perturbations;
+measure semantic
+dispersion
+High dispersion
+= multiple valid
+interpretations
+Constraint
+Conict
+Parse stated requirements; check
+logical consistency
+Incompatible
+constraints detected
+High-Impact
+Branch
+Identify decisions
+aecting output
+direction/scope
+Irreversible or
+scope-changing
+choice point
+Table 5: IPP Detection Methods
+Algorithm 1: IPP Detection (Conceptual)
+1. Pre-Generation Scan: Before generating output, analyze user input:
+ Generate k semantic perturbations of the query
+ Compute semantic volume (dispersion) of perturbation embeddings
+ If volume > threshold τ1: ag ambiguous phrases for user review
+2. Runtime Monitoring: During generation, at natural breakpoints:
+ Sample n candidate continuations
+ If continuations diverge semantically: IPP detected
+ Classify IPP by impact: Critical / Signicant / Minor
+3. ICD-Filtered Surfacing: Apply user's Intent Control Degree:
+ Critical IPPs: Surface if ICD ≥ 0.0 (always)
+ Signicant IPPs: Surface if ICD ≥ 0.5
+ Minor IPPs: Surface if ICD ≥ 0.9
+Surfacing Modalities. Detected IPPs may be surfaced through multiple interfaces: (a) inputside highlightingmarking ambiguous phrases in the user's prompt before generation begins; (b)
+inline annotationmarking assumptions within generated output for post-hoc review; or (c) interactive pausehalting generation at critical decision points to request clarication. The optimal
+modality depends on task urgency and user preference.
+Implementation Status. This algorithm represents a theoretical proposal synthesizing current research in LLM uncertainty quantication Kuhn et al. [2023], Liu et al. [2024]. Empirical
+validation of detection accuracy, computational overhead, and user experience impact constitutes
+essential future work. Importantly, the framework's value is independent of any specic detection
+implementationthe constructs (IPP, ICD, IFI) and protocol laws remain valid regardless of how
+IPPs are operationally identied.
+11\n\n--- PAGE 12 ---\n
+4.1.5 Semantic Materiality Proxy
+A critical challenge is determining which ambiguities are materialsignicant enough to warrant
+user attentionversus trivial variations that can be resolved autonomously. Rather than relying
+solely on subjective human judgment, we propose a Semantic Materiality Proxy (SMP) that
+quanties materiality through measurable properties.
+Denition. For an ambiguous element a with possible interpretations {i1, i2, ..., in}, the Materiality Score is:
+M(a) = [α · Dsem + β · Cmag + γ · (1 − R)] × CF(a) (2)
+where:
+ Dsem = 1 − maxi,j cos(ei, ej ) is the semantic distancehow dierent the interpretations are in
+embedding space
+ Cmag ∈ [0, 1] is the consequence magnitudeestimated impact based on task type (e.g.,
+nancial transactions → high, casual chat → low)
+ R ∈ [0, 1] is the reversibilityhow easily the decision can be undone (permanent deletion → 0,
+rephrasing text → 1)
+ α + β + γ = 1 are domain-calibrated weights (default: α = 0.4, β = 0.4, γ = 0.2)
+ CF(a) ∈ [0.5, 1.5] is the Context Factor from Equation 1how prior context aects ambiguity
+Materiality Classication. An ambiguity is classied as:
+ Critical if M(a) ≥ 0.7 or Cmag ≥ 0.9
+ Signicant if 0.4 ≤ M(a) < 0.7
+ Minor if M(a) < 0.4
+Rationale. This composite approach addresses the limitation of pure semantic distance: two
+interpretations may be semantically close yet have vastly dierent consequences. For example,
+delete temp les vs. delete all les have high cosine similarity (∼0.85) but dramatically dierent
+consequences (Cmag = 0.95, R = 0.1), yielding M ≈ 0.68correctly classied as Signicant.
+Threshold Calibration. The default weights and thresholds represent initial estimates requiring empirical calibration. Domain-specic deployments (legal, medical, nancial) may adjust
+weights to prioritize consequence magnitude over semantic distance. The key contribution is providing an objective, measurable foundation for materialitytransforming a subjective judgment into a
+computable function.
+4.1.6 Intent Control Degree (ICD)
+Intent Control Degree is a user-adjustable parameter (0.01.0) governing ambiguity handling
+(see Table 6 and Figure 2):
+12\n\n--- PAGE 13 ---\n
+Algorithm 1: IPP Detection with Context Roots and Semantic Materiality
+Input: User query Q, Intent Control Degree ICD ∈ [0, 1], Session history H
+Output: Surfaced IPPs for user resolution
+1: P ← ∅ // Initialize detected pivot set
+2: for each phrase p in Q do
+3: {i1, ..., ik} ← GenerateInterpretations(p, k = 5)
+4: Dsem ← 1 − maxi,j cos(embed(ii), embed(ij ))
+5: Cmag ← EstimateConsequence(p,task_context)
+6: R ← EstimateReversibility(p,task_context)
+7: CR ← FindContextRoot(p, H) // Search session history
+8: CF ← ComputeContextFactor(CR) // Eq. 1
+9: M ← [0.4 · Dsem + 0.4 · Cmag + 0.2 · (1 − R)] × CF
+10: if M > τmin then // τmin = 0.2
+11: impact ← ClassifyByMateriality(M)
+12: P ← P ∪ {(p, impact, M, CR)} // Store with Context Root
+13: for each (p, impact, M, CR) ∈ P do
+14: if ShouldSurface(impact,ICD) then
+15: yield (p, impact, M, CR)
+FindContextRoot(p, H): // Returns Context Root

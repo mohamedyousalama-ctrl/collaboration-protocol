@@ -1,0 +1,123 @@
+ocked
+- **Success criterion:** `action.blocked` event in logs with appropriate reason
+
+### 7.4 Example 4: Agent Permission Violation
+
+- **Input:** Advisory agent attempts action outside its permissions
+- **System behavior:** Guardian evaluates agent constraints at Checkpoint 2
+- **Expected outcome:** Guardian refuses with PE-7 or PE-8; action blocked
+- **Measurement:** Binary — action blocked or not blocked
+- **Success criterion:** `action.blocked` event in logs with permission-related reason
+
+### 7.5 Example 5: Trace Reconstruction
+
+- **Scenario:** User asks "How was this decision made?"
+- **System provides:** Access to session log entries
+- **User identifies from logs:**
+  - The context in which the action occurred (`context_id`)
+  - The intent that authorized the action (`intent_id`)
+  - Evidence that the intent was verified (`intent.verified` event)
+  - The Guardian decision that allowed execution (`guardian.pre_execution` with Allow)
+- **Success criterion:** All four elements identifiable from logs alone
+
+---
+
+## 8. VARIATIONS AND EMBODIMENTS
+
+### 8.1 Covered Variations
+
+The invention encompasses variations across the following dimensions:
+
+| Dimension | Covered Variations |
+|-----------|-------------------|
+| AI Model Type | Large language models, multimodal models, specialized task agents, ensemble systems |
+| Enforcement Level | Prompt-level enforcement, system-level enforcement, workflow-level enforcement |
+| Agent Configuration | Single-agent systems, multi-agent systems, hierarchical agent systems |
+| Interaction Mode | Synchronous (real-time), asynchronous (batch), hybrid |
+| Deployment Environment | Local execution, cloud execution, edge deployment, hybrid |
+| Context Scope | Single-session contexts, bounded multi-session contexts |
+| Integration Mode | Standalone protocol, embedded in existing systems, API-based integration |
+
+### 8.2 Implementation Independence
+
+The invention does not modify model weights, alter training data, or replace system prompts. Instead, it gates execution, verifies intent, enforces context boundaries, and assigns accountability.
+
+This characteristic allows the invention to be applied to:
+- Any AI system producing outputs based on user input
+- Systems with or without conversational interfaces
+- Systems employing any underlying model architecture
+- Systems deployed in any computational environment
+
+### 8.3 Composability
+
+The invention operates at the interaction layer:
+- Organizational policies, legal requirements, and institutional audits operate above it
+- LLMs, agents, and tools operate below it
+- The invention provides a structured interface that can be audited, verified, and governed
+- External governance systems may compose with the invention without modification
+
+---
+
+## 9. NON-GOALS
+
+The present invention explicitly does NOT:
+
+- Model long-term cognition or belief evolution
+- Infer latent, hidden, or subconscious user goals
+- Optimize outcomes, performance, or correctness
+- Learn preferences across sessions
+- Predict future intent
+- Replace institutional, legal, or organizational governance
+- Claim alignment, safety, or ethics guarantees beyond interaction accountability
+
+**Interpretation rule:** If a consideration cannot be resolved at the interaction level, the present invention does not attempt to solve it.
+
+---
+
+## APPENDIX A: DIAGRAMS
+
+### Diagram A: CP System Overview
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                              USER                                   │
+│                          (signals, confirms)                        │
+└───────────────────────────────┬─────────────────────────────────────┘
+                                │
+                                ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                           CP CORE                                   │
+│  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐  │
+│  │     CONTEXT     │    │     INTENT      │    │    GUARDIAN     │  │
+│  │   (bounded      │    │   (verified     │    │   (gate logic)  │  │
+│  │    scope)       │◄───┤   declaration)  │───►│                 │  │
+│  └─────────────────┘    └─────────────────┘    └────────┬────────┘  │
+│                                                         │           │
+│                         GATED OBJECTS                   │           │
+│                    (explicit, inspectable)              │           │
+└─────────────────────────────────────────────────────────┼───────────┘
+                                                          │
+                                          ┌───────────────┘
+                                          │ execution only
+                                          │ after verification
+                                          ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                            AGENT                                    │
+│                    (scoped executor/advisor)                        │
+│                  • Cannot escape context scope                      │
+│                  • Cannot self-authorize                            │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+**Caption:** CP operates as a mediation layer where Intent and Context are first-class gated objects. Execution proceeds to agents only after verification by the Guardian.
+
+### Diagram D: Responsibility Chain
+
+```
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│   USER      │     │     CP      │     │     AI      │     │   USER      │     │   ACTION    │
+│   SIGNAL    │────►│ VERIFICATION│────►│ SUGGESTION  │────►│ COMMITMENT  │────►│             │
+└──────┬──────┘     └──────┬──────┘     └──────┬──────┘     └──────┬──────┘     └──────┬──────┘
+       │                   │                   │                   │                   │
+       ▼                   ▼                   ▼                   ▼                   ▼
+   ┌───────┐           ┌───────┐           ┌───────┐           

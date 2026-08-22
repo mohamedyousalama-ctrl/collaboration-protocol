@@ -1,0 +1,273 @@
+2_skipped": false
+  },
+  "decay": {
+    "delta": 0.12,
+    "session_score": 0.15,
+    "health": "good"
+  },
+  "safety_floor": null,
+  "counterfactual_available": true,
+  "trace_available": true
+}
+```
+
+Note: `counterfactual_available: true` when at least one IPP was detected but not surfaced as friction.
+
+**Response (friction):**
+```json
+{
+  "type": "friction",
+  "friction_id": "uuid",
+  "trigger_type": "ambiguous_signal",
+  "ipp_type": "scope",
+  "message": "Your message could mean two different things.",
+  "clarification_question": "Do you mean the whole document or just the key points?",
+  "options": [
+    { "label": "Whole document", "resolution": "user_clarified" },
+    { "label": "Key points only", "resolution": "user_clarified" },
+    { "label": "Let me rephrase", "resolution": "user_revised" },
+    { "label": "Abandon", "resolution": "user_abandoned" }
+  ]
+}
+```
+
+---
+
+### POST /api/session/resolve
+Resolves an open friction event.
+
+**Request:**
+```json
+{
+  "session_id": "uuid",
+  "friction_id": "uuid",
+  "resolution": "user_clarified",
+  "input": "Key points only"
+}
+```
+
+**Process:**
+1. Update friction event state to `resolved` in `friction_events` table
+2. Write `friction.resolved` to CP Log Store
+3. If `user_confirmed` or `user_clarified` → retry message pipeline with resolution context
+4. If `user_revised` → return to input — user rephrases
+5. If `user_abandoned` → unblock input, no retry
+
+**Response:**
+```json
+{
+  "status": "resolved",
+  "next": "retry" | "rephrase" | "unblocked"
+}
+```
+
+---
+
+### POST /api/session/satisfaction
+User submits SS star rating. Completes IFI Phase 2 calculation.
+
+**Request:**
+```json
+{
+  "session_id": "uuid",
+  "action_id": "uuid",
+  "ss_rating": 4
+}
+```
+
+**Process:**
+1. Validate rating is 1–5
+2. Normalize: SS = (ss_rating - 1) / 4 → 0.0–1.0
+3. Load SA and CP from partial IFI record
+4. Calculate composite: IFI = 0.4(SA) + 0.3(CP) + 0.3(SS)
+5. Update ifi_scores record with SS and composite
+6. Write `ifi.phase2` to Klear Events Store
+
+**Response:**
+```json
+{
+  "ifi": 0.84,
+  "components": { "sa": 0.88, "cp": 1.0, "ss": 0.75 },
+  "cp2_skipped": false
+}
+```
+
+---
+
+### GET /api/session/trace/:action_id
+Returns human-readable decision trace for a specific response.
+
+**Response:**
+```json
+{
+  "trace": {
+    "user_message": "What are the most cited papers on AI alignment?",
+    "intent_governing": "Find and evaluate academic sources on AI governance",
+    "context_governing": "AI governance research, academic papers 2020–2026",
+    "icd_applied": 0.5,
+    "ipp_detected": [
+      { "type": "authority", "confidence": 0.3, "surfaced": false, "reason": "below ICD threshold" }
+    ],
+    "checkpoint1": { "decision": "allow", "rule": "PC-4", "reason": "No IPPs above threshold, in scope" },
+    "checkpoint2": { "decision": "allow", "reason": "Response stays within declared scope", "cp2_skipped": false },
+    "safety_floor": null,
+    "decay_at_time": { "delta": 0.12, "session_score": 0.15, "health": "good" },
+    "ifi": { "sa": 0.88, "cp": 1.0, "ss": 0.75, "composite": 0.84, "pending_ss": false }
+  }
+}
+```
+
+---
+
+### POST /api/session/counterfactual
+Returns alternative interpretations the IPP classifier detected but did not surface.
+
+**Request:**
+```json
+{
+  "session_id": "uuid",
+  "action_id": "uuid"
+}
+```
+
+**Process:**
+1. Load IPP classification results for this action from `klear_events`
+2. Filter to IPPs that were detected but not surfaced (below ICD threshold)
+3. Call Claude to generate 2–3 concrete alternative interpretations based on detected IPP types
+4. Return as selectable options
+
+**Response:**
+```json
+{
+  "original_interpretation": "Most cited papers in academic journals on AI alignment",
+  "alternatives": [
+    { "id": 1, "ipp_type": "authority", "interpretation": "Most cited by AI safety practitioners, not academics" },
+    { "id": 2, "ipp_type": "scope", "interpretation": "Most cited including preprints and grey literature" }
+  ]
+}
+```
+
+**Selecting an alternative:**
+User selects an alternative → frontend calls `POST /api/session/message` with the original message plus a resolution note: `"User selected alternative interpretation: [text]"` — this triggers a fresh pipeline run with the chosen interpretation injected into context.
+
+---
+
+### GET /api/session/report/:session_id
+Generates CP Compliance Report (registered users only).
+
+**Response:**
+```json
+{
+  "report": {
+    "session_id": "uuid",
+    "generated_at": "2026-04-08T12:00:00Z",
+    "declared_intent": "Find and evaluate academic sources on AI governance",
+    "declared_context": "AI governance research, academic papers 2020–2026",
+    "icd_setting": 0.5,
+    "domain": "general",
+    "safety_floor_active": false,
+    "total_messages": 12,
+    "total_friction_events": 2,
+    "friction_resolution_rate": 1.0,
+    "guardian_decisions": { "allow": 22, "clarify": 2, "refuse": 0 },
+    "ipp_summary": { "scope": 3, "authority": 1, "form": 2 },
+    "average_ifi": 0.81,
+    "ifi_trend": [0.78, 0.82, 0.84, 0.80],
+    "session_decay_final": 0.18,
+    "session_health": "good",
+    "responsibility_chain_intact": true,
+    "cp_log": [...],
+    "klear_events_log": [...]
+  }
+}
+```
+
+---
+
+### POST /api/context_root/save
+Saves a node as a permanent Context Root for registered users.
+
+**Request:**
+```json
+{
+  "user_id": "uuid",
+  "node_id": "uuid",
+  "content": "I prefer academic sources over news articles",
+  "source_session_id": "uuid"
+}
+```
+
+**Response:**
+```json
+{
+  "root_id": "uuid",
+  "content": "I prefer academic sources over news articles",
+  "saved": true
+}
+```
+
+---
+
+### GET /api/context_root/:user_id
+Returns all active Context Roots for a user.
+
+### DELETE /api/context_root/:root_id
+Deactivates a Context Root permanently.
+
+### PATCH /api/context_root/:root_id
+Updates the content of a Context Root.
+
+---
+
+### POST /api/profile/save
+Saves a Klear Profile for registered users.
+
+**Request:**
+```json
+{
+  "user_id": "uuid",
+  "profile_name": "Research Mode",
+  "default_icd": 0.8,
+  "default_context": "Academic research — peer-reviewed sources only",
+  "default_constraints": ["No opinion pieces", "Cite sources always"],
+  "domain_preference": "general"
+}
+```
+
+### GET /api/profile/:user_id
+Returns all saved profiles for a user.
+
+---
+
+## 6. Frontend Components
+
+### 6.1 Session Start Screen
+- Opening prompt input
+- Articulation card — editable topic, goal, scope, exclusions
+- ICD selector — three options with plain language labels
+- Context Roots confirmation panel (registered users)
+- Transitions to chat on confirmation
+
+### 6.2 Chat Interface
+- Message thread (scrollable)
+- Input bar (disabled during open friction)
+- Send button
+- CP Status bar: context summary, intent, ICD level, domain indicator, session health
+
+### 6.3 Friction Card Component
+- Inline in message thread
+- Amber/warning color with IPP type label
+- Plain language explanation
+- Specific clarification question for the detected IPP type
+- Resolution buttons with explicit labels
+- Input bar locked until resolved
+
+**Friction types and their cards:**
+
+| Type | Header | Question shown | Buttons |
+|------|--------|---------------|---------|
+| `ambiguous_signal` (IPP) | "Klear needs clarification" | The IPP clarification_question | Specific options + Rephrase + Abandon |
+| `scope_boundary` | "Outside your scope" | "This seems outside what you declared. How would you like to proceed?" | Proceed anyway / Stay in scope / Update scope |
+| `unverified_intent` | "Intent not set" | "Please confirm what you're trying to do before continuing." | Set intent |
+| `missing_context` | "More detail needed" | "There's not enough context to answer accurately." | Add detail / Abandon |
+| `conflict_detected` | "Conflict detected" | "This conflicts with something you declared earlier." | Keep original / Use new dir

@@ -1,0 +1,168 @@
+e; they do not constrain
+- Pivots never redefine nodes
+- Pivots never override intent
+- Pivots never trigger execution or action
+- In v1, pivots must be user-declared; system-suggested pivots require explicit user confirmation
+- Pivots are reversible at any time by user action
+
+---
+
+## 1.5 Agent
+
+**Definition:**  
+A scoped executor or advisor that operates within a Context under explicit permissions. Agents cannot escape their assigned scope, cannot self-authorize actions, and inherit all constraints from their governing Context.
+
+**Fields:**
+| Field | Type | Description |
+|-------|------|-------------|
+| `agent_id` | string | Unique identifier |
+| `context_id` | string | Reference to the Context this agent is bound to |
+| `agent_type` | enum | Category of agent |
+| `name` | string | Human-readable identifier |
+| `permissions` | list of strings | What this agent is allowed to do |
+| `prohibited_actions` | list of strings | What this agent is forbidden from doing |
+| `state` | enum | Current lifecycle state |
+| `created_at` | timestamp | When created |
+| `assigned_by` | string | User who authorized this agent |
+
+**Allowed Agent Types:**
+- `advisory` — Can suggest, explain, or provide information; cannot execute actions
+- `acting` — Can execute actions within scope, only after verified intent
+- `explanation_only` — Can only provide reasoning traces or clarifications
+
+**Allowed States:**
+- `active` — Agent is available and operating within its context
+- `suspended` — Agent is temporarily disabled
+- `revoked` — Agent has been permanently removed from this context
+
+**Constraints:**
+- Agents inherit context constraints and cannot override them
+- Agents cannot escape their assigned context scope
+- Agents cannot self-authorize actions
+- Agents cannot modify their own permissions
+- Acting agents may only execute after intent is verified or active
+- Agent state transitions require explicit user action
+
+---
+
+## 1.6 Action
+
+**Definition:**  
+A discrete operation executed by the system or an agent that produces an effect. Actions are the only mechanism through which the system changes state or produces outputs. Every action must be traceable to a verified intent and bounded by a context.
+
+**Fields:**
+| Field | Type | Description |
+|-------|------|-------------|
+| `action_id` | string | Unique identifier |
+| `intent_id` | string | Reference to the verified Intent that authorized this action |
+| `context_id` | string | Reference to the Context within which this action occurs |
+| `agent_id` | string \| null | Reference to the Agent that executed this action |
+| `action_type` | enum | Category of action |
+| `description` | string | Human-readable description of what the action does |
+| `inputs` | string \| object | Data or parameters the action operates on |
+| `outputs` | string \| object \| null | Results or artifacts produced |
+| `state` | enum | Current lifecycle state |
+| `requested_at` | timestamp | When action was requested |
+| `executed_at` | timestamp \| null | When action was completed |
+| `executed_by` | string \| null | Identifier of executor |
+
+**Allowed Action Types:**
+- `generate` — Produce content, artifact, or output
+- `modify` — Change existing content or structure
+- `retrieve` — Fetch or surface information
+- `communicate` — Send or present information to user
+- `external` — Interact with systems outside the workspace (highest risk)
+
+**Allowed States:**
+- `pending` — Action has been requested but not yet executed
+- `blocked` — Action was prevented due to missing verification or constraint violation
+- `executed` — Action has been completed
+- `failed` — Action was attempted but did not complete successfully
+- `reverted` — Action effects have been undone (where possible)
+
+**Constraints:**
+- No action without verified intent
+- Action must occur within the boundaries of its referenced context
+- Action must be within the permissions of its executing agent
+- All actions must be logged with full traceability
+- Actions cannot be executed silently
+- Failed or blocked actions must log the reason
+
+---
+
+## 1.7 FrictionEvent
+
+**Definition:**  
+A system-generated event that introduces deliberate pause, clarification, or resistance at critical decision points. Friction serves as a signal of ambiguity, risk, or missing verification—not as obstruction.
+
+**Fields:**
+| Field | Type | Description |
+|-------|------|-------------|
+| `friction_id` | string | Unique identifier |
+| `context_id` | string | Reference to the Context in which friction occurred |
+| `intent_id` | string \| null | Reference to the associated Intent |
+| `action_id` | string \| null | Reference to the Action that triggered friction |
+| `trigger_type` | enum | What caused the friction |
+| `trigger_description` | string | Human-readable explanation |
+| `resolution` | enum | How the friction was resolved |
+| `resolution_details` | string \| null | Description of resolution outcome |
+| `state` | enum | Current lifecycle state |
+| `triggered_at` | timestamp | When friction was introduced |
+| `resolved_at` | timestamp \| null | When friction was resolved |
+
+**Allowed Trigger Types:**
+- `ambiguous_signal` — User input could not be classified with confidence
+- `unverified_intent` — Action was requested without verified intent
+- `scope_boundary` — Requested operation would exceed context boundaries
+- `permission_violation` — Agent attempted action outside its permissions
+- `high_risk_action` — Action type requires additional confirmation
+- `missing_context` — Required context information is absent or unclear
+- `conflict_detected` — Request conflicts with existing node, intent, or constraint
+
+**Allowed Resolutions:**
+- `user_clarified` — User provided additional information
+- `user_confirmed` — User explicitly confirmed intent to proceed
+- `user_revised` — User changed their request
+- `user_abandoned` — User chose not to proceed
+- `system_blocked` — System prevented action due to unresolved constraint
+- `unresolved` — Friction has not yet been addressed
+
+**Allowed States:**
+- `active` — Friction is currently blocking or pausing progress
+- `resolved` — Friction has been addressed and closed
+- `escalated` — Friction could not be resolved and has been flagged
+
+**Constraints:**
+- Friction never blocks thinking or exploration; it only gates commitment and action
+- Friction must always include a human-readable explanation
+- Friction must be logged regardless of resolution outcome
+- Friction cannot be silently dismissed by the system
+- Friction is a signal, not a punishment
+
+---
+
+## Step 1 Summary
+
+| Object | Purpose | Key Constraint |
+|--------|---------|----------------|
+| **Context** | Bounded container for scope, goals, agents, intents | No implicit merging; must be declared or confirmed |
+| **Intent** | Explicit declaration of what user wants system to do | No action without verified intent |
+| **Node** | User-committed structural unit of meaning or work | Immutable unless explicitly edited by user |
+| **Pivot** | Annotation of significance; does not constrain | Never triggers action; never overrides intent |
+| **Agent** | Scoped executor or advisor bound to a context | Cannot escape scope; cannot self-authorize |
+| **Action** | Discrete operation producing an effect | Must trace to verified intent and context |
+| **FrictionEvent** | Deliberate pause at ambiguity or risk points | Never blocks thinking; gates commitment and action |
+
+---
+
+# STEP 2 — CP INTERACTION LOOP
+
+---
+
+## 2.1 Overview
+
+The CP Interaction Loop governs every exchange between user and system. Its purpose is to ensure:
+- Signals are captured without premature interpretation
+- Intent is verified before any action
+- Context boundaries are respected
+- Accountability is preserved at 

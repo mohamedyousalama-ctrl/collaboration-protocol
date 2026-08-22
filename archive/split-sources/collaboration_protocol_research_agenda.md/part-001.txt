@@ -1,0 +1,200 @@
+ higher final output satisfaction.
+
+**Why test first:**
+- Validates fundamental construct
+- Annotation study is low-cost
+- Creates reusable research infrastructure
+
+**Method:**
+1. Develop IPP annotation codebook with clear criteria
+2. Train 4 annotators on sample transcripts
+3. Measure inter-rater reliability on held-out set
+4. In separate study: let users intervene at experimenter-identified IPPs vs. random points
+5. Measure whether IPP intervention predicts outcome satisfaction
+
+**Success criteria:** Reliable identification + meaningful impact = IPPs are real and useful.
+
+---
+
+### Tier 2: Test After Tier 1 Validates Core Concepts
+
+---
+
+#### Claim 4: Meaning Ownership Erosion
+
+**Original assertion:** "Loss of Meaning Ownership: Users cannot intervene once generation begins."
+
+**Testable version:** Users report decreasing sense of authorship/ownership as AI contribution increases, but this effect is moderated by perceived control over the process.
+
+**Method:** 
+- Vary AI contribution level (20%, 50%, 80% of final output)
+- Vary control level (high ICD vs. low ICD)
+- Measure psychological ownership scales
+- Predict interaction effect
+
+---
+
+#### Claim 5: Articulation Assistance Without Decision Usurpation
+
+**Original assertion:** "AI may assist but must not decide intent."
+
+**Testable version:** AI systems that suggest intent articulations (without auto-selecting) lead to higher-quality expressed intent than either (a) no assistance or (b) AI-decided intent.
+
+**Method:**
+- Three conditions: no help, suggestions only, auto-resolution
+- Measure quality of captured intent against user's "true" intent (established separately)
+- Prediction: suggestions > auto-resolution > no help
+
+---
+
+#### Claim 6: Intent Signature Portability Value
+
+**Original assertion:** "Intent Signatures enable instant alignment without repeated setup."
+
+**Testable version:** Users whose interaction patterns are captured and applied to new tasks achieve satisfactory outputs 30% faster than users starting fresh.
+
+**Method:**
+- Within-subjects design: establish signature over 5 tasks, then new task with/without signature
+- Measure time to satisfaction, revision cycles, clarification needs
+
+---
+
+### Tier 3: Requires Infrastructure/Partnerships
+
+---
+
+#### Claim 7: CP Compliance Reduces Errors in High-Stakes Domains
+
+**Testable version:** In legal/medical/financial AI assistance, CP-compliant systems produce fewer consequential errors attributable to intent misalignment than non-compliant systems.
+
+**Requirements:** Domain partnership, longitudinal design, error classification framework
+
+---
+
+#### Claim 8: Reversibility Matters for Trust
+
+**Testable version:** Users who can undo AI intent interpretations at any point maintain more calibrated trust (neither over- nor under-trusting) than users without undo capability.
+
+**Requirements:** Custom system with full audit trail, trust calibration measures, longitudinal design
+
+---
+
+## Part 3: Publication Strategy
+
+### Immediate Opportunities (Next 6 months)
+
+| Venue | Paper Type | Content | Deadline Cycle |
+|-------|------------|---------|----------------|
+| CHI Workshop | Position paper | CP framework + preliminary silent inference data | Annual (Fall) |
+| AIES | Position/vision | CP as ethical framework for AI collaboration | Annual |
+| arXiv | Preprint | Full specification + research agenda | Anytime |
+| HCI Journal (IJHCS) | Theory paper | CP framework with literature integration | Rolling |
+
+### Medium-Term Targets (12-24 months)
+
+| Venue | Paper Type | Required Content |
+|-------|------------|------------------|
+| CHI Full Paper | Empirical | 2+ experiments validating ICD or IPP |
+| CSCW | Empirical | Field study of CP in collaborative work |
+| NeurIPS (Datasets & Benchmarks) | Resource | IPP-annotated corpus, intent fidelity benchmark |
+| Nature Human Behaviour | Full article | Comprehensive validation + real-world impact |
+
+### Long-Term Targets (24-48 months)
+
+| Venue | Paper Type | Required Content |
+|-------|------------|------------------|
+| Science/Nature | Perspective or Article | Broad empirical validation, field impact data |
+| ACM Computing Surveys | Survey | CP in context of full HCI/AI literature |
+| Management Science | Empirical | Organizational impact of CP adoption |
+
+---
+
+## Part 4: Resource Requirements
+
+### Minimum Viable Research Program
+
+**For Tier 1 studies (first publishable results):**
+
+| Resource | Requirement | Estimated Cost |
+|----------|-------------|----------------|
+| Participant compensation | 400 participants × $15 average | $6,000 |
+| Annotation labor | 4 coders × 40 hours × $25/hr | $4,000 |
+| Software/hosting | Survey tools, data storage | $1,000 |
+| Statistical consulting | 10 hours | $1,500 |
+| **Total** | | **$12,500** |
+
+**Timeline:** 6-9 months to first paper submission
+
+### Full Research Program (3-year)
+
+| Category | Estimated Cost |
+|----------|----------------|
+| Personnel (PhD student or postdoc) | $180,000 |
+| Participant compensation | $40,000 |
+| System development | $30,000 |
+| Travel/conferences | $15,000 |
+| Miscellaneous | $10,000 |
+| **Total** | **$275,000** |
+
+---
+
+## Part 5: Strengthening the Theoretical Foundation
+
+### Literature You Must Engage
+
+Before submission, integrate CP with:
+
+**Human-Automation Interaction:**
+- Parasuraman, R., & Riley, V. (1997). Humans and automation: Use, misuse, disuse, abuse.
+- Sheridan, T. B., & Verplank, W. L. (1978). Human and computer control of undersea teleoperators.
+- Endsley, M. R. (2017). From here to autonomy: Lessons learned from human–automation research.
+
+**Shared Mental Models:**
+- Mathieu, J. E., et al. (2000). The influence of shared mental models on team process and performance.
+
+**Explainable AI:**
+- Miller, T. (2019). Explanation in artificial intelligence: Insights from the social sciences.
+
+**Human-AI Teaming:**
+- Bansal, G., et al. (2021). Does the whole exceed its parts? The effect of AI explanations on complementary team performance.
+- Lai, V., & Tan, C. (2019). On human predictions with explanations and predictions of machine learning models.
+
+**Trust in Automation:**
+- Lee, J. D., & See, K. A. (2004). Trust in automation: Designing for appropriate reliance.
+
+### Theoretical Positioning Options
+
+**Option A: CP as Extension of Levels of Automation**
+- Position CP as addressing the "intent level" that existing frameworks don't capture
+- Existing frameworks focus on task allocation; CP focuses on meaning preservation
+
+**Option B: CP as Operationalization of Human-Centered AI Principles**
+- Shneiderman's "Human-Centered AI" is philosophical; CP makes it operational
+- CP provides the "how" to existing "what" principles
+
+**Option C: CP as Correction to Current Interaction Paradigms**
+- Position against "prompt engineering" as insufficient
+- Argue that interface-level solutions miss protocol-level problems
+
+---
+
+## Part 6: Potential Collaborators & Institutions
+
+### Academic Partners to Approach
+
+| Institution | Relevant Lab/Researcher | Why |
+|-------------|------------------------|-----|
+| Stanford HAI | Michael Bernstein, James Landay | Human-AI interaction, HCI |
+| MIT Media Lab | Pattie Maes, Rosalind Picard | AI systems, human-centered computing |
+| CMU HCII | Geoff Kaufman, Haiyi Zhu | AI collaboration, social computing |
+| University of Washington | Dan Weld, Tim Althoff | AI safety, human-AI teams |
+| Oxford Internet Institute | Luciano Floridi | AI ethics, information philosophy |
+| Max Planck (Tübingen) | Moritz Hardt | ML foundations, fairness |
+
+### Industry Research Partners
+
+| Company | Research Group | Alignment |
+|---------|---------------|-----------|
+| Anthropic | Alignment research | Direct relevance to constitutional AI |
+| DeepMind | Safety team | Human-in-the-loop systems |
+| Microsoft Research | FATE group |

@@ -1,0 +1,182 @@
+ven hypothesis** |
+| Proven that higher ICD improves fidelity/satisfaction/trust calibration | **Unproven hypothesis** |
+| Shown that IPPs can be annotated reliably enough (κ > 0.7–0.8) to become a standard construct | **Untested** |
+| Evidence that the framework actually reduces intent decay, accountability gaps, or disempowerment in realistic settings | **No real-world data** |
+
+## L.2 How Empirical Communities Will View This
+
+**Strongly empirical communities** (core CHI, CSCW, UIST) would likely classify this work as:
+
+> "Promising speculation / call for research" rather than a definitive advance
+
+This is **not a criticism**—it accurately describes the nature of a pre-empirical framework paper.
+
+## L.3 What This Means for Positioning
+
+- **Be honest about the contribution:** This is a framework paper, not an empirical paper
+- **Frame claims appropriately:** "We hypothesize..." not "We have shown..."
+- **Acknowledge limitations upfront:** Reviewers will respect honesty
+- **Position for the right venues:** AIES, FAccT, alt.chi, AI & Society — not empirical tracks
+
+---
+
+# Appendix M: Path to Full Validation
+
+## M.1 From Framework to Proven Theory
+
+| Stage | What You Have | What You Need | Timeline |
+|-------|---------------|---------------|----------|
+| **Current** | Theoretical framework, operationalized constructs, study designs | — | Now |
+| **Stage 1** | + Pilot data (n=100) | Execute 30-day pilot | +1 month |
+| **Stage 2** | + IPP reliability (κ > 0.7) | Complete Study 2 | +3 months |
+| **Stage 3** | + ICD effect validation | Complete Study 3 | +6 months |
+| **Stage 4** | + Field deployment data | Partner organizations | +18 months |
+| **Stage 5** | + Cross-cultural replication | International collaboration | +36 months |
+
+## M.2 Minimum Data for Stronger Claims
+
+To move from "framework paper" to "empirical contribution":
+
+**Minimum viable:**
+- Silent Inference Prevalence study (n=100, $2,260)
+- IPP annotation reliability (κ > 0.7)
+- arXiv + CHI workshop publication
+
+**Stronger position:**
+- + ICD effect study (n=240)
+- + CHI/CSCW full paper submission
+
+**Definitive validation:**
+- + Field deployment with organizations
+- + Nature Human Behaviour / Science submission possible
+
+## M.3 Decision Point: Publish Now or Wait?
+
+| Option | Pros | Cons |
+|--------|------|------|
+| **Publish framework now** | Establishes priority; gets feedback; begins citation | Limited to theory venues; no empirical claims |
+| **Wait for pilot data** | Stronger initial publication; broader venue options | Delays priority; risk of being scooped |
+| **Parallel track** | arXiv preprint now + empirical paper later | More work; but best of both worlds |
+
+**Recommended:** Parallel track — arXiv preprint immediately to establish priority, then pursue empirical validation for full paper.
+
+---
+
+# END OF DOCUMENT
+
+---
+
+**The Collaboration Protocol Research Package**  
+Version 4.0 — FINAL (Realistic Assessment Edition)  
+January 2026  
+Mohamed Salama
+
+---
+
+## Document Summary
+
+This final research package contains:
+
+### PART I: THE RESEARCH PAPER
+- Publication-ready academic paper with comprehensive Related Work
+- Four operationalized constructs (ICD, IPP, IFI, Intent Decay)
+- Seven Protocol Laws
+- Four empirical study designs
+- 30-day pilot protocol
+
+### PART II: RESEARCH EXECUTION AGENDA
+- Four-phase roadmap (48 months)
+- Prioritized testable claims
+- Publication strategy with realistic likelihood assessments
+- Resource requirements
+- Collaborator recommendations
+
+### PART III: APPENDICES
+- Reviewer Objection Matrix (10 objections)
+- Quick-Start Study Protocol
+- Measurement Instruments
+- Complete Literature References
+
+### PART IV: APPLIED EXTENSIONS
+- **Project A:** Regulatory Auditing of Intent Compliance
+- **Project B:** Organizational Intent Signatures
+
+### PART V: FUTURE INVESTIGATION VAULT
+- Agent Intent Profiles (AIP)
+- Multi-Agent Orchestration
+- Intent Decay Mathematical Model
+- Legal Framework: Meaning Ownership
+
+### PART VI: REALISTIC ASSESSMENT
+- What This Framework Achieves (Without Empirical Data)
+- Important Boundaries and Limitations
+- Path to Full Validation
+
+---
+
+## Version 4.1 Changes from Version 4.0
+
+| Change | Location | Description |
+|--------|----------|-------------|
+| **Enhanced title** | Header | Added searchable subtitle with "Human-LLM Interaction" |
+| **Tightened abstract** | Section 1 | Reduced to ~250 words; clearer structure |
+| **Expanded keywords** | Section 1 | Added "Human-LLM Interaction", "Semantic Authority", "Intent Governance", "Large Language Models" |
+| **ACM CCS codes** | Section 1 | Added for conference submission compatibility |
+| **Paper type declaration** | Header | Explicit "Position Paper" framing |
+| **arXiv guidance** | Footer | Categories, license, citation format |
+
+---
+
+## The Honest Bottom Line
+
+**What you have:** A well-constructed, falsifiable theoretical framework with unusually concrete operationalization, ready-to-run empirical protocols, and applied extension proposals attractive to regulators and enterprises.
+
+**What you don't have:** Proof that the framework works. The hypotheses are plausible, the constructs are measurable, and the study designs are sound—but until the studies are run, these remain claims, not findings.
+
+**What to do next:**
+1. **Immediately:** Submit arXiv preprint to establish priority
+2. **Within 30 days:** Execute pilot study ($2,260)
+3. **Within 6 months:** Submit to AIES or CHI alt.chi/LBW
+4. **Within 12 months:** Complete IPP reliability + ICD effect studies
+5. **Within 24 months:** Submit to CHI/CSCW main track
+
+**The path forward is clear. The execution is yours.**
+
+---
+
+# END OF DOCUMENT
+
+---
+
+**The Collaboration Protocol**  
+*Silent Intent Inference as a Safety Risk in Human-LLM Interaction*  
+Version 4.1 — arXiv Submission Edition  
+January 2026  
+Mohamed Salama
+
+---
+
+## arXiv Submission Notes
+
+**Recommended Categories:**
+- **Primary:** cs.HC (Human-Computer Interaction)
+- **Secondary:** cs.AI (Artificial Intelligence), cs.CL (Computation and Language)
+
+**License:** CC BY 4.0 (recommended for maximum citation and reuse)
+
+**Suggested Citation:**
+```
+Salama, M. (2026). The Collaboration Protocol: Silent Intent Inference 
+as a Safety Risk in Human-LLM Interaction. arXiv preprint arXiv:26XX.XXXXX.
+```
+
+---
+
+## Version History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 1.0 | Jan 2026 | Initial research package |
+| 2.0 | Jan 2026 | Added applied extensions (Project A/B), refined ICD user-choice principle |
+| 4.0 | Jan 2026 | Added realistic assessment (Part VI), bounded claims, intellectual priority documentation |
+| **4.1** | Jan 2026 | **arXiv optimization:** Enhanced title, tightened abstract (~250 words), expanded keywords, added ACM CCS, arXiv submission guidance |

@@ -1,0 +1,195 @@
+tial request
+2. **Pivot Detection:** System identifies Intent Pivot Points in the request
+3. **ICD Application:** Based on user's ICD setting, determine which pivots to surface
+4. **Clarification (if needed):** Present pivot points to user; capture explicit choices
+5. **Constrained Generation:** Produce output respecting articulated constraints
+6. **Correction Opportunity:** Output presented with override capability preserved
+
+## 6.3 CP Compliance Criteria
+
+A system is **CP-compliant** if and only if it:
+- Exposes Intent Pivot Points according to the user's ICD setting
+- Respects user choices at all surfaced pivot points
+- Allows human override at any stage of generation
+- Prevents silent resolution of intent-critical ambiguity
+- Maintains traceable logs of all intent transformations
+
+---
+
+# 7. Proposed Empirical Validation
+
+The following studies are designed to validate the Collaboration Protocol's core claims. Each study is specified with sufficient detail for independent replication.
+
+## 7.1 Study 1: Silent Inference Prevalence
+
+### Research Question
+How frequently do current AI systems engage in Silent Intent Inference, and how often are users aware of these inferences?
+
+### Hypotheses
+- **H1a:** Silent intent inferences occur in >60% of complex task completions
+- **H1b:** Users are unaware of these inferences in >70% of cases
+
+### Method
+- **Participants:** 200 knowledge workers recruited via Prolific
+- **Task:** Complete 5 complex tasks using ChatGPT or Claude (randomized)
+- **Tasks:** Recommendation letter, project proposal, data analysis request, creative brief, technical explanation
+- **Data:** Full interaction transcripts saved
+- **Coding:** 4 trained annotators identify all assumption points using IPP codebook
+- **Awareness measure:** Post-task survey asks "What decisions did the AI make for you?" (open-ended)
+- **Comparison:** Match user-reported assumptions against coder-identified assumptions
+
+### Analysis
+- **Silent Inference Rate** = (Total coded assumptions) / (Total interactions)
+- **Awareness Rate** = (User-identified assumptions) / (Coder-identified assumptions)
+- **Inter-rater reliability:** Cohen's κ computed for assumption coding
+
+### Expected Output
+Quantified baseline of silent inference prevalence in current AI systems, establishing the magnitude of the problem CP addresses.
+
+## 7.2 Study 2: IPP Annotation Reliability
+
+### Research Question
+Can Intent Pivot Points be reliably identified by trained annotators?
+
+### Method
+- **Corpus:** 100 human-AI interaction transcripts from Study 1
+- **Annotators:** 4 trained coders + 2 expert validators
+- **Training:** 8-hour training session using IPP codebook
+- **Task:** Independently annotate all IPPs in each transcript
+- **Measure:** Cohen's κ for pairwise agreement; Fleiss' κ for group agreement
+
+### Success Criteria
+- κ > 0.7 indicates acceptable reliability
+- κ > 0.8 indicates good reliability
+
+If reliability is achieved, IPP becomes a validated construct for future research.
+
+## 7.3 Study 3: ICD Effect on Collaboration Quality
+
+### Research Question
+Does Intent Control Degree affect intent fidelity and user satisfaction?
+
+### Hypotheses
+- **H3a:** Higher ICD leads to higher Intent Fidelity Index scores
+- **H3b:** The ICD-satisfaction relationship is moderated by task complexity
+- **H3c:** Higher ICD increases task completion time but reduces revision cycles
+
+### Design
+4 (ICD: 0.2, 0.5, 0.8, 1.0) × 3 (Complexity: Low, Medium, High) mixed design
+- ICD: Between-subjects
+- Complexity: Within-subjects
+
+### Method
+- **Participants:** 240 (60 per ICD condition)
+- **Interface:** Custom AI wrapper implementing ICD conditions
+- **Tasks:** 3 tasks of varying complexity (document draft, analysis, creative work)
+- **Measures:** IFI (composite), task time, revision count, NASA-TLX, satisfaction
+
+### Analysis
+Two-way mixed ANOVA; planned contrasts for ICD main effect; moderation analysis for complexity interaction.
+
+## 7.4 Study 4: IPP Intervention Effect
+
+### Research Question
+Does user intervention at Intent Pivot Points improve output alignment?
+
+### Design
+4 conditions (between-subjects):
+1. **Control:** Standard generation, no pivot exposure
+2. **Post-hoc:** Pivots shown after generation
+3. **Real-time:** Pivots shown during generation
+4. **Interactive:** User can edit pivots mid-generation
+
+### Method
+- **Participants:** 160 (40 per condition)
+- **Task:** Complex document with multiple valid interpretations
+- **Measures:** Output alignment (expert-rated), revision cycles, perceived control, trust
+
+### Predictions
+Interactive > Real-time > Post-hoc > Control on alignment measures.
+
+---
+
+# 8. Pilot Study Protocol: 30-Day Quick Start
+
+This section provides a detailed protocol for conducting the first empirical study within 30 days and a budget of approximately $2,000.
+
+## 8.1 Objective
+
+Establish baseline data on Silent Intent Inference prevalence to validate the core problem CP addresses.
+
+## 8.2 Timeline
+
+| Week | Activities |
+|------|------------|
+| **Week 1** | Task design: Create 10 complex tasks with known ambiguity points; pilot test with 5 participants; refine task wording |
+| **Week 2** | Data collection: Recruit 100 participants via Prolific; participants complete tasks with AI; save all transcripts; administer post-task survey |
+| **Week 3** | Coding: Train 2 coders on IPP codebook (4 hours each); code all transcripts; compute inter-rater reliability; resolve disagreements |
+| **Week 4** | Analysis & write-up: Calculate silent inference rate; calculate awareness gap; draft workshop paper; prepare submission |
+
+## 8.3 Budget
+
+| Item | Cost |
+|------|------|
+| Participant compensation (100 × $12) | $1,200 |
+| Prolific fees (30%) | $360 |
+| Coder compensation (2 × 20 hours × $15) | $600 |
+| Software/API costs | $100 |
+| **Total** | **$2,260** |
+
+## 8.4 Expected Outputs
+- Quantified silent inference rate
+- Quantified awareness gap
+- Validated IPP coding protocol
+- Workshop paper submission (CHI LBW or AIES)
+- arXiv preprint establishing priority
+
+---
+
+# 9. Limitations and Scope
+
+## 9.1 Explicit Scope Boundaries
+
+This research program is explicitly bounded:
+- No live production system deployment in initial phases
+- No formal mathematical optimization proofs
+- No cross-cultural validation (deferred to Phase 4)
+- No claims about model architecture modifications
+
+These boundaries are methodological choices, not oversights.
+
+## 9.2 Potential Limitations
+
+- **Ecological validity:** Lab tasks may not fully represent real-world complexity
+- **Participant pool:** Prolific samples may not generalize to all user populations
+- **IPP subjectivity:** Despite reliability testing, edge cases may remain ambiguous
+- **ICD manipulation:** Interface-based ICD may not capture all dimensions of control
+
+## 9.3 What This Research Does NOT Address
+
+- Model training modifications
+- Architectural changes to LLMs
+- Fully autonomous AI systems
+- Non-language modalities (vision, robotics)
+
+---
+
+# 10. Future Work
+
+Successful validation of core constructs enables several research extensions:
+
+## 10.1 Near-Term Extensions (12-24 months)
+- Field studies with professional knowledge workers
+- Domain-specific validation (legal, medical, financial)
+- Longitudinal trust calibration studies
+
+## 10.2 Medium-Term Extensions (24-48 months)
+- Cross-cultural validation of IPP taxonomy
+- Multi-agent intent preservation protocols
+- Formal mathematical modeling of intent decay
+
+## 10.3 Long-Term Vision
+- Industry-standard CP compliance certification
+- Regulatory frameworks incorporating intent governance (see Part IV: Applied Extensions)
+- Integration with AI safety research programs
+- Legal recognition of meaning ownership as a user right (aligns with GDPR Art. 22 explainability requirements and emerging AI accountability 

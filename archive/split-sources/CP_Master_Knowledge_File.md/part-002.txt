@@ -1,0 +1,56 @@
+ed as genuine, methodologically self-aware (documents absence of IRB — Taiwan's system doesn't accept unaffiliated applicants; single-city/single-interviewer limits; AI-assisted document prep disclosed). Self-published preprint, not peer-reviewed — methodology exchange and convergent concepts, **not citable evidence**.
+
+**His findings (the precise version — his own email oversimplified):**
+- **Q1 (who caused the error):** tripartite — 25% user / 37% shared / 31% AI.
+- **Q2 (who bears the loss):** **79% self** — and **71% of those who blamed the AI still assigned the loss to themselves**.
+- **The Q1→Q2 gap is the phenomenon:** causation and consequence come apart; responsibility collapses onto the user at the consequence level.
+- **Experience gradient:** newer users blame the AI more (52%), experienced users less (24%) — convergent with H2: experience teaches users the AI makes invisible interpretive choices they must compensate for.
+
+**The theoretical bridge (jointly identified):** SII means the interpretive decision leaves no trace → no accountability object exists between "the AI erred" and "I pay for it" → the loss defaults to the user **on absence of a traceable decision point, not on belief**. Mohamed's IPP log is *the missing artifact Fan's respondents had no access to*. Jointly testable (future, funded): would surfacing/logging IPPs weaken the Q1→Q2 collapse?
+
+**His methodology notes (public collection, DOI 10.5281/zenodo.20281517) — three convergences:**
+- **TN-021 Cross-Thread Parallel Review:** Fan independently invented, as epistemology, what Mohamed built as governance (KIVO builder/auditor/PM separation; no window approves its own work). His **"framework lock-in effect"** names the mechanism Mohamed's CF formalizes and the corpus recorded (surfaced-IPP decay, AUD-015).
+- **FN-006 proficiency-vs-understanding gap:** H2's psychological mechanism candidate ("I know how to use it" mistaken for "I know what it is"); age null-finding. Treat as interpretive lens, not finding — mirror Fan's own labeling discipline.
+- **FN-073 + TN-068b:** "adversarial use is the key variable" (the capacity to reject/revise/redo is thinking in operation) = what KIVO rejection-gates industrialize; **"institutional design replacing willpower"** = a one-line statement of the Protocol Laws' purpose. *Simple analogy: Fan is a very careful driver; Mohamed built traffic lights and seatbelts.*
+
+**Correspondence state:** Fan replied warmly, accepted the Q1/Q2 sharpening ("sharper than the framing I originally offered"), endorsed the accountability-object reading, and set an honest boundary — **no resources for new data collection**. He offered methodology exchange and asked for Mohamed's classification protocol. Prepared reply (pending send): honors the boundary explicitly; delivers the extraction protocol; borrows his two phrases with attribution; and offers a strictly-bounded desk task — **independent re-coding of 10 sanitized incidents** (A3 quotes only, interpretations listed blind) for inter-coder reliability (target κ > 0.7) with named credit in the methodology section. If accepted: stratified sample (2 stale-base, 2 definitional, 2 authority, 2 benign, 2 disclosure), stripped of KIVO/product/repo identifiers. Also required before sending: attach IPP_Extraction_Protocol.md; create/insert Mohamed's ORCID.
+
+---
+
+# PART VII — THE STRATEGIC PROGRAM
+
+## 7.1 The empirical paper (the current vehicle)
+Working title: *"Measuring Silent Intent Inference: Evidence from Naturalistic Corpora and a CP-Governed System."* Skeleton: Intro (SII recap) → Study A corpus → Study B Klear → Study C health + SF anomaly → algorithm validation (precision/recall of the IPP detector against the hand-labeled corpus; real latency replacing simulated) → Taxonomy v2 (incl. standing-instruction class + resolution-by-disclosure) → Limitations written FIRST (single-user corpus; non-blind pilot tester; asymmetric comparison; model-as-rater; single dates) → IFI-Bench announcement. Candidate venues: CHI / CSCW / IUI / FAccT. This paper converts Mohamed from "theorist with a framework" to "researcher with a framework, a governed system, and three evidence layers" — and preempts the inevitable JAIR "no data" critique.
+
+## 7.2 IFI-Bench (the long game)
+Benchmarks rule AI (MMLU, HumanEval, SWE-bench) — their creators define fields without training models. No standard benchmark exists for intent fidelity. Plan: seed v0.1 (50–100 items) from C8-flagged corpus incidents + Klear scenario bank; each item = prompt, context, interpretation set, materiality label, correct behavior per ICD level, scoring rubric; release on GitHub/HuggingFace as the empirical paper's companion artifact. Hard problems acknowledged: ground truth needs multi-annotator κ > 0.7; scale beyond one person's logs; maintenance against leakage. *Whoever defines the metric governs the field.*
+
+## 7.3 Backlog (compressed; full version in CP_Research_Backlog.md)
+- **EPIC 0 Publication:** arXiv endorsement → publish theory preprint (makes SF addendum citation valid) → JAIR review management → Fan reply.
+- **EPIC 1 Corpus:** verify quotes (C9) → C0 classification → full C-fields → metrics.
+- **EPIC 2 Klear:** ⚠ fix FIN-R-04 first → blind re-rating κ → reframe → document architecture → archive evidence with hashes → Usama consent.
+- **EPIC 3 Health:** formal write-up → SF assertion checklists (make SCS measurable) → sensitivity analysis on 0.15 weight → park H5 study.
+- **EPIC 4 Algorithm:** freeze version → run vs corpus → run vs Klear transcripts → error analysis → real latency.
+- **EPIC 5 IFI-Bench seed. EPIC 6 Paper assembly.**
+- **Standing rules:** no unverified quote enters analysis; no pre-filled result survives audit; LLMs extract, Mohamed classifies; every claim gets its limitation tag at birth; nothing cites "Salama 2026, arXiv" until the arXiv page exists.
+
+## 7.4 Asset inventory
+| Asset | Content |
+|---|---|
+| JAIR manuscript (26 pp) | Theory paper under review |
+| CP Core Specification V0 | Original protocol spec (Seven Laws) |
+| Safety Floor Addendum | Health extension: SF, SCS, IFI-H, Law 8, H5 |
+| IPP_Extraction_Protocol.md | The corpus instrument (Parts A–D) |
+| CP_Incident_Database_v1.xlsx | 52 records, codebook, live aggregates |
+| CP_Research_Backlog.md | Full 6-epic program |
+| Klear test guides + Usama results | Study B pilot data + evidence links |
+| IntentHealth sessions (IHC-MML1GT83/2BEG3) | Study C pilot data |
+| Extraction reports ×7 windows | Raw corpus sources |
+| Fan correspondence + DCM 2.0 + notes collection | External convergence layer |
+| The Intent Economy (book) | Broader conceptual frame |
+
+---
+
+# PART VIII — THE ONE-PARAGRAPH VERSION
+
+Science established that language is ambiguous and AI is uncertain. Mohamed Salama invented the vocabulary and machinery to govern **who resolves that ambiguity**: he named the problem (Silent Intent Inference), defined its unit (Intent Pivot Points), its control dial (Intent Control Degree), its outcome metric (Intent Fidelity Index), its memory (Context Roots), its filter (Semantic Materiality), its record (IPP logging — the flight recorder for meaning), its constitution (Eight Protocol Laws), and its safety exception (the Safety Floor, born from an anomaly his own framework surfaced against itself). He then did what almost no framework author does: he built a governed system (Klear), tested it against ungoverned rivals, mined months of his own AI collaboration for 52 forensically extracted incidents, discovered three new phenomena in the data (standing-instruction decay, resolution-by-disclosure, surfaced-IPP decay), and found an independent researcher on another continent whose 328 f

@@ -1,0 +1,197 @@
+frameworks)
+
+---
+
+# 11. Conclusion
+
+Silent Intent Inference is a structural flaw in modern human-AI interaction—and a safety risk that creates accountability gaps, untraceable decisions, and systematic user disempowerment. Current systems resolve ambiguity invisibly, displacing meaning ownership from humans to machines. This paper introduces the Collaboration Protocol—a principled framework that preserves human semantic authority through explicit construct governance.
+
+We have defined four operationalized constructs (ICD, IPP, IFI, and Intent Decay), specified seven protocol laws, and designed four empirical studies to validate core claims. The 30-day pilot protocol enables immediate research action.
+
+The contribution is not a complete solution but a **falsifiable framework**: if the studies fail, the theory is wrong; if they succeed, the path to better human-AI collaboration is clearer.
+
+The Collaboration Protocol does not limit AI capability—it channels that capability through human intent. In an era of increasingly powerful AI systems, this channeling may prove essential to ensuring that AI serves human purposes rather than substituting for them.
+
+Beyond academic validation, the framework opens pathways to practical application: regulatory auditing of intent compliance (Appendix E) and organizational intent signatures (Appendix F) demonstrate how CP principles can scale to institutional adoption. **Meaning ownership**—the right of humans to define acceptable interpretations—may emerge as a foundational principle for AI governance, aligning with existing consent principles, explainability requirements, and accountability law trajectories.
+
+---
+
+# PART II: RESEARCH EXECUTION AGENDA
+
+---
+
+# 12. Four-Phase Research Roadmap
+
+## Phase 1: Foundational Work (Months 1-12)
+
+**Activities:**
+- Operationalize all constructs with measurement protocols
+- Conduct Studies 1-2 (Silent Inference Prevalence, IPP Reliability)
+- Publish workshop/position papers
+- Establish arXiv priority
+
+**Budget:** $12,500  
+**Output:** 2-3 publications, validated constructs
+
+## Phase 2: Experimental Validation (Months 12-24)
+
+**Activities:**
+- Conduct Studies 3-4 (ICD Effects, IPP Intervention)
+- Build CP-compliant prototype interface
+- Submit to top-tier venues (CHI, CSCW)
+
+**Budget:** $45,000  
+**Output:** 2 full papers, working prototype
+
+## Phase 3: Field Deployment (Months 24-36)
+
+**Activities:**
+- Partner with organizations for field studies
+- Longitudinal data collection
+- Domain-specific validation (legal, medical, financial)
+- Pilot Project A (Regulatory Auditing) and Project B (Organizational Signatures)
+
+**Budget:** $120,000  
+**Output:** Field study publications, partnership network, applied extension pilots
+
+## Phase 4: Generalization (Months 36-48)
+
+**Activities:**
+- Cross-cultural replication
+- Multi-agent extensions
+- Regulatory/governance frameworks
+- Scale Project A and Project B implementations
+
+**Budget:** $100,000  
+**Output:** Comprehensive validation, policy influence, institutional adoption
+
+---
+
+# 13. Prioritized Testable Claims
+
+## Tier 1: Test First (Highest Impact, Most Feasible)
+
+| Claim | Testable Version | Resources |
+|-------|------------------|-----------|
+| **Silent Inference Prevalence** | Occurs in >60% of complex tasks; users unaware in >70% | $2,000, 30 days |
+| **IPP Reliability** | Trained annotators achieve κ > 0.7 | $4,000, 6 weeks |
+| **ICD-Satisfaction Link** | High ICD → higher satisfaction independent of quality | $6,000, 8 weeks |
+
+## Tier 2: Test After Core Validation
+
+| Claim | Testable Version | Requirements |
+|-------|------------------|--------------|
+| **Meaning Ownership Erosion** | Ownership decreases with AI contribution; moderated by ICD | Tier 1 complete |
+| **Articulation Assistance** | Suggestions > auto-resolution > no help for intent quality | Tier 1 complete |
+| **Intent Signature Value** | Signatures reduce alignment time by 30% | Prototype built |
+
+## Tier 3: Requires Infrastructure
+
+- CP reduces errors in high-stakes domains (requires domain partnership)
+- Reversibility affects trust calibration (requires custom system)
+- Cross-cultural IPP validity (requires international collaboration)
+- Regulatory intent auditing effectiveness (requires government partnership)
+
+---
+
+# 14. Publication Strategy
+
+## Immediate (0-6 months)
+
+| Venue | Type | Content | Likelihood |
+|-------|------|---------|------------|
+| **arXiv** | Preprint | Full framework + research agenda | Very High (establishes priority) |
+| **CHI LBW / alt.chi** | Late-Breaking Work | Framework overview + pilot results | High |
+| **AIES** | Position paper | CP as ethical/safety framework | High |
+| **AI & Society** | Theory paper | CP with philosophical framing | High |
+| **Minds & Machines** | Theory paper | Meaning ownership concept | Moderate-High |
+
+## Medium-Term (12-24 months) — Requires Empirical Data
+
+| Venue | Type | Required Content | Likelihood Without Data |
+|-------|------|------------------|------------------------|
+| **CHI Full Paper** | Empirical | 2+ validated experiments | Low |
+| **CSCW** | Empirical | Field study data | Low |
+| **NeurIPS D&B** | Resource | IPP-annotated corpus | Low |
+
+## Long-Term (24-48 months) — Requires Comprehensive Validation
+
+- **Nature Human Behaviour:** Comprehensive validation + real-world impact
+- **Science/Nature Perspective:** Broad implications for human-AI future
+- **ACM Computing Surveys:** CP in context of full HCI/AI literature
+
+---
+
+# 15. Resource Requirements
+
+## 15.1 Minimum Viable Program (First Publication)
+
+| Resource | Cost |
+|----------|------|
+| Participant compensation (400 × $15) | $6,000 |
+| Annotation labor (4 coders × 40 hrs × $25) | $4,000 |
+| Software/hosting | $1,000 |
+| Statistical consulting | $1,500 |
+| **Total** | **$12,500** |
+
+**Timeline:** 6-9 months to first paper submission
+
+## 15.2 Full Research Program (3 Years)
+
+| Category | Cost |
+|----------|------|
+| Personnel (PhD student or postdoc) | $180,000 |
+| Participant compensation | $40,000 |
+| System development | $30,000 |
+| Travel/conferences | $15,000 |
+| Miscellaneous | $10,000 |
+| **Total** | **$275,000** |
+
+## 15.3 Applied Extensions (Project A & B)
+
+| Project | Estimated Additional Cost | Timeline |
+|---------|--------------------------|----------|
+| Project A: Regulatory Pilot | $50,000-100,000 | 18-36 months |
+| Project B: Organizational Pilot | $30,000-75,000 | 12-24 months |
+
+---
+
+# 16. Potential Collaborators
+
+## 16.1 Academic Partners
+
+| Institution | Lab/Researcher | Relevance |
+|-------------|----------------|-----------|
+| Stanford HAI | Michael Bernstein, James Landay | Human-AI interaction, HCI |
+| MIT Media Lab | Pattie Maes, Rosalind Picard | AI systems, human-centered computing |
+| CMU HCII | Geoff Kaufman, Haiyi Zhu | AI collaboration, social computing |
+| U. Washington | Dan Weld, Tim Althoff | AI safety, human-AI teams |
+| Oxford | Luciano Floridi | AI ethics, information philosophy |
+| Max Planck (Tübingen) | Moritz Hardt | ML foundations, fairness |
+
+## 16.2 Industry Partners
+
+| Company | Research Group | Alignment |
+|---------|----------------|-----------|
+| Anthropic | Alignment research | Direct relevance to constitutional AI |
+| DeepMind | Safety team | Human-in-the-loop systems |
+| Microsoft Research | FATE group | Responsible AI |
+| Google Research | PAIR | Human-AI interaction |
+| IBM Research | Human-Centered AI | Enterprise AI collaboration |
+
+## 16.3 Regulatory/Policy Partners (for Project A)
+
+| Organization | Relevance |
+|--------------|-----------|
+| EU AI Office | AI Act implementation |
+| NIST | AI Risk Management Framework |
+| UK AI Safety Institute | Safety standards development |
+| FDA (Digital Health) | Healthcare AI oversight |
+
+---
+
+# PART III: APPENDICES
+
+---
+
+# Appen

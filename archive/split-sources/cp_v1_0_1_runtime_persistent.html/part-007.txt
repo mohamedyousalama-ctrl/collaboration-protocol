@@ -1,0 +1,78 @@
+e</button><button class="btn-secondary" onclick="UI.showStorageStats()">Refresh</button></div>`;
+        },
+        togglePanel(name) {
+            const panels = { logs: 'logs-content', state: 'state-content', nodes: 'nodes-content', pivots: 'pivots-content', agents: 'agents-content', storage: 'storage-content' };
+            const p = document.getElementById(panels[name]); if (p) p.classList.toggle('collapsed');
+            const t = document.getElementById(name + '-toggle'); if (t) t.textContent = p.classList.contains('collapsed') ? '▶' : '▼';
+        },
+        newContext() {
+            const desc = prompt('Context description:'); if (!desc) return;
+            const enableAgent = confirm('Enable advisory agent?\n\nOK = Yes, Cancel = No');
+            /* FIX 3 (EDGE-17): Agent now suspended when context archived via New Context */
+            if (Session.activeContextId) { 
+                const old = ContextStore.get(Session.activeContextId); 
+                if (old) { 
+                    /* Suspend agent before archiving context */
+                    if (Session.activeAgentId) {
+                        const oldAgent = AgentStore.get(Session.activeAgentId);
+                        if (oldAgent && oldAgent.state === 'active') {
+                            oldAgent.state = 'suspended';
+                            AgentStore.update(oldAgent.agent_id, oldAgent);
+                            LogStore.append({ event_type: 'agent', event_subtype: 'state_changed', object_id: oldAgent.agent_id, context_id: old.context_id, intent_id: Session.activeIntentId, agent_id: oldAgent.agent_id, user_id: 'user_01', details: 'Agent suspended', reason: 'Context archived for new context' });
+                        }
+                    }
+                    old.state = 'archived'; 
+                    ContextStore.update(old.context_id, old); 
+                    LogStore.append({ event_type: 'context', event_subtype: 'state_changed', object_id: old.context_id, context_id: old.context_id, intent_id: null, agent_id: null, user_id: 'user_01', details: 'Context archived', reason: 'New context' }); 
+                } 
+            }
+            const ctx = createContext(desc); ContextStore.create(ctx); Session.activeContextId = ctx.context_id; Session.activeIntentId = null; Session.activeAgentId = null; Session.systemState = 'idle'; Session.pendingVerification = null; Session.persist();
+            LogStore.append({ event_type: 'context', event_subtype: 'created', object_id: ctx.context_id, context_id: ctx.context_id, intent_id: null, agent_id: null, user_id: 'user_01', details: 'Context: ' + ctx.description, reason: null });
+            let msg = 'New context:\n- ' + ctx.context_id + '\n- ' + ctx.description + '\n';
+            if (enableAgent) {
+                const agent = createAgent(ctx.context_id, 'CP Advisory Agent'); AgentStore.create(agent); ctx.allowed_agents.push(agent.agent_id); ContextStore.update(ctx.context_id, ctx); Session.activeAgentId = agent.agent_id; Session.persist();
+                LogStore.append({ event_type: 'agent', event_subtype: 'created', object_id: agent.agent_id, context_id: ctx.context_id, intent_id: null, agent_id: agent.agent_id, user_id: 'user_01', details: 'Agent: ' + agent.name, reason: null });
+                LogStore.append({ event_type: 'agent', event_subtype: 'registered', object_id: agent.agent_id, context_id: ctx.context_id, intent_id: null, agent_id: agent.agent_id, user_id: 'user_01', details: 'Agent registered', reason: null });
+                msg += '\n- Agent: ' + agent.name + ' ENABLED';
+            }
+            msg += '\n\nDeclare your intent.';
+            this.addMessage('system', msg); this.updateStatus(); this.updateNodes(); this.updatePivots(); this.updateAgents(); this.showStorageStats();
+        },
+        closeContext() {
+            if (!Session.activeContextId) { this.addMessage('system', 'No context.'); return; }
+            const ctx = ContextStore.get(Session.activeContextId); ctx.state = 'committed'; ContextStore.update(ctx.context_id, ctx);
+            if (Session.activeAgentId) { const agent = AgentStore.get(Session.activeAgentId); if (agent) { agent.state = 'suspended'; AgentStore.update(agent.agent_id, agent); LogStore.append({ event_type: 'agent', event_subtype: 'state_changed', object_id: agent.agent_id, context_id: ctx.context_id, intent_id: null, agent_id: agent.agent_id, user_id: 'user_01', details: 'Agent suspended', reason: 'Context closed' }); } }
+            LogStore.append({ event_type: 'context', event_subtype: 'state_changed', object_id: ctx.context_id, context_id: ctx.context_id, intent_id: Session.activeIntentId, agent_id: null, user_id: 'user_01', details: 'Context committed', reason: 'Closed' });
+            this.addMessage('system', 'Context closed: ' + ctx.context_id);
+            Session.activeContextId = null; Session.activeIntentId = null; Session.activeAgentId = null; Session.systemState = 'idle'; Session.pendingVerification = null; Session.persist();
+            this.updateStatus(); this.updateAgents(); this.showStorageStats();
+        },
+        clearAllData() {
+            if (!confirm('Delete ALL data permanently?')) return;
+            if (!confirm('Are you sure? This cannot be undone.')) return;
+            LogStore.appendInternal({ event_type: 'storage', event_subtype: 'clear_all', object_id: null, context_id: Session.activeContextId, intent_id: Session.activeIntentId, agent_id: null, user_id: 'user_01', details: 'User cleared all data', reason: null });
+            Persistence.clearAll();
+            ContextStore.contexts.clear(); IntentStore.intents.clear(); NodeStore.nodes.clear(); NodeStore.pivots.clear(); ActionStore.actions.clear(); FrictionStore.frictions.clear(); AgentStore.agents.clear(); LogStore.entries = []; Session.reset();
+            document.getElementById('output-content').innerHTML = ''; document.getElementById('logs-content').innerHTML = ''; document.getElementById('log-count').textContent = '0';
+            this.addMessage('storage', 'All data cleared.');
+            LogStore.appendInternal({ event_type: 'storage', event_subtype: 'cleared', object_id: null, context_id: null, intent_id: null, agent_id: null, user_id: 'system', details: 'Fresh session', reason: null });
+            this.updateStatus(); this.updateNodes(); this.updatePivots(); this.updateAgents(); this.updateStateInspector(); this.showStorageStats();
+        },
+        exportSession() {
+            try {
+                const data = Persistence.exportAll();
+                const json = JSON.stringify(data, null, 2);
+                const blob = new Blob([json], { type: 'application/json' });
+                const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'cp_v1_session_' + new Date().toISOString().split('T')[0] + '.json'; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                LogStore.append({ event_type: 'storage', event_subtype: 'exported', object_id: null, context_id: Session.activeContextId, intent_id: Session.activeIntentId, agent_id: null, user_id: 'user_01', details: 'Session exported (' + (json.length / 1024).toFixed(2) + ' KB)', reason: null });
+                this.addMessage('storage', 'Session exported.');
+            } catch (e) { this.addMessage('system', 'Export failed: ' + e.message); }
+        },
+        importSession(event) {
+            const file = event.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    Persistence.importAll(data);
+                    document.getElementById('output-content').innerHTML = ''; document.getEl

@@ -1,0 +1,115 @@
+duct laws, rights, prohibited behavior, and authority limits |
+| S-009 | Produce CP Kernel compatibility statement | Required | Exact use and non-use of frozen CP inside Ghost |
+
+## 13.3 Human continuity, memory, and privacy
+
+| ID | Item | State | Required outcome |
+|---|---|---|---|
+| S-010 | Resolve the ten scientific questions | In progress | Evidence-based architecture packages and founder trade-offs |
+| S-011 | Test LLM-history archaeology | Open | Precision, correction burden, sensitive-data handling, and third-party exposure |
+| S-012 | Define memory taxonomy and retention policy | Evidence-resolvable | Per-class purpose, expiry, authority effect, correction, and deletion |
+| S-013 | Define local sync and recovery posture | Evidence and founder trade-off | Secure multi-device continuity without hidden trust expansion |
+| S-014 | Define bystander and private-zone policy | Open | Sources that may suppress behavior without modeling other people |
+
+## 13.4 Presence, onboarding, and UI
+
+| ID | Item | State | Required outcome |
+|---|---|---|---|
+| S-015 | Test Come arrival contracts | Open | Situated, truthful, fast, correctable arrival |
+| S-016 | Compare radical UI paradigms with accessible baseline | In progress; Kivo-derived candidate identified | Test Live Work Field, chat, list, and dashboard baselines for awareness, targeting, correction, and overload |
+| S-017 | Test minimal ceremony and continuous calibration | Open | Consent comprehension, burden, early value, and correction |
+| S-018 | Define proactive Presence boundaries | Open | When Ghost may appear without being called |
+| S-019 | Define anti-dependency and healthy departure policy | Open | No exclusivity, emotional coercion, engagement optimization, or false consciousness |
+| S-020 | Evaluate driving and voice handoff | Deferred to later version evidence | Safe, interruption-sparse, easily deferred interaction |
+
+## 13.5 Action, authority, and evidence
+
+| ID | Item | State | Required outcome |
+|---|---|---|---|
+| S-021 | Formalize Universal Action Grammar | Ready for specification after canon | Actor, verb, object, target set, Context, authority, materiality, reversibility, budget, expiry, evidence, recovery, and one plan per target |
+| S-022 | Formalize Intervention and Authority Controller | Ready for specification after scientific input | Hard floors plus semantic intervention policy |
+| S-023 | Define Execution Permit | Required | Exact tool, action, target, scope, budget, expiry, ownership epoch, evidence, and recovery; batch intent never implies one shared permit |
+| S-024 | Define Capability Manifest | Required | Truthful per-adapter states: available, preview-only, confirmation-required, ownership-required, blocked, unsupported, and assurance declarations |
+| S-025 | Define Meaning Ledger and provenance layers | Evidence-resolvable | Ordinary, correction, human-readable, and forensic views, including selection, per-target plan, permit, exclusion, and outcome evidence |
+| S-026 | Define independent verifier and trusted base | Evidence-resolvable | No self-approval, signed updates, rollback, and protected roots |
+
+## 13.6 Family and enterprise
+
+| ID | Item | State | Required outcome |
+|---|---|---|---|
+| S-027 | Define Family Supervision Contract | Open | Age-progressive rights, parent controls, private zones, alerts, and appeal |
+| S-028 | Define Enterprise Supervision Contract | Open | Company-only Context, device boundary, employee notice, audit, and separation |
+| S-029 | Conduct jurisdiction-specific legal review | Deferred until edition scope | Child, employee, privacy, data protection, and labor requirements |
+| S-030 | Define supervisor-access evidence and redress | Open | Every supervisor access is visible, scoped, auditable, and contestable |
+
+## 13.7 Evidence and execution transition
+
+| ID | Item | State | Required outcome |
+|---|---|---|---|
+| S-031 | Complete multi-model evidence synthesis | In progress | Convergence, disagreement, source quality, and unsupported claims |
+| S-032 | Reconstruct remaining founder decisions | In progress | Only genuine residual value decisions returned to founder |
+| S-033 | Build Founder Decision Register | After evidence synthesis | Signed authority for product canon |
+| S-034 | Build all-version master roadmap | Blocked | Version charters, dependencies, evidence gates, risks, and resources |
+| S-035 | Build shared technical reference architecture | Blocked | Common system boundaries and contracts |
+| S-036 | Build version-specific technical specifications | Blocked | Enabled capabilities, data, authority, tests, migrations, and exclusions |
+| S-037 | Build governed implementation backlog | Blocked | Traceable requirements, acceptance tests, evidence, owners, and gates |
+| S-038 | Independent audit of execution baseline | Blocked | GO, GO WITH CONDITIONS, HOLD, or REJECT |
+| S-039 | Founder execution authorization | Blocked | Explicit GO required before engineering |
+
+## 13.8 Cross-product interaction evidence
+
+| ID | Item | State | Required outcome |
+|---|---|---|---|
+| S-040 | Formalize Live Work Field and Work Episode model | In progress | Define object, lifecycle, stable overview, live state, accessibility baseline, and overload limits |
+| S-041 | Define selection, targeting, and multi-target intent compilation | Ready for specification after canon | One human intention, isolated per-target Context, review partition, permits, and evidence |
+| S-042 | Define Lead, Listener, Scoped Participation, and One Outward Voice | Open | Roles, ownership, scope expiry, conflict behavior, and customer-visible coherence |
+| S-043 | Define Same-Surface Focus Studio | Open | Detail expansion that preserves field state, selected set, Context, and live updates |
+| S-044 | Define responsibility flow and next-contribution model | Open | Show who or what must contribute next without reducing work to database status |
+| S-045 | Create Kivo-to-Ghost validation protocol | Open | Sanitized evidence classes, comparable metrics, transfer limits, and no product-identity leakage |
+| S-046 | Resolve Episode, Thread, Task, Context, and Knot ontology | Required before product canon | Canonical boundaries, aliases, composition, and lifecycle |
+
+---
+
+# 14. PARKED STRATEGIC OPPORTUNITIES
+
+## 14.1 Kaggle and public benchmark strategy
+
+**Status:** Parked until explicitly reactivated by Mohamed.
+
+Purpose:
+
+- turn intent fidelity, authority, continuity, and governed action into a public measurement category;
+- create IFI-Bench or an equivalent benchmark family;
+- publish sanitized benchmark datasets and explanatory notebooks;
+- compare base models, prompt-only systems, CP Kernel, and Ghost-governed systems;
+- consider relevant agent-security competitions;
+- apply for benchmark research grants when a validated seed exists;
+- add a Kivo restaurant intent-fidelity track after the general benchmark works;
+- later host an Intent Fidelity Challenge.
+
+Parked sub-initiatives:
+
+- KAG-001: Core intent-fidelity benchmark.
+- KAG-002: Agentic authority and action track.
+- KAG-003: Standing-instruction persistence track.
+- KAG-004: Kivo restaurant track.
+- KAG-005: Public notebook and dataset program.
+- KAG-006: Base model versus Ghost evaluation package.
+- KAG-007: Agent-security competition participation.
+- KAG-008: Benchmark resource-grant application.
+- KAG-009: Future community challenge.
+
+No Kaggle work enters the active roadmap until Mohamed reactivates this program.
+
+---
+
+# 15. DEFERRED DECISIONS
+
+The following remain intentionally deferred unless required by the next version:
+
+- final public brand;
+- final mythology;
+- final voice and visual character;
+- final cloud provider;
+- final database and framework choices;
+- production microphone, camera, location, biometric, or nea

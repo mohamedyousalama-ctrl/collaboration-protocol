@@ -1,0 +1,140 @@
+# PROVISIONAL PATENT APPLICATION
+
+## TITLE
+
+**System and Method for Intent-Verified, Constraint-Preserving Execution in Human–AI Interaction Systems**
+
+---
+
+## 1. FIELD OF THE INVENTION
+
+The present invention relates to computer-implemented systems and methods for governing human–AI interaction. More specifically, the invention pertains to a pre-hoc interaction protocol that operates as an execution-time mediation layer between user signals and AI system actions. The invention addresses execution verification and constraint enforcement in systems employing probabilistic language models and AI agents. The protocol gates execution, verifies user intent before action, enforces context boundaries, and maintains complete audit trails, thereby providing structural mechanisms for interaction-level accountability in human–AI collaboration systems.
+
+---
+
+## 2. BACKGROUND / PROBLEM STATEMENT
+
+### 2.1 Technical Problem in Current Systems
+
+Current human–AI interaction systems, particularly those employing large language models and AI agents, lack structural mechanisms for interaction-level accountability. When an AI system takes an action on behalf of a user, the user often cannot determine:
+
+1. What they originally requested
+2. Whether they confirmed the request
+3. How the system interpreted their input
+4. What decision chain led to the executed action
+
+This accountability gap creates traceability gaps and prevents meaningful human oversight.
+
+### 2.2 Limitations of Existing Approaches
+
+The problem is architectural. Most human–AI interaction systems treat user input as a stream of instructions to be interpreted and executed, rather than as signals that require explicit verification before action. The system's interpretation of user intent remains implicit, unverifiable, and unreconstructible from available logs.
+
+### 2.3 Specific Technical Deficiencies
+
+Current systems exhibit the following deficiencies:
+
+- **Probabilistic output variance**: Language models produce variable outputs for identical inputs, making decision reconstruction difficult
+- **Instruction drift**: User intent may be silently reinterpreted across conversation turns
+- **Implicit context merging**: System may combine contexts without explicit user authorization
+- **No verification gates**: Actions execute without explicit user confirmation of intent
+- **Unreconstructible decision chains**: Logs do not preserve sufficient information to trace actions to user decisions
+- **Silent failure modes**: Ambiguity or constraint violations may proceed without user notification
+
+### 2.4 Need for Structural Solution
+
+There exists a need for a computer-implemented system and method that provides structural mechanisms for interaction-level accountability—ensuring that every action traces to a verified human decision and every decision can be reconstructed from the audit trail.
+
+---
+
+## 3. SUMMARY OF THE INVENTION
+
+### 3.1 Overview
+
+The present invention provides a Collaboration Protocol (CP), a pre-hoc interaction protocol that governs the boundary between human intent and AI execution. The protocol operates as an execution-time mediation layer, positioned between user signals and system actions. The protocol does not modify model weights, alter training data, or replace system prompts. Instead, it gates execution, verifies intent, enforces context boundaries, and assigns accountability.
+
+The protocol treats intent and context as first-class computational objects—explicit, inspectable, and governable—ensuring that every action traces to a verified human decision and every decision can be reconstructed from the audit trail.
+
+### 3.2 Core Components
+
+The invention comprises the following named components with their definitions:
+
+| Component | Definition |
+|-----------|------------|
+| **Context** | A bounded, user-declared semantic and operational scope within which reasoning and actions are permitted |
+| **Intent** | An explicit, verified declaration of what the user wants the system to do, under defined constraints, before execution |
+| **Agent** | A scoped executor or advisor that operates within a context under explicit permissions |
+| **Node** | A user-committed structural constraint that governs future reasoning |
+| **Pivot** | A user-declared epistemic marker indicating perceived importance without implying intent or commitment |
+| **Guardian** | A read-only evaluation component that issues gate decisions at critical checkpoints |
+| **Friction** | A deliberate pause at critical decision points when ambiguity, risk, or missing verification is detected |
+| **Responsibility Chain** | The unbroken path from user signal to system action |
+
+### 3.3 Technical Provisions
+
+The invention provides:
+
+- An interaction protocol governing AI execution at runtime
+- Explicit intent declaration and verification before any action execution
+- Frozen and inspectable constraint sources (Contexts, Nodes)
+- Ordered enforcement rules (PC-1 through PC-4 for post-classification; PE-1 through PE-11 for pre-execution)
+- Blocking of non-compliant actions via Guardian gate decisions
+- Traceable decision artifacts via append-only logging at every state transition
+
+### 3.4 Key Technical Characteristics
+
+- Context must be declared or confirmed by the user before any operations may occur within it
+- No action may execute without a verified intent; words alone do not constitute intent
+- Verification requires explicit user confirmation
+- All state transitions are logged with timestamps and actor identification
+- The Guardian has no write access; it cannot modify what it evaluates
+- Friction cannot be silently dismissed by the system; only user action resolves friction
+
+---
+
+## 4. SYSTEM ARCHITECTURE
+
+### 4.1 Functional Modules
+
+The system comprises the following functional modules:
+
+| Module | Function |
+|--------|----------|
+| **Context Store** | Persists scope, constraints, and context lifecycle |
+| **Intent Store** | Persists declarations, verification status, and lifecycle |
+| **Node Store** | Persists user commitments and annotations (includes Pivots) |
+| **Action Store** | Persists action requests, execution status, and outputs |
+| **Friction Store** | Persists accountability checkpoints |
+| **Log Store** | Append-only audit trail for all events |
+| **Guardian** | Read-only evaluation component issuing gate decisions |
+| **Signal Classifier** | Determines signal clarity, intent presence, and context fit |
+
+### 4.2 Access Constraints
+
+The system enforces the following access constraints:
+
+- Stores are accessed by ID only (maintains state boundaries)
+- All writes generate log entries (ensures reconstructibility)
+- Log Store is append-only (prevents tampering)
+- Cross-store queries require explicit joins (no implicit data merging)
+
+### 4.3 Guardian Constraints
+
+The Guardian has no write access. It cannot modify what it evaluates.
+
+The Guardian operates as a read-only evaluation component that:
+- Observes system state at defined checkpoints
+- Evaluates constraints against current state
+- Issues exactly one of three gate decisions: Allow, Clarify, or Refuse
+- Logs all decisions with reasons
+
+### 4.4 Architecture Layers
+
+The system is positioned as follows:
+
+```
+┌─────────────────────────────────────────────┐
+│ External Governance / Institutions          │
+│ (policy, law, org processes, audits)        │
+└───────────────────▲─────────────────────────┘
+                    │ composable, optional
+┌───────────────────┴─────────────────────────┐

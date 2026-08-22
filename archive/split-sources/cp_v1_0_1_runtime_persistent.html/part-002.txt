@@ -1,0 +1,41 @@
+omEntries(NodeStore.nodes));
+            this.save(STORAGE_KEYS.pivots, Object.fromEntries(NodeStore.pivots));
+            this.save(STORAGE_KEYS.actions, Object.fromEntries(ActionStore.actions));
+            this.save(STORAGE_KEYS.frictions, Object.fromEntries(FrictionStore.frictions));
+            this.save(STORAGE_KEYS.agents, Object.fromEntries(AgentStore.agents));
+            this.save(STORAGE_KEYS.logs, LogStore.entries);
+            this.save(STORAGE_KEYS.session, { activeContextId: Session.activeContextId, activeIntentId: Session.activeIntentId, activeAgentId: Session.activeAgentId, systemState: Session.systemState });
+            LogStore.appendInternal({ event_type: 'storage', event_subtype: 'force_save', object_id: null, context_id: Session.activeContextId, intent_id: Session.activeIntentId, agent_id: null, user_id: 'system', details: 'All stores saved', reason: null });
+            UI.showStorageStats();
+        },
+        exportAll() {
+            return { version: '1.0', exported_at: new Date().toISOString(), contexts: Object.fromEntries(ContextStore.contexts), intents: Object.fromEntries(IntentStore.intents), nodes: Object.fromEntries(NodeStore.nodes), pivots: Object.fromEntries(NodeStore.pivots), actions: Object.fromEntries(ActionStore.actions), frictions: Object.fromEntries(FrictionStore.frictions), agents: Object.fromEntries(AgentStore.agents), logs: LogStore.entries, session: { activeContextId: Session.activeContextId, activeIntentId: Session.activeIntentId, activeAgentId: Session.activeAgentId, systemState: Session.systemState } };
+        },
+        importAll(data) {
+            if (!data || data.version !== '1.0') throw new Error('Invalid session file');
+            ContextStore.contexts.clear(); IntentStore.intents.clear(); NodeStore.nodes.clear(); NodeStore.pivots.clear(); ActionStore.actions.clear(); FrictionStore.frictions.clear(); AgentStore.agents.clear(); LogStore.entries = [];
+            if (data.contexts) Object.entries(data.contexts).forEach(([k,v]) => ContextStore.contexts.set(k,v));
+            if (data.intents) Object.entries(data.intents).forEach(([k,v]) => IntentStore.intents.set(k,v));
+            if (data.nodes) Object.entries(data.nodes).forEach(([k,v]) => NodeStore.nodes.set(k,v));
+            if (data.pivots) Object.entries(data.pivots).forEach(([k,v]) => NodeStore.pivots.set(k,v));
+            if (data.actions) Object.entries(data.actions).forEach(([k,v]) => ActionStore.actions.set(k,v));
+            if (data.frictions) Object.entries(data.frictions).forEach(([k,v]) => FrictionStore.frictions.set(k,v));
+            if (data.agents) Object.entries(data.agents).forEach(([k,v]) => AgentStore.agents.set(k,v));
+            if (data.logs) LogStore.entries = data.logs;
+            if (data.session) { Session.activeContextId = data.session.activeContextId; Session.activeIntentId = data.session.activeIntentId; Session.activeAgentId = data.session.activeAgentId; Session.systemState = data.session.systemState || 'idle'; }
+            this.forceSaveAll();
+        }
+    };
+
+    function generateId(p) { return `${p}_${Date.now().toString(36)}_${Math.random().toString(36).substr(2,5)}`; }
+    function timestamp() { return new Date().toISOString(); }
+
+    const ContextStore = { contexts: new Map(), create(c) { this.contexts.set(c.context_id, c); this.persist(); return c; }, get(id) { return this.contexts.get(id) || null; }, update(id, u) { const c = this.contexts.get(id); if(c) { Object.assign(c,u); this.persist(); } return c; }, clear() { this.contexts.clear(); this.persist(); }, persist() { Persistence.save(STORAGE_KEYS.contexts, Object.fromEntries(this.contexts)); }, load() { const d = Persistence.load(STORAGE_KEYS.contexts); if(d) this.contexts = new Map(Object.entries(d)); } };
+    const IntentStore = { intents: new Map(), create(i) { this.intents.set(i.intent_id, i); this.persist(); return i; }, get(id) { return this.intents.get(id) || null; }, update(id, u) { const i = this.intents.get(id); if(i) { Object.assign(i,u); this.persist(); } return i; }, clear() { this.intents.clear(); this.persist(); }, persist() { Persistence.save(STORAGE_KEYS.intents, Object.fromEntries(this.intents)); }, load() { const d = Persistence.load(STORAGE_KEYS.intents); if(d) this.intents = new Map(Object.entries(d)); } };
+    const NodeStore = { nodes: new Map(), pivots: new Map(), createNode(n) { this.nodes.set(n.node_id, n); this.pn(); return n; }, createPivot(p) { this.pivots.set(p.pivot_id, p); this.pp(); return p; }, getNode(id) { return this.nodes.get(id); }, getNodesByContext(cid) { return Array.from(this.nodes.values()).filter(n => n.context_id === cid && n.state === 'active'); }, getPivotsByContext(cid) { return Array.from(this.pivots.values()).filter(p => p.context_id === cid && p.state === 'active'); }, clear() { this.nodes.clear(); this.pivots.clear(); this.pn(); this.pp(); }, pn() { Persistence.save(STORAGE_KEYS.nodes, Object.fromEntries(this.nodes)); }, pp() { Persistence.save(STORAGE_KEYS.pivots, Object.fromEntries(this.pivots)); }, load() { const n = Persistence.load(STORAGE_KEYS.nodes); if(n) this.nodes = new Map(Object.entries(n)); const p = Persistence.load(STORAGE_KEYS.pivots); if(p) this.pivots = new Map(Object.entries(p)); } };
+    const ActionStore = { actions: new Map(), create(a) { this.actions.set(a.action_id, a); this.persist(); return a; }, get(id) { return this.actions.get(id); }, update(id, u) { const a = this.actions.get(id); if(a) { Object.assign(a,u); this.persist(); } return a; }, getPending() { return Array.from(this.actions.values()).filter(a => a.state === 'pending'); }, clear() { this.actions.clear(); this.persist(); }, persist() { Persistence.save(STORAGE_KEYS.actions, Object.fromEntries(this.actions)); }, load() { const d = Persistence.load(STORAGE_KEYS.actions); if(d) this.actions = new Map(Object.entries(d)); } };
+    const FrictionStore = { frictions: new Map(), create(f) { this.frictions.set(f.friction_id, f); this.persist(); return f; }, get(id) { return this.frictions.get(id); }, update(id, u) { const f = this.frictions.get(id); if(f) { Object.assign(f,u); this.persist(); } return f; }, getActive() { return Array.from(this.frictions.values()).filter(f => f.state === 'active'); }, clear() { this.frictions.clear(); this.persist(); }, persist() { Persistence.save(STORAGE_KEYS.frictions, Object.fromEntries(this.frictions)); }, load() { const d = Persistence.load(STORAGE_KEYS.frictions); if(d) this.frictions = new Map(Object.entries(d)); } };
+    const AgentStore = { agents: new Map(), create(a) { this.agents.set(a.agent_id, a); this.persist(); return a; }, get(id) { return this.agents.get(id); }, update(id, u) { const a = this.agents.get(id); if(a) { Object.assign(a,u); this.persist(); } return a; }, getByContext(cid) { return Array.from(this.agents.values()).filter(a => a.context_id === cid); }, clear() { this.agents.clear(); this.persist(); }, persist() { Persistence.save(STORAGE_KEYS.agents, Object.fromEntries(this.agents)); }, load() { const d = Persistence.load(STORAGE_KEYS.agents); if(d) this.agents = new Map(Object.entries(d)); } };
+    const LogStore = { entries: [], append(e) { e.log_id = generateId('log'); e.timestamp = timestamp(); this.entries.push(e); this.persist(); UI.addLogEntry(e); return e; }, appendInternal(e) { e.log_id = generateId('log'); e.timestamp = timestamp(); this.entries.push(e); this.persist(); return e; }, clear() { this.entries = []; this.persist(); }, persist() { Persistence.save(STORAGE_KEYS.logs, this.entries); }, load() { const d = Persistence.load(STORAGE_KEYS.logs); if(d) this.entries = d; } };
+
+    const Session = { activeContextId: null, activeIntentId: null, activeAgentId: null, pendingVerification: null, systemState: 'idle', reset() { this.activeContextId = nul

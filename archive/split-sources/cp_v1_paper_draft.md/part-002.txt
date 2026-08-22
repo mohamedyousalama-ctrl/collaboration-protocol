@@ -1,0 +1,139 @@
+────────┐     ┌─────────────┐     ┌─────────────┐
+│   USER      │     │     CP      │     │     AI      │     │   USER      │     │   ACTION    │
+│   SIGNAL    │────►│ VERIFICATION│────►│ SUGGESTION  │────►│ COMMITMENT  │────►│             │
+└──────┬──────┘     └──────┬──────┘     └──────┬──────┘     └──────┬──────┘     └──────┬──────┘
+       │                   │                   │                   │                   │
+       ▼                   ▼                   ▼                   ▼                   ▼
+   ┌───────┐           ┌───────┐           ┌───────┐           ┌───────┐           ┌───────┐
+   │  LOG  │           │  LOG  │           │  LOG  │           │  LOG  │           │  LOG  │
+   └───────┘           └───────┘           └───────┘           └───────┘           └───────┘
+```
+**Figure 3.** Responsibility chain. Every link is logged with timestamp and actor identification. No link may be skipped or compressed. The chain must be reconstructible from logs alone. User commitment is the only mechanism that advances signals to actions.
+
+**Chain Properties:**
+- Every link is logged with timestamp and actor identification
+- No link may be skipped or compressed
+- The chain must be reconstructible from logs alone
+- User commitment is the only mechanism that advances signals to actions
+
+**Accountability Rule:** If any link in the chain cannot be reconstructed, the system has failed its accountability guarantee.
+
+### 3.3 Guardian Logic
+
+The CP Guardian is a read-only evaluation component that issues gate decisions at critical checkpoints. The Guardian cannot modify state; it can only observe and judge.
+
+#### 3.3.1 Checkpoint Placement
+
+**Checkpoint 1 — Post-Classification:** Located after signal classification, before execution layer. Determines routing based on signal clarity and intent presence.
+
+**Checkpoint 2 — Pre-Execution:** Located after action construction, before actual execution. Final verification that all constraints are satisfied.
+
+#### 3.3.2 Gate Decisions
+
+The Guardian issues exactly one of three decisions at each checkpoint:
+
+| Decision | Meaning | System Response |
+|----------|---------|-----------------|
+| **Allow** | All constraints satisfied | Proceed to next stage |
+| **Clarify** | Ambiguity or boundary concern | Trigger friction, request user input |
+| **Refuse** | Constraint violation or missing verification | Block action, log reason |
+
+#### 3.3.3 Post-Classification Rules
+
+- PC-1: If signal is ambiguous → Clarify
+- PC-2: If signal is out of scope → Clarify
+- PC-3: If signal requests action without context → Clarify
+- PC-4: If signal is clear and no action requested → Allow
+
+#### 3.3.4 Pre-Execution Rules
+
+- PE-1: If no intent exists → Refuse
+- PE-2: If intent is not verified or active → Refuse
+- PE-3: If intent does not match action → Refuse
+- PE-4: If context is not open → Refuse
+- PE-5: If agent is not in context's allowed list → Refuse
+- PE-6: If agent is not active → Refuse
+- PE-7: If agent type prohibits action type → Refuse
+- PE-8: If action exceeds agent permissions → Refuse
+- PE-9: If action violates context constraints → Refuse
+- PE-10: If unresolved friction exists → Refuse
+- PE-11: If all checks pass → Allow
+
+**Guardian Constraint:** The Guardian has no write access. It cannot modify what it evaluates.
+
+```
+User Signal
+    │
+    ▼
+┌────────────────────┐
+│  Signal Classifier │
+└─────────┬──────────┘
+          │
+          ▼
+╔════════════════════════════════════════════════════════╗
+║  CHECKPOINT 1: POST-CLASSIFICATION                     ║
+║  PC-1 through PC-4 evaluated                           ║
+╚════════════════════╤═══════════════════════════════════╝
+                     │
+     ┌───────────────┼───────────────┐
+     ▼               ▼               ▼
+  CLARIFY         CLARIFY         ALLOW
+  (friction)      (friction)      (proceed)
+                                    │
+                                    ▼
+                           [Intent Verification]
+                                    │
+                                    ▼
+╔════════════════════════════════════════════════════════╗
+║  CHECKPOINT 2: PRE-EXECUTION                           ║
+║  PE-1 through PE-11 evaluated                          ║
+╚════════════════════╤═══════════════════════════════════╝
+                     │
+          ┌──────────┴──────────┐
+          ▼                     ▼
+       ALLOW                 REFUSE
+       (execute)             (block)
+```
+**Figure 5.** Guardian checkpoints. The Guardian evaluates constraints at two checkpoints: post-classification (routing decisions) and pre-execution (final gate). All decisions are logged with reasons.
+
+### 3.4 Friction Mechanism
+
+Friction is CP's accountability tool for handling ambiguity, risk, and missing verification. Friction is a signal, not a punishment.
+
+#### 3.4.1 Purpose
+
+Friction introduces deliberate pause at critical decision points. It does not block thinking or exploration; it gates commitment and action. Every friction event must be logged regardless of resolution outcome.
+
+#### 3.4.2 Trigger Types
+
+| Trigger | Condition |
+|---------|-----------|
+| `ambiguous_signal` | User input could not be classified with confidence |
+| `unverified_intent` | Action requested without verified intent |
+| `scope_boundary` | Operation would exceed context boundaries |
+| `permission_violation` | Agent attempted action outside its permissions |
+| `high_risk_action` | Action type requires additional confirmation |
+| `missing_context` | Required context information is absent |
+| `conflict_detected` | Request conflicts with existing node, intent, or constraint |
+
+#### 3.4.3 Resolution Paths
+
+| Resolution | Meaning |
+|------------|---------|
+| `user_clarified` | User provided additional information |
+| `user_confirmed` | User explicitly confirmed intent to proceed |
+| `user_revised` | User changed their request |
+| `user_abandoned` | User chose not to proceed |
+| `system_blocked` | System prevented action due to unresolved constraint |
+
+**Friction Constraint:** Friction cannot be silently dismissed by the system. Only user action resolves friction.
+
+```
+              TRIGGER CONDITION
+                      │
+                      ▼
+       ╔═════════════════════════════╗
+       ║     FRICTION TRIGGERED      ║
+       ║     state = ACTIVE          ║
+       ║     ──────── LOGGED ─────── ║
+       ╚══════════════╤═

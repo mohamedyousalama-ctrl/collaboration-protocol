@@ -1,0 +1,171 @@
+;
+- control over its own trusted base.
+
+---
+
+# 10. PRODUCT FAMILY AND VERSION ARCHITECTURE
+
+This is the accepted provisional development scaffold. It is evidence-gated, not date-gated.
+
+| Stage | Purpose | Real data and action level | Exit evidence |
+|---|---|---|---|
+| S0 - Canon and Decisions | Close founder decisions, terminology, rights, evidence, and version scope | None | Founder canon and independently reviewed decision register |
+| Ghost V0 - Simulation Lab | Test Come, Presence, onboarding, Live Work Field, selection, scoped participation, control modes, action grammar, and provenance | Synthetic or storyboard only | Users understand value, targeting, responsibility, and capability without inferring false authority |
+| Ghost V0.5 - Founder Lab | Local continuity using founder-controlled data | Local, no irreversible external action | Context accuracy, correction, usefulness, and provenance |
+| Ghost V1 - Personal Digital Ghost | Cross-AI continuity, local vault, Come, universal preparation floor | Selected digital sources; Ghost-native actions | Measurable reduction in re-explanation, supervision, time, and AI waste |
+| Ghost V1.5 - Governed Action Alpha | One connector with permits, hold, verify, recover, and prove | One low-risk reversible action path | No out-of-permit execution and acceptable false holds |
+| Ghost V2 - Governed Delegation | Multiple connectors, persistent Context, action controller | Real professional workflows | Lower rework, cost, and supervision with controlled action |
+| Ghost V3 - Ambient Digital Presence | Desktop, mobile, voice continuity, and continuous onboarding | Bounded proactive digital Context | Presence adds value without over-trust or interruption fatigue |
+| Ghost V4 - Supervised Editions | Family and Enterprise editions | Isolated supervision Contexts | Rights, transparency, separation, legal and security validation |
+| Ghost V5 - Physical and Social Presence | Driving, wearables, and local environmental sensing | Explicitly permitted sensors and physical Context | Material incremental value over lower-data alternatives |
+| Ghost V6 - Platform and Standard | SDK, profiles, external implementations, possible standard | Ecosystem | Independent teams reproduce the intended guarantees |
+
+## 10.1 Editions
+
+Editions are separate from generations:
+
+- Personal.
+- Professional.
+- Family.
+- Enterprise.
+- Developer or Platform.
+
+## 10.2 Capability manifest
+
+Capability is declared per environment and action, not by product prestige level.
+
+Possible capabilities:
+
+- aware;
+- advise;
+- verify;
+- prepare;
+- gate;
+- execute;
+- recover;
+- prove.
+
+These are partly independent and should later be represented as a capability lattice or manifest rather than one misleading autonomy ladder.
+
+---
+
+# 11. SCIENCE, EVIDENCE, AND CLAIMS
+
+## 11.1 Evidence rule
+
+Every material mechanism must be labeled as:
+
+- established science or mature standard;
+- strong but Context-dependent evidence;
+- production-proven engineering;
+- emerging technology;
+- product hypothesis;
+- unsupported or contradicted.
+
+## 11.2 Current scientific research queue
+
+The active ten-question research program covers:
+
+1. Memory categories, expiry, and retention.
+2. User approval granularity.
+3. Encrypted local-memory synchronization.
+4. Lost-device and account recovery.
+5. Automatic explanation thresholds.
+6. Ordinary versus forensic provenance.
+7. Silent adaptation boundaries.
+8. Local model and adapter updates.
+9. Independent update verification.
+10. The trusted boundary Ghost cannot modify.
+
+## 11.3 Claims currently prohibited
+
+Do not claim that:
+
+- Ghost understands the true person;
+- Ghost always knows the user's true intent;
+- Silent Intent Inference is eliminated;
+- CP provides universal safety;
+- Ghost can control every app;
+- local storage is automatically secure;
+- the system is clinically validated;
+- the current metrics are universally validated;
+- the current corpus establishes population prevalence;
+- the product will make every user outperform every peer;
+- the product is production-ready;
+- Kaggle or one benchmark alone proves real-world safety.
+
+---
+
+# 12. FALSIFICATION AND NARROWING
+
+Use protected principles and falsifiable mechanisms.
+
+Every major product hypothesis requires a Falsification Card containing:
+
+- hypothesis;
+- reason;
+- baseline;
+- test;
+- evidence source;
+- success condition;
+- harm and guardrail conditions;
+- continue condition;
+- narrow condition;
+- stop condition;
+- time and budget limit;
+- review authority;
+- what remains unproven after success.
+
+Examples:
+
+## Ambient sensing
+
+Continue only if it adds material value that selected digital sources cannot provide. Narrow if useful only in one Context. Defer or stop if low-data alternatives produce nearly the same benefit with less risk.
+
+## LLM-history import
+
+Continue if it recovers useful Context with low material correction and manageable third-party exposure. Narrow to selected projects if broad imports are unreliable. Stop if imports repeatedly convert AI-generated text into false user memory.
+
+## Relational Presence
+
+Continue if it improves comprehension, accepted outcomes, and control. Narrow to summonable task-bound use if dependence or capability confusion increases. Remove as default if harm exceeds value.
+
+## Automatic actions
+
+Continue if actions remain within permits, are reversible, save attention, and recover reliably. Narrow to Ghost-owned actions if external actions produce unacceptable false execution or false holds.
+
+## First market
+
+Continue only if target users repeatedly use and pay after experiencing the complete Ghost loop. Narrow to the segment showing strong recurring value. Change the wedge when interest does not become repeated use and payment.
+
+## Live Work Field
+
+Continue if concurrent episodes become easier to understand, target, and correct than in chat, list, or dashboard baselines. Narrow to high-concurrency Contexts if the pattern is valuable only there. Reject as a default if it increases overload, hides priority, or causes selection mistakes.
+
+## Multi-target intent compilation
+
+Continue if one intention produces separate correct plans with low review burden and zero cross-target Context leakage. Narrow to preparation-only if execution risk or correction burden is high. Stop external execution if aggregation creates authority errors, privacy leakage, duplicate effects, or false confidence.
+
+---
+
+# 13. CURRENT STRATEGIC BACKLOG
+
+This is a decision and discovery backlog, not an engineering sprint backlog.
+
+## 13.1 Product and market
+
+| ID | Item | State | Required outcome |
+|---|---|---|---|
+| S-001 | Confirm first profession or segment inside the AI-intensive operator category | Open | Repeated costly incident, current workaround, permission tolerance, willingness to pay |
+| S-002 | Select the first recurring costly event | Open | One measurable event Ghost can reduce or prevent |
+| S-003 | Select the first connector or governed action path | Open | Honest Gate, Recover, and Prove capability with low-risk reversibility |
+| S-004 | Define the first ten-minute magic moment | Open | User experiences value before broad data access |
+| S-005 | Define packaging and pricing hypotheses | Deferred until value evidence | Companion, gateway, control plane, or combined package |
+
+## 13.2 Product canon and terminology
+
+| ID | Item | State | Required outcome |
+|---|---|---|---|
+| S-006 | Produce canonical Ghost ontology | Required before specification | One meaning for each product object and role |
+| S-007 | Produce terminology authority and historical alias register | Required | Resolve IPP, ICD, IFI, Guardian, Context, Intent, Pivot, Permit, and Ledger collisions |
+| S-008 | Produce Ghost Product Constitution | Blocked until remaining decisions close | Pro

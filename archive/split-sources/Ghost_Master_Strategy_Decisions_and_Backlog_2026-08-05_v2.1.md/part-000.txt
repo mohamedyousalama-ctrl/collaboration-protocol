@@ -1,0 +1,116 @@
+# GHOST MASTER STRATEGY, FOUNDER DECISIONS, AND DISCOVERY BACKLOG
+
+**Version:** 2.1  
+**State date:** 5 August 2026  
+**Working product name:** Ghost  
+**Public brand:** Open  
+**Current phase:** Strategy closure, cross-product evidence integration, founder decision reconstruction, and pre-canon specification  
+**Build authorization:** None  
+**Purpose:** Preserve the current product thesis, founder decisions, research constraints, cross-product learning, strategic backlog, version direction, and unresolved matters without silently converting proposals into implementation authority.
+
+---
+
+# 1. STATUS AND AUTHORITY
+
+This document replaces the strategy-state record dated 1 August 2026 as the current Ghost master strategy record.
+
+The earlier Project Continuity roadmaps and execution backlogs remain historical proposal artifacts. They may be mined for useful structures, but they are not execution authority because they were created before the product thesis, founder decisions, terminology, release structure, and evidence gates were sufficiently resolved.
+
+## 1.1 Authority classes
+
+| Status | Meaning | Effect |
+|---|---|---|
+| FROZEN SOURCE | Meaning fixed by a canonical source such as frozen CP v1.0.1 | Preserve exactly; do not silently redefine |
+| FOUNDER DECISION | Mohamed explicitly selected or approved the direction | Governs the product unless later revised |
+| FOUNDER DIRECTION | Mohamed supplied a clear direction, but implementation details remain open | Strong product constraint; specification still required |
+| FOR-YOU DELEGATION | Mohamed assigned the question to the assistant for deep evidence-based resolution | Assistant must research, compare, design, red-team, and recommend |
+| EVIDENCE-SUPPORTED RECOMMENDATION | Supported by current standards, research, production practice, and project evidence | Candidate for ratification or technical specification |
+| MODEL PROPOSAL | Useful option or design generated during analysis | Non-binding until approved |
+| OPEN STRATEGIC QUESTION | Material issue still requiring evidence or founder judgment | Cannot silently become a requirement |
+| PARKED OPPORTUNITY | Valuable future program intentionally deferred | Preserve for later; no current execution |
+| REJECTED OR SUPERSEDED | No longer governing, but historically preserved | Must not reappear as active authority |
+
+## 1.2 Active process laws
+
+1. Founder statements outrank model recommendations.
+2. Repetition does not create approval.
+3. Model confidence does not create founder intent.
+4. Science, standards, and market practice must be distinguished from product hypotheses.
+5. Research artifacts must not silently dictate the Ghost customer experience.
+6. Product mechanisms must not be presented as validated scientific laws unless evidence supports the claim.
+7. No build begins until the founder explicitly authorizes execution.
+8. Every substantive founder message must update the strategy, decision, risk, and backlog state.
+9. When Mohamed marks a question "for you," the assistant owns the evidence and design analysis and returns only the remaining value trade-off, if any.
+10. Historical documents remain preserved; corrections append new authority rather than rewriting history.
+11. Cross-product experiments may provide evidence about mechanisms, but they do not silently redefine Ghost's identity, market, rights, or architecture.
+12. A product-specific interface choice becomes a Ghost requirement only through explicit Ghost validation and authority.
+13. Kivo-derived results must be labeled as design evidence, implementation evidence, pilot evidence, or market evidence; one class must not be represented as another.
+
+## 1.3 Cross-product evidence classes
+
+| Class | Meaning | Ghost effect |
+|---|---|---|
+| DESIGN-DERIVED | A mechanism was developed through product design work | Candidate for Ghost V0 simulation; not validated |
+| IMPLEMENTED ELSEWHERE | A mechanism exists in another product or branch | Feasibility evidence only; no Ghost authorization |
+| OPERATIONALLY TESTED | Real users performed the workflow in a bounded environment | Stronger interaction evidence; still Context-specific |
+| PILOT-PROVEN | A defined cohort achieved the target outcome without invalidating harms | May inform Ghost version decisions |
+| MARKET-PROVEN | Repeated paid use demonstrates durable value and economics | May inform packaging and market decisions |
+
+---
+
+# 2. EXECUTIVE PRODUCT THESIS
+
+Ghost is one customer-facing product.
+
+Ghost is a user-owned continuity and delegated-action governance system that helps a person use many AI tools as one increasingly capable operational advantage, while preserving human authorship over material meaning and consequential action.
+
+Ghost should help the user:
+
+- save time and money spent using AI;
+- achieve better accepted outcomes than they can obtain through fragmented AI tools alone;
+- avoid repeatedly teaching each AI the same project, standards, and corrections;
+- delegate more without checking every output or action;
+- prevent important work from silently leaving the user's intent, scope, authority, safety, or commitments;
+- recover quickly when an AI, tool, integration, or user decision goes wrong;
+- move across tools, devices, projects, and later physical environments without losing continuity;
+- feel supported by a Presence that is usually quiet, arrives already situated, and acts with truthful limits.
+
+## 2.1 Product hierarchy
+
+| Layer | Current product meaning |
+|---|---|
+| Customer outcome | Save time and money while producing more accepted, higher-quality work |
+| Primary practical value | Reliable AI delegation with less supervision |
+| Continuity mechanism | Carry relevant project, personal, and operational context across tools and time |
+| Governance mechanism | Detect material interpretation changes and prevent unapproved consequential action |
+| Action mechanism | Prepare, route, request, execute, recover, and prove according to actual integration power |
+| Human interface | A summonable, context-aware Presence |
+| Long-term experience | Ambient intelligence across digital, physical, and social contexts |
+| Research foundation | Collaboration Protocol and the broader intent-governance research program |
+
+## 2.2 Core laws
+
+1. **Memory is not authority.**
+2. **The human gives authority.**
+3. **Ghost may improve competence, but may not silently increase power.**
+4. **One product outside; separated responsibilities inside.**
+5. **Capability must be truthful per tool and environment.**
+6. **Material interpretation must remain correctable and accountable.**
+7. **Care may increase attention, but never secretly increase authority.**
+8. **Raw environmental data stays local, is processed transiently, and is deleted by default.**
+9. **Selected retained memory must remain sourced, scoped, correctable, revocable, and governed.**
+10. **Magic by default; correction in one gesture; provenance when needed.**
+11. **Ghost may prepare universally; execution is conditional; evidence must be explicit about what is and is not proven.**
+12. **Ghost's constitutional principles remain protected; mechanisms remain falsifiable.**
+13. **One human intention may compile into many Context-specific plans, but every target remains independently governed, reviewable, and evidenced.**
+14. **Overview, intervention, and detail should coexist without forcing the user to lose the active field of work.**
+
+## 2.3 Commercial promise
+
+Working customer promise:
+
+> Turn the AI tools you already pay for into one continuously improving, governed production advantage: less reteaching, less checking, less waste, fewer wrong actions, and more accepted work.
+
+Working emotional promise:
+
+> More of you can be present in the world without more of you being consumed by the 

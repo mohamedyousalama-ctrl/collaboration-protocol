@@ -1,0 +1,116 @@
+h
+3. **The AI silently selected an interpretation** without surfacing alternatives
+4. **The output violated user intent** despite being factually defensible
+
+This single example motivates the core argument: Silent Intent Inference is not an edge case but a structural feature of current human-AI interaction paradigms.
+
+## 2.3 Research Claims (Bounded)
+
+**This paper does NOT claim:**
+- Universal correctness of the proposed framework
+- Model-level superiority over existing approaches
+- Full system implementation or deployment readiness
+- Resolution of all human-AI collaboration failures
+- Empirical proof of prevalence rates (these require future studies)
+
+**This paper DOES claim:**
+- Silent Intent Inference is prevalent and empirically measurable (hypothesis, not proven)
+- It represents a protocol failure, not a capability failure
+- It can be mitigated via structured interaction rules (the Collaboration Protocol)
+- The proposed constructs are operationalizable and testable
+- The framework provides a falsifiable foundation for future research
+
+---
+
+# 3. Related Work
+
+The Collaboration Protocol addresses a gap at the intersection of five established research streams. We position our contribution relative to each.
+
+## 3.1 Human-Automation Interaction
+
+The foundational work on levels of automation (Sheridan & Verplank, 1978; Parasuraman, Sheridan, & Wickens, 2000) established taxonomies for allocating tasks between humans and machines. These frameworks address **who does what** but not **who decides what**—the semantic authority question central to our work.
+
+Parasuraman and Riley (1997) identified patterns of automation misuse, disuse, and abuse, demonstrating that human-automation failures often stem from inappropriate trust calibration rather than capability mismatch. Our construct of Intent Control Degree extends this insight by providing a mechanism for users to calibrate their trust through explicit control over ambiguity resolution.
+
+Endsley's (2017) review of human-automation research identifies situation awareness as a critical failure point. Silent Intent Inference degrades situation awareness by resolving ambiguity invisibly—the user cannot be aware of decisions they were never shown.
+
+**Gap:** Existing frameworks focus on task allocation (who performs actions) but do not address semantic authority (who determines meaning).
+
+## 3.2 Shared Mental Models
+
+Research on shared mental models (Mathieu et al., 2000; Cannon-Bowers & Salas, 2001) demonstrates that team performance depends on aligned understanding of tasks, processes, and team member capabilities. Human-AI teams face a unique challenge: the AI's "mental model" is opaque and cannot be directly inspected or negotiated.
+
+The Collaboration Protocol addresses this by externalizing the points at which human and AI understanding may diverge (Intent Pivot Points), making implicit model differences explicit and actionable.
+
+**Gap:** Shared mental model research assumes bidirectional model inspection; human-AI interaction lacks this symmetry.
+
+## 3.3 Explainable AI (XAI)
+
+The explainable AI literature (Miller, 2019; Gunning et al., 2019) focuses on making AI reasoning transparent **after** decisions are made. This post-hoc transparency is valuable but insufficient for intent preservation—by the time an explanation is offered, the silent inference has already occurred.
+
+Bansal et al. (2021) demonstrate that AI explanations can improve human-AI team performance, but only when appropriately calibrated to user expertise. Lai and Tan (2019) show that explanations alone do not guarantee appropriate reliance. These findings support our argument that transparency mechanisms must be embedded in the interaction protocol itself, not bolted on afterward.
+
+**Gap:** XAI explains AI decisions but does not prevent unauthorized decision-making.
+
+## 3.4 Trust in Automation
+
+Lee and See's (2004) seminal review establishes that appropriate trust calibration depends on understanding automation capabilities and limitations. Overtrust leads to automation bias; undertrust leads to disuse of beneficial systems.
+
+The Collaboration Protocol provides a mechanism for dynamic trust calibration: users can adjust Intent Control Degree based on their evolving assessment of AI reliability in specific contexts. This operationalizes the "appropriate reliance" goal that Lee and See identify.
+
+**Gap:** Trust research identifies the calibration problem but provides limited mechanisms for real-time adjustment during interaction.
+
+## 3.5 Prompt Engineering and Interaction Design
+
+The emergence of large language models has spawned extensive work on prompt engineering (Liu et al., 2023; White et al., 2023) and conversational interface design (Clark et al., 2019). These approaches attempt to reduce ambiguity through better input formulation.
+
+We argue that prompt optimization addresses a **symptom** (ambiguous inputs) rather than the **underlying cause** (unauthorized inference). Even well-crafted prompts contain ambiguity (human language is inherently underspecified). The question is not whether ambiguity exists but how it is resolved and by whom.
+
+**Gap:** Prompt engineering treats ambiguity as an input problem; we treat it as a protocol problem.
+
+## 3.6 Summary: The Missing Layer
+
+Existing research addresses:
+- **Task allocation** (who acts)
+- **Explanation** (why AI acted)
+- **Trust** (whether to accept AI actions)
+
+No existing framework addresses **semantic authority**: who determines what actions mean before they are taken.
+
+The Collaboration Protocol fills this gap by treating intent resolution as a first-class protocol responsibility requiring explicit governance mechanisms.
+
+---
+
+# 4. Problem Definition: Silent Intent Inference
+
+## 4.1 Definition
+
+**Silent Intent Inference** is defined as:
+
+> Any machine-generated assumption about user intent made without explicit human authorization, where the assumption materially affects the output.
+
+Key elements of this definition:
+- **Machine-generated:** The assumption originates from the AI system, not the user
+- **Assumption about intent:** The inference concerns what the user wants, not factual matters
+- **Without explicit authorization:** The user neither requested nor approved the inference
+- **Materially affects output:** The assumption changes what the user receives in a non-trivial way
+
+## 4.2 Silent Intent Inference as a Safety Risk
+
+Silent Intent Inference is not merely an interaction inconvenience—it represents a **structural safety failure** with cascading consequences:
+
+1. **Accountability Gaps:** When inferences are invisible, responsibility for outcomes becomes unclear. Did the user request this, or did the AI assume it? This ambiguity undermines both legal accountability and organizational governance.
+
+2. **Untraceable Decisions:** Silent inferences leave no audit trail. In high-stakes domains (healthcare, finance, legal), this opacity creates compliance risks and prevents systematic error analysis.
+
+3. **User Disempowerment:** Systematic silent inference trains users to accept AI outputs passively rather than critically. This learned helplessness compounds over time, reducing human capacity for meaningful oversight.
+
+4. **Meaning Displacement:** The AI decides meaning without user consent, shifting semantic authority from human to machine. This displacement is invisible to the user but consequential for outcomes.
+
+5. **Trust Miscalibration:** Users cannot appropriately calibrate trust in systems whose inference behavior is opaque. This leads to both overtrust (automation bias) and undertrust (valuable capability rejection).
+
+## 4.3 Prevalence Hypothesis
+
+We hypothesize that Silent Intent Inference is not rare but endemic to current AI interaction paradigms:
+
+> **H1:** In c

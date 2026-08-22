@@ -1,0 +1,165 @@
+omplex task completions using current AI systems, silent intent inferences occur in >60% of interactions.
+
+> **H2:** Users are unaware of these inferences in >70% of cases where they occur.
+
+**Important Note:** These hypotheses are testable through the empirical protocols described in Section 7, but have not yet been validated. The framework's value depends on empirical confirmation.
+
+## 4.4 Objection: "This Is Just Prompt Ambiguity"
+
+**Anticipated objection:**
+> "The problem you describe is prompt ambiguity. The solution is better prompting, not a new protocol."
+
+**Response:**
+Prompt ambiguity is a **symptom**; Silent Intent Inference is the **system behavior** that resolves it without permission. Even perfect prompts contain residual ambiguity (human language is inherently underspecified). The question is not whether ambiguity exists but how systems handle it. Current systems resolve silently; the Collaboration Protocol requires explicit surfacing.
+
+---
+
+# 5. Core Constructs (Operationalized)
+
+The Collaboration Protocol defines four primary constructs, each with specific operational definitions enabling empirical measurement.
+
+## 5.1 Intent
+
+### 5.1.1 Conceptual Definition
+
+**Intent** is the human-authored constraint that determines acceptable outcomes. Intent specifies not what the AI should produce but what boundaries the production must respect.
+
+**Intent is NOT:**
+- Output format (how it should look)
+- Task description (what to do)
+- Optimization objective (what to maximize)
+
+**Intent IS:**
+- Meaning boundaries (what interpretations are acceptable)
+- Constraint sets (what must and must not be true of outputs)
+- Contextual assumptions (what the user takes for granted)
+
+### 5.1.2 Operational Definition
+
+For measurement purposes, intent is captured through:
+
+1. **Pre-task articulation:** User states desired outcome and constraints before AI generation
+2. **Post-task validation:** User confirms whether output matches their pre-stated intent
+3. **Counterfactual probing:** User identifies alternative interpretations that would have been acceptable
+
+## 5.2 Intent Pivot Points (IPP)
+
+### 5.2.1 Conceptual Definition
+
+An **Intent Pivot Point** exists when:
+- Two or more interpretations of user input are plausible
+- Resolution between interpretations materially changes the output
+- The user has not explicitly specified which interpretation to use
+
+### 5.2.2 IPP Taxonomy
+
+Six types of Intent Pivot Points have been identified:
+
+| IPP Type | Definition | Example |
+|----------|------------|---------|
+| **Scope** | Ambiguity about boundaries of the request | "Summarize this" — whole document or key points? |
+| **Temporal** | Ambiguity about time reference | "Current status" — as of when? |
+| **Entity Reference** | Ambiguity about which entity is referenced | "How many population?" — Egypt or Cairo? |
+| **Authority** | Ambiguity about whose perspective to adopt | "Best approach" — according to whom? |
+| **Output Form** | Ambiguity about format or structure | "Explain X" — brief or comprehensive? |
+| **Abstraction Level** | Ambiguity about detail granularity | "How does it work?" — high-level or technical? |
+
+### 5.2.3 Operational Definition
+
+IPP identification uses a trained annotation protocol:
+
+1. Annotators review human-AI transcripts
+2. Each point where AI generates output is examined for implicit assumptions
+3. Assumptions are classified by IPP type
+4. Inter-rater reliability is computed (target: Cohen's κ > 0.7)
+
+The IPP annotation codebook (Appendix C) provides detailed decision rules.
+
+## 5.3 Intent Control Degree (ICD)
+
+### 5.3.1 Conceptual Definition
+
+**Intent Control Degree** is a continuous parameter (0.0–1.0) governing how ambiguity is resolved between human and AI:
+
+| ICD Range | System Behavior | User Experience |
+|-----------|-----------------|-----------------|
+| 0.0–0.3 | AI resolves ambiguity freely; minimal clarification | Fast, autonomous; low user burden |
+| 0.4–0.6 | AI confirms major pivot points only | Balanced; moderate interaction |
+| 0.7–0.9 | AI confirms most pivot points | High control; more interruptions |
+| 1.0 | No ambiguity resolved without explicit confirmation | Maximum control; highest user burden |
+
+### 5.3.2 Critical Design Principle
+
+**ICD is suggested by the system but chosen by the user.**
+
+The system may recommend an ICD level based on task complexity, domain risk, or user history. However, final authority over ICD setting always resides with the human. This preserves user agency while enabling intelligent defaults.
+
+### 5.3.3 Operational Definition
+
+ICD is manipulated experimentally through interface design:
+- **Low ICD (0.2):** System generates without clarification prompts
+- **Medium ICD (0.5):** System surfaces 2-3 major pivot points before generation
+- **High ICD (0.8):** System surfaces all identified pivot points before generation
+
+ICD is measured through:
+- **Clarification frequency:** Number of pivot points surfaced per generation cycle
+- **User perception:** Post-task survey assessing perceived control (7-point scale)
+- **Behavioral markers:** Time spent on clarification vs. generation phases
+
+## 5.4 Intent Fidelity Index (IFI)
+
+### 5.4.1 Conceptual Definition
+
+**Intent Fidelity** measures the degree to which AI output preserves original human intent. High fidelity means the output matches what the user actually wanted; low fidelity means significant divergence.
+
+### 5.4.2 Operational Definition
+
+IFI is computed as a composite of three sub-measures:
+
+1. **Semantic Alignment (SA):** Expert-rated correspondence between stated intent and output meaning (1-7 scale)
+2. **Constraint Preservation (CP):** Proportion of user-specified constraints satisfied in output (0-100%)
+3. **Subjective Satisfaction (SS):** User-reported satisfaction that output matches their intent (1-7 scale)
+
+**Composite formula:** IFI = 0.4(SA) + 0.3(CP) + 0.3(SS)
+
+Weighting reflects the primacy of semantic alignment while incorporating objective constraint satisfaction and subjective experience.
+
+## 5.5 Intent Decay (Theoretical Concept)
+
+### 5.5.1 Conceptual Definition
+
+**Intent Decay** refers to cumulative divergence between original intent and system output caused by compounded assumptions. Each silent inference introduces a deviation; deviations compound across interaction steps.
+
+### 5.5.2 Modeling Intuition
+- Each silent assumption introduces deviation δ
+- Deviation compounds across n steps
+- Total decay D = f(δ₁, δ₂, ... δₙ)
+- CP reduces decay by minimizing silent inferences at critical pivot points
+
+### 5.5.3 Research Status
+
+Intent decay is presented as a **theoretical concept** motivating the CP framework. Formal mathematical modeling is deferred until empirical decay data is collected through the proposed studies. See Appendix I for detailed treatment.
+
+---
+
+# 6. The Collaboration Protocol Framework
+
+## 6.1 Protocol Laws
+
+The Collaboration Protocol is governed by seven inviolable laws:
+
+| Law | Name | Statement |
+|-----|------|-----------|
+| 1 | **Intent Authority** | Human intent is authoritative; AI interpretation is advisory |
+| 2 | **Ambiguity Surfacing** | Ambiguity must be surfaced before resolution, not after |
+| 3 | **Articulation Supremacy** | Explicit articulation supersedes implicit inference |
+| 4 | **Meaning Ownership** | Final semantic authority resides with the human |
+| 5 | **Non-Assumption Default** | Non-assumption is the default state; AI must not silently resolve intent-critical ambiguity |
+| 6 | **Pivot Traceability** | All pivot point decisions must be logged and inspectable |
+| 7 | **Human Override** | Humans may intervene, edit, or redirect at any point |
+
+## 6.2 Interaction Flow
+
+The CP-compliant interaction proceeds through six stages:
+
+1. **Input Reception:** User provides ini

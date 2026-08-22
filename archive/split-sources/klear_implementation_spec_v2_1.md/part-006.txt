@@ -1,0 +1,140 @@
+ion_id);
+create index idx_context_roots_user on context_roots(user_id);
+create index idx_klear_profiles_user on klear_profiles(user_id);
+```
+
+---
+
+## 9. Environment Variables
+
+```
+# Backend (.env)
+ANTHROPIC_API_KEY=sk-...
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_KEY=eyJ...
+PORT=3001
+
+# Frontend (.env)
+VITE_API_URL=http://localhost:3001
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJ...
+```
+
+---
+
+## 10. File Structure
+
+```
+klear/
+├── frontend/
+│   └── src/
+│       ├── components/
+│       │   ├── SessionStart.jsx         # Articulation card + ICD selector + roots
+│       │   ├── Chat.jsx
+│       │   ├── MessageThread.jsx
+│       │   ├── FrictionCard.jsx         # All 6 friction types + decay warning
+│       │   ├── InputBar.jsx
+│       │   ├── IFIBadge.jsx             # Phase 1 + Phase 2 display + star rating
+│       │   ├── TracePanel.jsx           # Full decision trace per response
+│       │   ├── CounterfactualPanel.jsx  # Alternative interpretations (conditional)
+│       │   ├── SafetyFloor.jsx          # Domain safety card (non-dismissible)
+│       │   ├── SessionHealth.jsx        # Decay indicator in status bar
+│       │   ├── AuditPanel.jsx           # CP log + Klear events + report export
+│       │   ├── ProfileManager.jsx       # Klear profiles + context roots
+│       │   └── CPStatus.jsx             # Status bar: intent, ICD, domain, health
+│       ├── hooks/
+│       │   ├── useSession.js
+│       │   ├── useFriction.js
+│       │   ├── useIFI.js
+│       │   └── useDecay.js
+│       ├── api/
+│       │   └── klear.js                 # All API calls to backend
+│       └── App.jsx
+│
+├── backend/
+│   └── src/
+│       ├── routes/
+│       │   ├── session.js               # All /api/session/* endpoints
+│       │   ├── context_root.js          # All /api/context_root/* endpoints
+│       │   └── profile.js               # All /api/profile/* endpoints
+│       ├── cp/
+│       │   ├── guardian.js              # Checkpoint 1 + 2 logic
+│       │   ├── ipp_classifier.js        # 6-type IPP taxonomy + Claude call
+│       │   ├── icd_filter.js            # ICD threshold application
+│       │   ├── decay.js                 # Intent decay calculator
+│       │   ├── ifi.js                   # IFI Phase 1 + Phase 2 calculator
+│       │   ├── domain_classifier.js     # Domain detection + shift handling
+│       │   ├── safety_floor.js          # SF profile selection + injection
+│       │   ├── counterfactual.js        # Alternative interpretation generator
+│       │   ├── friction.js              # Friction creation + resolution
+│       │   ├── prompts.js               # System prompt + context injection
+│       │   └── logger.js                # Routes events to correct store
+│       ├── db/
+│       │   └── supabase.js              # Supabase client + all store accessors
+│       └── index.js
+│
+├── supabase/
+│   ├── schema_v1.sql                    # Core CP stores
+│   └── schema_v2.sql                    # Klear extension tables
+│
+└── spec/
+    └── klear_implementation_spec_v2_1.md
+```
+
+---
+
+## 11. Build Order
+
+| Step | What | File(s) |
+|------|------|---------|
+| 1 | Supabase schema — core CP stores | `supabase/schema_v1.sql` |
+| 2 | Supabase schema — Klear extension tables | `supabase/schema_v2.sql` |
+| 3 | Backend scaffold + Supabase client | `backend/src/index.js`, `db/supabase.js` |
+| 4 | CP Logger (routes to correct store) | `backend/src/cp/logger.js` |
+| 5 | IPP Classifier (with full prompt) | `backend/src/cp/ipp_classifier.js` |
+| 6 | ICD Filter | `backend/src/cp/icd_filter.js` |
+| 7 | CP Guardian — Checkpoint 1 | `backend/src/cp/guardian.js` |
+| 8 | CP Guardian — Checkpoint 2 | `backend/src/cp/guardian.js` |
+| 9 | Intent Decay Calculator | `backend/src/cp/decay.js` |
+| 10 | IFI Calculator (Phase 1 + Phase 2) | `backend/src/cp/ifi.js` |
+| 11 | Domain Classifier + Safety Floor | `backend/src/cp/domain_classifier.js`, `safety_floor.js` |
+| 12 | Counterfactual Engine | `backend/src/cp/counterfactual.js` |
+| 13 | CP Prompts + Context Injection | `backend/src/cp/prompts.js` |
+| 14 | Friction Handler | `backend/src/cp/friction.js` |
+| 15 | Session API routes | `backend/src/routes/session.js` |
+| 16 | Context Root API routes | `backend/src/routes/context_root.js` |
+| 17 | Profile API routes | `backend/src/routes/profile.js` |
+| 18 | React app scaffold | `frontend/src/App.jsx` |
+| 19 | Session start screen | `SessionStart.jsx` |
+| 20 | Chat + message thread | `Chat.jsx`, `MessageThread.jsx` |
+| 21 | Friction card (all 6 types) | `FrictionCard.jsx` |
+| 22 | IFI badge + star rating | `IFIBadge.jsx` |
+| 23 | Trace panel | `TracePanel.jsx` |
+| 24 | Counterfactual panel | `CounterfactualPanel.jsx` |
+| 25 | Safety floor card | `SafetyFloor.jsx` |
+| 26 | Session health indicator | `SessionHealth.jsx` |
+| 27 | Audit panel + compliance report | `AuditPanel.jsx` |
+| 28 | Profile manager + context roots | `ProfileManager.jsx` |
+| 29 | Auth flow | Supabase Auth integration |
+| 30 | Deploy backend | Railway |
+| 31 | Deploy frontend | Vercel |
+
+---
+
+## 12. CP Protocol Reference
+
+This implementation is governed by and must conform to:
+
+- **CP v1.0.1 Freeze Declaration** — `cp_v1_0_1_freeze_declaration.md`
+- **CP System Model** — `cp_v1_system_model_final.md`
+- **CP Evaluation Framework** — `cp_v1_evaluation_framework.md`
+- **CP Research Package v2.0** — construct definitions, IPP taxonomy, IFI formula
+- **Safety Floor Specification** — domain extension, SF profiles, Law 8
+- **IntentHealth Execution Plan** — Context Roots, ICD implementation patterns
+- **Patent Application** — USPTO Application No. 63/976,086
+
+Any implementation decision that conflicts with the frozen specification must be resolved against the spec — never the reverse.
+
+---
+
+*End of Klear Implementation Specification v2.1*

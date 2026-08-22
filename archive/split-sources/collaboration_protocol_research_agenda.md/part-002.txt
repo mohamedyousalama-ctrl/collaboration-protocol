@@ -1,0 +1,55 @@
+ Responsible AI |
+| Google Research | PAIR (People + AI Research) | Human-AI interaction |
+| IBM Research | Human-Centered AI | Enterprise AI collaboration |
+
+---
+
+## Appendix: Quick-Start Experiment Protocol
+
+### "Silent Inference Study" — Runnable in 30 Days
+
+**Materials needed:**
+- Access to ChatGPT/Claude API
+- Survey platform (Qualtrics, Google Forms)
+- $2,000 participant budget
+
+**Procedure:**
+
+1. **Week 1: Task Design**
+   - Create 10 complex tasks with known ambiguity points
+   - Example: "Write a recommendation letter" (ambiguous: how positive? what format? what length?)
+
+2. **Week 2: Data Collection**
+   - 100 participants complete tasks with AI
+   - Save full transcripts
+   - Post-task survey: "What decisions did the AI make for you?"
+
+3. **Week 3: Coding**
+   - Expert coders identify all assumption points in transcripts
+   - Code user awareness for each assumption
+
+4. **Week 4: Analysis & Write-up**
+   - Calculate silent inference rate
+   - Calculate awareness gap
+   - Draft CHI workshop submission
+
+**Expected output:** First empirical paper, validating core problem.
+
+---
+
+## Conclusion
+
+The Collaboration Protocol has genuine publication potential, but the path requires:
+
+1. **Immediate:** Literature integration, construct operationalization
+2. **Short-term:** Tier 1 empirical studies (silent inference, ICD effects, IPP validity)
+3. **Medium-term:** System building, field studies
+4. **Long-term:** Cross-cultural validation, longitudinal impact
+
+The ideas are strong. The execution gap is closeable. Start with the Silent Inference Study—it requires no system building, validates your core problem, and can be submitted to a CHI workshop within 3 months.
+
+---
+
+*Document prepared: January 2026*
+*For: Mohamed Salama*
+*Purpose: Research planning for Collaboration Protocol validation*

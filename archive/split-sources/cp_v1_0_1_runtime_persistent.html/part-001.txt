@@ -1,0 +1,113 @@
+#155724; }
+        .storage-info { padding: 10px 12px; background: #d1ecf1; border-radius: 5px; margin-bottom: 8px; border-left: 3px solid #17a2b8; font-size: 0.85rem; }
+        .storage-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+        .storage-actions button { padding: 6px 12px; font-size: 0.8rem; }
+        #import-file { display: none; }
+        @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CP v1.0.1 Runtime — Persistent Storage</h1>
+            <div class="header-subtitle">Collaboration Protocol with localStorage persistence, import/export, and session recovery</div>
+        </div>
+        <div class="main-panel">
+            <div class="session-controls">
+                <button class="btn-primary" onclick="UI.newContext()">New Context</button>
+                <button class="btn-secondary" onclick="UI.closeContext()">Close Context</button>
+                <button class="btn-storage" onclick="UI.exportSession()">Export Session</button>
+                <button class="btn-storage" onclick="document.getElementById('import-file').click()">Import Session</button>
+                <input type="file" id="import-file" accept=".json" onchange="UI.importSession(event)">
+                <button class="btn-danger" onclick="UI.clearAllData()">Clear All Data</button>
+                <span style="flex: 1;"></span>
+                <button class="btn-secondary" onclick="UI.togglePanel('logs')">Toggle Logs</button>
+                <button class="btn-secondary" onclick="UI.togglePanel('state')">Toggle State</button>
+            </div>
+            <div class="status-bar">
+                <div class="status-item"><span class="status-label">Context:</span><span class="status-value none" id="status-context">none</span></div>
+                <div class="status-item"><span class="status-label">Intent:</span><span class="status-value none" id="status-intent">none</span></div>
+                <div class="status-item"><span class="status-label">State:</span><span class="status-value" id="status-state">idle</span></div>
+                <div class="status-item"><span class="status-label">Agent:</span><span class="status-value none" id="status-agent">none</span></div>
+                <div class="status-item"><span class="status-label">Storage:</span><span class="status-value storage" id="status-storage">checking...</span></div>
+            </div>
+            <div class="output-area">
+                <div class="output-header">Conversation</div>
+                <div class="output-content" id="output-content"><div class="output-empty">Initializing...</div></div>
+            </div>
+            <div class="input-area">
+                <div class="input-wrapper">
+                    <input type="text" id="signal-input" placeholder="Enter your signal..." onkeydown="if(event.key==='Enter') UI.sendSignal()">
+                </div>
+                <div class="input-actions">
+                    <button class="btn-primary" onclick="UI.sendSignal()">Send Signal</button>
+                    <button class="btn-success" onclick="UI.confirm()">Confirm</button>
+                    <button class="btn-warning" onclick="UI.revise()">Revise</button>
+                    <button class="btn-danger" onclick="UI.abandon()">Abandon</button>
+                    <button class="btn-agent" id="btn-ask-agent" onclick="UI.askAgent()" disabled>Ask Agent</button>
+                </div>
+            </div>
+            <div class="nodes-panel">
+                <div class="panel-header" onclick="UI.togglePanel('nodes')"><span>Committed Nodes</span><span class="panel-toggle" id="nodes-toggle">▼</span></div>
+                <div class="panel-content" id="nodes-content"><div class="empty-state">No nodes committed</div></div>
+            </div>
+            <div class="nodes-panel">
+                <div class="panel-header" onclick="UI.togglePanel('pivots')"><span>Pivots</span><span class="panel-toggle" id="pivots-toggle">▼</span></div>
+                <div class="panel-content" id="pivots-content"><div class="empty-state">No pivots</div></div>
+            </div>
+        </div>
+        <div class="side-panel">
+            <div class="agent-panel">
+                <div class="panel-header" onclick="UI.togglePanel('agents')"><span>Agents</span><span class="panel-toggle" id="agents-toggle">▼</span></div>
+                <div class="panel-content" id="agents-content"><div class="empty-state">No agents</div></div>
+            </div>
+            <div class="storage-panel">
+                <div class="panel-header" onclick="UI.togglePanel('storage')"><span>Storage Status</span><span class="panel-toggle" id="storage-toggle">▼</span></div>
+                <div class="panel-content" id="storage-content"><div class="storage-info">Loading...</div></div>
+            </div>
+            <div class="state-inspector">
+                <div class="panel-header" onclick="UI.togglePanel('state')"><span>State Inspector</span><span class="panel-toggle" id="state-toggle">▼</span></div>
+                <div class="state-content collapsed" id="state-content"></div>
+            </div>
+            <div class="log-panel">
+                <div class="panel-header" onclick="UI.togglePanel('logs')"><span>Event Log <span id="log-count" style="opacity:0.6">(0)</span></span><span class="panel-toggle" id="logs-toggle">▼</span></div>
+                <div class="log-content" id="logs-content"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+    /*
+     * CP v1.0.1 Runtime — Persistent Storage
+     * Version: 1.0.1
+     * Date: January 27, 2025
+     * 
+     * CHANGELOG from v1.0:
+     * - Fix 1: Added "off topic", "different subject" to scope boundary patterns (DPT-17)
+     * - Fix 2: Added intent.revised logging when Revise button clicked (DPT-19/L2)
+     * - Fix 3: Agent now suspended when context archived via New Context (EDGE-17)
+     * - Fix 4: User notification displayed when localStorage save fails (EDGE-22)
+     * - Fix 5: Added signal.received logging for all incoming signals (L1)
+     */
+
+    const STORAGE_KEYS = { contexts: 'cp_v1_contexts', intents: 'cp_v1_intents', nodes: 'cp_v1_nodes', pivots: 'cp_v1_pivots', actions: 'cp_v1_actions', frictions: 'cp_v1_frictions', agents: 'cp_v1_agents', logs: 'cp_v1_logs', session: 'cp_v1_session' };
+    
+    const Persistence = {
+        isAvailable: false,
+        init() { try { localStorage.setItem('cp_test', '1'); localStorage.removeItem('cp_test'); this.isAvailable = true; return true; } catch(e) { return false; } },
+        /* FIX 4 (EDGE-22): Added user notification when save fails */
+        save(k, d) { 
+            if (!this.isAvailable) return; 
+            try { 
+                localStorage.setItem(k, JSON.stringify(d)); 
+            } catch(e) { 
+                console.error('Storage save failed:', e);
+                UI.addMessage('system', '⚠️ Storage save failed: ' + e.message + '. Data may not persist.');
+            } 
+        },
+        load(k) { if (!this.isAvailable) return null; try { const j = localStorage.getItem(k); return j ? JSON.parse(j) : null; } catch(e) { return null; } },
+        clearAll() { Object.values(STORAGE_KEYS).forEach(k => localStorage.removeItem(k)); },
+        getSize() { let u = 0; Object.values(STORAGE_KEYS).forEach(k => { const i = localStorage.getItem(k); if(i) u += i.length * 2; }); return { used: u, total: 5*1024*1024 }; },
+        forceSaveAll() {
+            this.save(STORAGE_KEYS.contexts, Object.fromEntries(ContextStore.contexts));
+            this.save(STORAGE_KEYS.intents, Object.fromEntries(IntentStore.intents));
+            this.save(STORAGE_KEYS.nodes, Object.fr

@@ -1,0 +1,219 @@
+ observations persist locally.
+
+Working refinement:
+
+- ephemeral by default;
+- purpose-bound retention;
+- user-controlled expiry and deletion;
+- no assumption that local automatically means secure;
+- encrypted storage, protected keys, device-loss handling, recovery, and synchronization still require evidence-based specification.
+
+---
+
+# 7. PRESENCE AND NEW INTERACTION MODEL
+
+Ghost is not primarily a chat window.
+
+The fundamental interaction unit is a continuous human episode. Multiple episodes may coexist inside one live work field when the user is managing concurrent work.
+
+```text
+Human objective
+    -> Context recognition
+    -> Appropriate Presence
+    -> Preparation, discussion, or action
+    -> Outcome
+    -> Correction and learning
+    -> Continuity into the next surface
+```
+
+## 7.1 Presence states
+
+1. Away or Private.
+2. Ambient.
+3. Summoned.
+4. Accompanying.
+5. Protective Intervention.
+6. Reflection or Atlas.
+
+## 7.2 Come
+
+When the user says "Come," Ghost should arrive already situated.
+
+A useful arrival communicates:
+
+- I am here.
+- Where Ghost believes the user is.
+- Why Ghost believes it was called.
+- What Ghost does not know.
+- The most important unresolved matter.
+- What Ghost can actually do on the current surface.
+- How the user can correct or dismiss it.
+
+Ghost should not default to "How can I help?"
+
+## 7.3 UX primitives under exploration
+
+- Context Lens.
+- Thread.
+- Knot.
+- Gate.
+- Seed.
+- Echo.
+- Veil.
+- Atlas.
+- Ledger.
+- Capability Manifest.
+
+## 7.4 UX law
+
+> New interaction model; familiar controls.
+
+Novelty must improve understanding of Context, continuity, authority, action, privacy, and correction. Every spatial or ambient experience requires a complete accessible list or conventional equivalent.
+
+## 7.5 Magical relevance
+
+Founder direction:
+
+- The user should sometimes feel "How did it know?"
+- Ghost should not proactively narrate every source behind an ordinary useful insight.
+- The user should be able to correct the insight quickly.
+- Material action, dispute, serious mistake, or explicit user request must make relevant provenance available.
+
+Working principle:
+
+> Magic by default. Correction in one gesture. Provenance when needed.
+
+## 7.6 Kivo-derived interaction evidence
+
+The Kivo work produced a coherent candidate pattern for high-concurrency human-AI operation. It is not yet canonical Ghost UX.
+
+| Pattern | Candidate Ghost value | Current evidence |
+|---|---|---|
+| Live Work Field | See multiple active episodes without opening a queue item | Design-derived |
+| Large live work objects | Preserve enough real content to understand state at a glance | Design-derived |
+| Stable spatial continuity | Build spatial memory and reduce orientation cost | Design-derived |
+| Select without opening | Target one or many episodes quickly | Design-derived; isolated prototype |
+| Intent Action Dock | Reveal available intentions only when relevant | Design-derived; isolated prototype |
+| One intent, many plans | Compile one human goal into separate Context-specific plans | Design-derived |
+| Ready / Review / Excluded | Make batch safety and uncertainty explicit | Design-derived |
+| Lead / Listener / Scoped Participation | Let human and AI contribute without full replacement | Design-derived |
+| One outward voice | Prevent contradictory or duplicate external communication | Strong architectural recommendation |
+| Same-surface Focus Studio | Expand detail without losing the active field | Design-derived; isolated prototype |
+| Responsibility flow | Organize around who or what must contribute next | Design-derived |
+| AI microtasks over a selection | Let Ghost find, compare, summarize, or prepare without becoming a separate chat | Design-derived |
+
+## 7.7 Candidate Ghost interaction contract
+
+The following is ready for V0 simulation, not implementation authority:
+
+1. A **Work Episode** is one bounded unit of ongoing human-AI work.
+2. A **Live Work Field** shows several active episodes with stable positions and truthful state.
+3. Selection changes targeting, not ownership.
+4. Opening an episode expands detail in the same surface and preserves the wider field.
+5. An **Intent Action** describes the human's goal; it is not automatically an execution command.
+6. Ghost compiles one Context-specific action plan per selected target.
+7. Each plan is independently classified as ready, review required, excluded, or unsupported.
+8. A batch never shares private Context between targets.
+9. Lead, listener, participant, verifier, and executor are separate roles.
+10. Only one authorized outward action may occur for a target at a time.
+11. Capability state must distinguish available, preview-only, confirmation-required, ownership-required, blocked, and unsupported.
+12. The user can inspect why a target was included, reviewed, or excluded.
+
+### Ontology caution
+
+`Work Episode`, `Thread`, `Context`, `Task`, and `Knot` may overlap. They must not all become canonical objects before S-046 resolves their boundaries.
+
+---
+
+# 8. CONTINUOUS ONBOARDING
+
+## 8.1 Founder direction
+
+- Minimal explicit setup.
+- The user should not feel trapped in onboarding.
+- Understanding improves through ordinary work.
+- Calibration is continuous.
+- Scenarios should be personalized and enjoyable.
+- Pacing and pauses should be informed by psychology and Context.
+- The user can pause, defer, resume, or stop.
+- Existing AI histories can reduce repetitive teaching.
+- Calibration may continue across phone, desktop, speaker, car, and other surfaces.
+
+## 8.2 Working structure
+
+### Essential Ceremony
+
+Short explicit setup covering identity, keys, basic data boundaries, essential permissions, initial Context, and what Ghost may or may not do.
+
+### Continuous Calibration
+
+Learning through real tasks, corrections, Context changes, repeated outcomes, and natural breakpoints.
+
+### Just-in-Time Permission
+
+New data sources, sensors, integrations, or powers are requested only when the user can understand the immediate value.
+
+## 8.3 Anti-manipulation rule
+
+Ghost must not use improved knowledge of the user to optimize engagement, dependency, vulnerability, or persuasion against the user's interests.
+
+---
+
+# 9. CONTINUOUS IMPROVEMENT AND UPDATE GOVERNANCE
+
+Ghost may improve daily, but update types must remain separated.
+
+## 9.1 Improvement classes
+
+### Class 1 - Automatic understanding
+
+- retrieval;
+- Context matching;
+- pattern detection;
+- tool knowledge;
+- history organization.
+
+### Class 2 - Reversible adaptation
+
+- timing;
+- tone;
+- ordering;
+- density;
+- modality;
+- notification grouping;
+- low-risk workflow defaults.
+
+These must remain reversible, inspectable, Context-bounded, and inside an approved Improvement Envelope.
+
+### Class 3 - Proposed rule changes
+
+Ghost may propose a standing instruction, approval condition, recurring workflow, retention change, or escalation rule. It may not silently activate material authority.
+
+### Class 4 - New capability or integration
+
+Explicit approval required for new app access, sensor, account, data category, write access, model provider, executor, or data destination.
+
+### Class 5 - Governance, safety, privacy, or constitutional change
+
+Strong approval and independent verification required.
+
+### Class 6 - Company-issued software or model updates
+
+Use signed releases, testing, staged rollout, monitoring, and rollback appropriate to the risk.
+
+### Class 7 - Ghost-generated self-modification
+
+May be proposed and tested in a sandbox. It may not independently approve, sign, deploy, audit, or change its own governing constraints.
+
+## 9.2 No-self-amplification rule
+
+Ghost may never silently increase:
+
+- permissions;
+- data access;
+- sensor access;
+- data destinations;
+- action authority;
+- Safety Floor exceptions;
+- supervisor access;
+- control over its own verifier
