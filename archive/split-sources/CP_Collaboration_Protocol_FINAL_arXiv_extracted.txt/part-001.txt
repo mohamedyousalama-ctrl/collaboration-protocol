@@ -1,0 +1,111 @@
+red mental model research assumes bidirectional model inspection; human-AI interaction lacks this symmetry.
+2.3 Explainable AI
+The XAI literature [Miller, 2019, Gunning et al., 2019] focuses on making AI reasoning transparent
+after decisions are made. This post-hoc transparency is valuable but insucientby the time an
+explanation is oered, the silent inference has already occurred.
+Bansal et al. [2021] demonstrate that explanations improve human-AI team performance only
+when appropriately calibrated. Lai & Tan [2019] show that explanations alone do not guarantee
+appropriate reliance. These ndings support our argument that transparency mechanisms must be
+embedded in the interaction protocol itself.
+Gap: XAI explains AI decisions but does not prevent unauthorized decision-making.
+3\n\n--- PAGE 4 ---\n
+2.4 Trust in Automation
+Lee & See [2004] establish that appropriate trust calibration depends on understanding automation
+capabilities. Overtrust leads to automation bias; undertrust leads to disuse.
+The Collaboration Protocol provides a mechanism for dynamic trust calibration: users adjust
+Intent Control Degree based on evolving assessment of AI reliability. This operationalizes the
+appropriate reliance goal.
+Gap: Trust research identies the calibration problem but provides limited mechanisms for
+real-time adjustment.
+2.5 Prompt Engineering
+Work on prompt engineering [Liu et al., 2023, White et al., 2023] and conversational interface design
+[Clark et al., 2019] attempts to reduce ambiguity through better input formulation. We argue this
+addresses a symptom (ambiguous inputs) rather than the underlying cause (unauthorized inference).
+Even well-crafted prompts contain residual ambiguity; the question is how systems handle it.
+Gap: Prompt engineering treats ambiguity as an input problem; we treat it as a protocol
+problem.
+2.6 Current LLM Mitigation Mechanisms
+Contemporary LLM systems have developed partial mechanisms for handling ambiguity, which we
+review to contextualize our contribution.
+Clarication Questions. Modern conversational AI systems sometimes ask clarifying questions when facing ambiguous inputs. Claude's approach to ambiguity is inuenced by Anthropic's
+core design of helpfulness and honesty, with research showing that Claude's default behavior is
+to avoid unfounded speculation. When faced with ambiguous or sensitive requests, Claude 4 asks
+follow-up questions instead of guessing, reducing misunderstandings. However, these clarications
+are inconsistenttriggered by model uncertainty thresholds rather than user-specied control, and
+focused on preventing errors rather than preserving semantic authority.
+Chain-of-Thought Reasoning. OpenAI o1 thinks before it answersit can produce a long
+internal chain of thought before responding to the user. This approach makes reasoning more
+transparent but does not address the core issue: OpenAI forbids users from trying to reveal o1's
+chain of thought, which is hidden by design. Even when visible, chain-of-thought reveals how the
+model reasoned, not whether it had authority to make the semantic choices it made.
+Conversational Repair Research. HCI research has extensively studied breakdown recovery
+in chatbot interactions. Providing options and explanations were generally favored, as they manifest
+initiative from the chatbot and are actionable to recover from breakdowns. When chatbots are
+deployed to automate customer service, it is nearly inevitable that situations will arise in which they
+struggle to understand customer requests. Unfortunately, the onus of resolving such conversational
+breakdowns tends to fall on either the customer or the chatbot alone. This research focuses on
+recovering from misunderstandings rather than preventing unauthorized semantic decisions.
+Why These Mechanisms Remain Insucient. Current approaches share three limitations
+that CP addresses:
+1. Reactive, not proactive: Clarications occur when the model detects uncertainty, not when
+users request control over semantic decisions.
+2. Binary, not continuous: Systems either ask or don't askusers cannot specify their preferred
+level of involvement (the ICD contribution).
+4\n\n--- PAGE 5 ---\n
+3. Error-focused, not authority-focused: Existing mechanisms aim to reduce mistakes, not to
+preserve human ownership of meaning.
+The Collaboration Protocol complements these mechanisms by providing a user-controlled,
+proactive framework for semantic authority preservation.
+2.7 Agentic Systems and Multi-Turn Interaction
+Recent advances in LLM agents introduce additional considerations for intent preservation. Yao et
+al. [2023] present ReAct, which synergizes reasoning and acting by interleaving reasoning traces with
+task-specic actions. While ReAct improves interpretability by making reasoning visible, it does not
+address who authorized the semantic choices embedded in those reasoning traces. Similarly, Shinn et
+al. [2023] introduce Reexion, where agents verbally reect on task feedback and maintain episodic
+memory to improve decision-making across trials. This self-improvement mechanism enhances task
+success but operates after intent interpretation has occurredthe agent reects on outcomes, not
+on whether its interpretation of user intent was authorized.
+These agentic approaches share a common limitation from CP's perspective: they optimize for
+task completion rather than semantic authority. An agent using ReAct or Reexion may become
+highly eective at achieving goals, but those goals reect the agent's interpretation of user intent,
+not necessarily the user's actual intent. As agents become more autonomous and operate across
+extended interactions, the risk of accumulated silent inferences compounds. CP addresses this orthogonal dimension by surfacing intent-level decisions before the agent commits to an interpretation,
+regardless of how sophisticated its subsequent reasoning or reection may be.
+2.8 Summary: The Missing Layer
+Existing research addresses task allocation (who acts), explanation (why AI acted), and trust
+(whether to accept actions). No existing framework addresses semantic authority: who determines what actions mean before they are taken. The Collaboration Protocol lls this gap. Table 1
+summarizes how CP relates to existing approaches.
+3 Problem Denition: Silent Intent Inference
+3.1 Denition
+Silent Intent Inference is dened as:
+Any machine-generated assumption about user intent made without explicit human
+authorization, where the assumption materially aects the output.
+Key elements: (1) the assumption originates from the AI system; (2) it concerns what the user
+wants, not factual matters; (3) the user neither requested nor approved it; (4) it changes the output
+in a non-trivial way.
+3.2 Accountability Challenge Framing
+Silent Intent Inference represents a structural accountability challenge with potential downstream eects:
+5\n\n--- PAGE 6 ---\n
+Dimension Levels of
+Automation
+Explainable
+AI
+RLHF Human-inthe-LoopCollaboration
+Protocol
+Primary focus Task allocationPost-hoc explanationValue alignmentTask oversightSemantic authority
+When applied Design-time After output Training-time Runtime
+(gates)
+Runtime (continuous)
+Addresses ambiguity?No No Indirectly No Yes (core focus)
+User control
+mechanism
+Fixed levels None None Binary approvalICD (0.01.0)
+Surfaces decision points?No Post-hoc only No Predened
+only
+Yes (IPPs)
+Audit trail Partial Partial No Partial Full (IPP log)
+Preserves user
+agency?
+Partially No No Partially Yes (by design)
+Table 1: Comparison of the Collaboration Protocol with existing human-AI interaction
+frameworks. CP uniquely addresses semantic authoritywho determines meaningthro
