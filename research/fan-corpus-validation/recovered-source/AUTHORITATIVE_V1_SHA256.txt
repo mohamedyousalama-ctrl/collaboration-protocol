@@ -1,0 +1,4 @@
+# Authoritative recovery identities for the Fan corpus validation workstream.
+# The source-bundle line records the external recovery source identity; the workbook line is the exact v1 evidence identity.
+4998d3a509114a46d54232d6e6d7f6bc0353b271bfde75fd3ba7af66956cffa8  182607  files(3).zip
+3a5d4e82c2d65473b1117d70b68428efd89319386a89978871f38edf8ee8ed4a  31471   CP_Incident_Database_v1.xlsx
