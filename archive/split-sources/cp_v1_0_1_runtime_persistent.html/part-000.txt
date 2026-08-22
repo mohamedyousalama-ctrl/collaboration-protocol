@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CP v1.0.1 Runtime — Persistent Storage</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #333; line-height: 1.5; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 350px; gap: 20px; }
+        .main-panel, .side-panel { display: flex; flex-direction: column; gap: 15px; }
+        .header { background: #1a1a2e; color: white; padding: 15px 20px; border-radius: 8px; grid-column: 1 / -1; }
+        .header h1 { font-size: 1.4rem; font-weight: 600; margin-bottom: 5px; }
+        .header-subtitle { font-size: 0.85rem; opacity: 0.7; }
+        .session-controls { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        .session-controls button { padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer; font-size: 0.9rem; font-weight: 500; transition: all 0.2s; }
+        .btn-primary { background: #4361ee; color: white; }
+        .btn-primary:hover { background: #3a56d4; }
+        .btn-secondary { background: #e9ecef; color: #333; }
+        .btn-secondary:hover { background: #dee2e6; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-danger:hover { background: #c82333; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-success:hover { background: #218838; }
+        .btn-warning { background: #ffc107; color: #333; }
+        .btn-warning:hover { background: #e0a800; }
+        .btn-agent { background: #6f42c1; color: white; }
+        .btn-agent:hover { background: #5a32a3; }
+        .btn-agent:disabled { background: #ccc; color: #666; cursor: not-allowed; }
+        .btn-storage { background: #17a2b8; color: white; }
+        .btn-storage:hover { background: #138496; }
+        .status-bar { background: white; padding: 12px 15px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; gap: 20px; font-size: 0.9rem; flex-wrap: wrap; }
+        .status-item { display: flex; align-items: center; gap: 6px; }
+        .status-label { font-weight: 600; color: #666; }
+        .status-value { color: #333; background: #f0f0f0; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.85rem; }
+        .status-value.active { background: #d4edda; color: #155724; }
+        .status-value.pending { background: #fff3cd; color: #856404; }
+        .status-value.none { background: #f0f0f0; color: #999; }
+        .status-value.agent-active { background: #e2d9f3; color: #6f42c1; }
+        .status-value.storage { background: #d1ecf1; color: #0c5460; }
+        .output-area { background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); min-height: 300px; max-height: 500px; overflow-y: auto; display: flex; flex-direction: column; }
+        .output-header { padding: 12px 15px; border-bottom: 1px solid #eee; font-weight: 600; background: #fafafa; border-radius: 8px 8px 0 0; position: sticky; top: 0; }
+        .output-content { padding: 15px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
+        .output-empty { color: #999; font-style: italic; text-align: center; padding: 40px; }
+        .message { padding: 12px 15px; border-radius: 6px; font-size: 0.9rem; border-left: 4px solid; }
+        .message-user { background: #e3f2fd; border-color: #2196f3; }
+        .message-system { background: #f5f5f5; border-color: #9e9e9e; }
+        .message-guardian { background: #e8f5e9; border-color: #4caf50; }
+        .message-guardian.refuse { background: #ffebee; border-color: #f44336; }
+        .message-friction { background: #fff3e0; border-color: #ff5722; border-width: 3px; }
+        .message-friction::before { content: "⚠️ FRICTION: "; font-weight: 700; }
+        .message-verification { background: #f3e5f5; border-color: #9c27b0; }
+        .message-agent { background: #ede7f6; border-color: #6f42c1; border-width: 2px; }
+        .message-agent::before { content: "🤖 "; }
+        .message-storage { background: #d1ecf1; border-color: #17a2b8; }
+        .message-storage::before { content: "💾 "; }
+        .message-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; opacity: 0.7; }
+        .input-area { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .input-wrapper { display: flex; gap: 10px; margin-bottom: 10px; }
+        .input-wrapper input { flex: 1; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 1rem; }
+        .input-wrapper input:focus { outline: none; border-color: #4361ee; }
+        .input-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .nodes-panel, .agent-panel, .state-inspector, .log-panel, .storage-panel { background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .panel-header { padding: 12px 15px; border-bottom: 1px solid #eee; font-weight: 600; background: #fafafa; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .panel-header:hover { background: #f0f0f0; }
+        .panel-toggle { font-size: 0.8rem; color: #666; }
+        .panel-content { padding: 15px; max-height: 300px; overflow-y: auto; }
+        .panel-content.collapsed { display: none; }
+        .node-item { padding: 10px 12px; background: #f8f9fa; border-radius: 5px; margin-bottom: 8px; border-left: 3px solid #4361ee; }
+        .node-id { font-size: 0.75rem; color: #666; font-family: monospace; }
+        .node-content { font-size: 0.9rem; margin-top: 4px; }
+        .node-meta { font-size: 0.75rem; color: #888; margin-top: 4px; }
+        .empty-state { color: #999; font-style: italic; text-align: center; padding: 20px; font-size: 0.9rem; }
+        .log-content { font-family: monospace; font-size: 0.8rem; background: #1a1a2e; color: #a0ffa0; padding: 15px; max-height: 400px; overflow-y: auto; border-radius: 0 0 8px 8px; }
+        .log-content.collapsed { display: none; }
+        .log-entry { padding: 4px 0; border-bottom: 1px solid #2a2a4e; }
+        .log-timestamp { color: #888; }
+        .log-type { color: #ffd700; font-weight: 600; }
+        .log-type.guardian { color: #00ff88; }
+        .log-type.friction { color: #ff6b6b; }
+        .log-type.agent { color: #b388ff; }
+        .log-type.storage { color: #00bcd4; }
+        .log-type.signal { color: #ffab40; }
+        .state-content { padding: 15px; font-family: monospace; font-size: 0.8rem; background: #f8f9fa; border-radius: 0 0 8px 8px; max-height: 300px; overflow-y: auto; }
+        .state-content.collapsed { display: none; }
+        .state-section { margin-bottom: 15px; }
+        .state-section-title { font-weight: 600; color: #4361ee; margin-bottom: 5px; font-size: 0.85rem; }
+        .state-json { background: white; padding: 8px; border-radius: 4px; border: 1px solid #e0e0e0; white-space: pre-wrap; word-break: break-all; }
+        .state-null { color: #999; font-style: italic; }
+        .pivot-item { padding: 8px 10px; background: #fffde7; border-radius: 5px; margin-bottom: 8px; border-left: 3px solid #ffb300; font-size: 0.85rem; }
+        .agent-item { padding: 10px 12px; background: #f3e5f5; border-radius: 5px; margin-bottom: 8px; border-left: 3px solid #6f42c1; }
+        .agent-status { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 0.7rem; font-weight: 600; }
+        .agent-status.active { background: #d4edda; color: 
