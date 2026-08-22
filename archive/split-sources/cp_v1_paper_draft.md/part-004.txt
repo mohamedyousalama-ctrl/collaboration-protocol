@@ -1,0 +1,100 @@
+stitute success.
+
+### 4.5 Failure Injection Testing
+
+**Purpose:** Verify that CP surfaces failures rather than allowing them to proceed silently.
+
+**Test Cases:**
+
+| Test | Injection | Expected | Measurement |
+|------|-----------|----------|-------------|
+| Ambiguous signal | Submit "maybe" or "hmm" | Friction with `ambiguous_signal` | Binary: friction triggered? |
+| Scope boundary | Submit "off topic" signal | Friction with `scope_boundary` | Binary: friction triggered? |
+| Unverified intent | Request action before verification | Guardian refuses (PE-1/PE-2) | Binary: action blocked? |
+| Permission violation | Advisory agent attempts execution | Guardian refuses (PE-7/PE-8) | Binary: action blocked? |
+
+All tests produce binary outcomes: the system surfaced the failure as specified, or it did not.
+
+---
+
+## 5. Discussion
+
+### 5.1 Scope Boundaries
+
+CP addresses accountability at the interaction level. This scope is intentional and non-negotiable. We restate the explicit non-goals:
+
+CP does NOT:
+- Model long-term cognition or belief evolution
+- Infer latent, hidden, or subconscious user goals
+- Optimize outcomes, performance, or correctness
+- Learn preferences across sessions
+- Predict future intent
+- Replace institutional, legal, or organizational governance
+- Claim alignment, safety, or ethics guarantees beyond interaction accountability
+
+**Interpretation rule:**
+If a consideration cannot be resolved at the interaction level, CP does not attempt to solve it.
+
+These limitations are not weaknesses to be addressed in future work—they are definitional boundaries that allow CP to make verifiable claims within a tractable scope.
+
+### 5.2 Composability
+
+The Collaboration Protocol is intentionally complete only at the interaction level. It does not attempt to model long-horizon system evolution or collective learning. Instead, it guarantees semantic closure, intent traceability, and accountability for each human–AI decision cycle. This local completeness allows CP to function as a standalone interaction protocol, while remaining composable with external governance, human-in-the-loop, or institutional systems that operate at larger temporal or organizational scales.
+
+This composability is by design. CP operates at the interaction layer; organizational policies, legal requirements, and institutional audits operate above it. LLMs, agents, and tools operate below it. CP does not replace these systems—it provides a structured interface between human intent and AI execution that can be audited, verified, and governed.
+
+### 5.3 Limitations
+
+CP's limitations follow directly from its scope:
+
+**Single-session scope:** CP does not maintain state across sessions or learn user preferences over time. Each session begins fresh. This is intentional—cross-session learning implies inference of latent preferences, which CP explicitly avoids.
+
+**No outcome measurement:** CP does not evaluate whether actions produced good outcomes. It only verifies that actions were authorized. Outcome quality is outside CP's scope.
+
+**User burden:** CP requires explicit declarations and confirmations. This creates overhead compared to systems that infer intent. We view this as a feature, not a bug—the overhead is the cost of accountability.
+
+**Partial coverage:** CP addresses the interaction level only. Broader questions of value alignment, organizational accountability, or societal impact require mechanisms operating at different scales.
+
+---
+
+## 6. Conclusion
+
+We have presented the Collaboration Protocol (CP), a pre-hoc interaction protocol that establishes structural accountability for human–AI interaction. CP treats intent and context as first-class computational objects, requiring explicit declaration and verification before action. The responsibility chain ensures that every action traces to a verified user decision, and the friction mechanism surfaces ambiguity and missing verification rather than allowing potentially misaligned actions to proceed.
+
+CP makes no claims about optimization, preference learning, or outcome quality. It makes specific, verifiable claims about accountability: that actions require verified intent, that context boundaries are enforced, that decisions are traceable, and that the authorization chain can be reconstructed from logs. Our evaluation framework tests these claims through trace reconstruction and failure injection, producing binary outcomes that do not depend on subjective assessment.
+
+The protocol is intentionally complete only at the interaction level, remaining composable with external governance systems that address larger-scale concerns. This local completeness is not a limitation to be overcome—it is the foundation of CP's tractability and verifiability.
+
+This document is canonical for CP's interaction-level system model. Broader cognitive, organizational, or societal models are intentionally out of scope.
+
+---
+
+## References
+
+[1] Doshi-Velez, F., & Kim, B. (2017). Towards a rigorous science of interpretable machine learning. arXiv preprint arXiv:1702.08608.
+
+[2] Lipton, Z. C. (2018). The mythos of model interpretability. Queue, 16(3), 31-57.
+
+[3] Amershi, S., et al. (2019). Guidelines for human-AI interaction. CHI '19.
+
+[4] Horvitz, E. (1999). Principles of mixed-initiative user interfaces. CHI '99.
+
+[5] Cohen, P. R., & Levesque, H. J. (1990). Intention is choice with commitment. Artificial Intelligence, 42(2-3), 213-261.
+
+[6] Clark, H. H., & Brennan, S. E. (1991). Grounding in communication. Perspectives on socially shared cognition.
+
+[7] McTear, M., Callejas, Z., & Griol, D. (2016). The conversational interface. Springer.
+
+[8] Acquisti, A., et al. (2017). Nudges for privacy and security. ACM Computing Surveys.
+
+[9] Thaler, R. H., & Sunstein, C. R. (2008). Nudge: Improving decisions about health, wealth, and happiness.
+
+---
+
+## Acknowledgments
+
+[To be completed]
+
+---
+
+*Word count: approximately 4,800 words (excluding figures, tables, and references)*
