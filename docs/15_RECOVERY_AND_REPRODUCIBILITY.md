@@ -2,26 +2,27 @@
 
 ## 1. Purpose
 
-This file defines how a future researcher, engineer, lawyer, or successor AI window can verify what was preserved and reconstruct the specially encoded artifacts without relying on memory of this conversation.
+This file defines how a future researcher, engineer, lawyer, or successor AI window can verify what was preserved and reconstruct specially encoded artifacts without relying on memory of the preservation conversation.
 
 ---
 
-## 2. Source-identity verification
+## 2. Checksum and representation semantics
 
-Two root manifests are authoritative preservation aids:
+The checksum files have different roles. Read `MANIFEST_README.md` before using them.
 
-- `MANIFEST_SOURCE_BUNDLES_SHA256.txt` — fingerprints the major recovered source bundles represented by this archive.
-- `SOURCE_ARTIFACT_SHA256.txt` — fingerprints the individual recovered staging artifacts, including many files that are also preserved directly in Git.
+### Authoritative source-artifact manifest
 
-Verification procedure for any recovered source file:
+`MANIFEST_SHA256.txt` records SHA-256 identities for the final recovered preservation staging set used to build this archive. A matching source hash establishes byte identity with the recovered source artifact that was hashed; it does not establish the historical creation date printed inside that artifact.
 
-```sh
-sha256sum <file>
-```
+A path appearing in the manifest does **not by itself** prove that the original artifact bytes are present in Git under that same path. The repository may instead contain a direct text copy, ordered split parts, Base64 reconstruction, searchable conversion, source-bundle identity record, or an explicit exclusion/gap record.
 
-Compare the result with the exact path/hash entry in the manifest.
+### Recovered source-bundle identities
 
-A matching hash proves byte identity with the preserved source used in the August 2026 archive pass. It does not prove the historical creation date printed inside the artifact.
+`MANIFEST_SOURCE_BUNDLES_SHA256.txt` fingerprints the major recovered bundles and now records their representation status explicitly. Several large binary source bundles were recovered and checksum-verified locally but could not be embedded as complete native binary payloads through the connected GitHub text-write interface used for this pass. Their hashes are provenance records; they are not claims that the bytes are recoverable from Git alone.
+
+### Superseded staging snapshot
+
+`SOURCE_ARTIFACT_SHA256.txt` is retained as preservation-process history but is **superseded**. Final audit spot checks found that several values in that earlier staging snapshot differ from the final recovered staging tree. Do not use it as the authoritative checksum manifest.
 
 ---
 
@@ -50,7 +51,29 @@ The workbook is an empirical **candidate corpus**, not a completed ground-truth 
 
 ---
 
-## 4. Reconstructing Klear `session.js`
+## 4. Reconstructing split textual sources
+
+High-value large textual sources are stored in ordered `part-*` series under `archive/split-sources/`.
+
+Read `archive/split-sources/README.md` before using them. It distinguishes two integrity classes:
+
+- **EXACT-VERIFIED** — Git blob identities were checked against the corresponding recovered local source parts; ordered concatenation reconstructs the recovered byte stream.
+- **SEARCHABLE-NORMALIZED** — readable/searchable content is retained, but connector/text normalization means the Git representation must not be described as byte-exact.
+
+For an EXACT-VERIFIED source:
+
+```sh
+cat archive/split-sources/CP_Master_Knowledge_File.md/part-* > CP_Master_Knowledge_File.md
+sha256sum CP_Master_Knowledge_File.md
+```
+
+Compare the result with the source SHA-256 in `archive/split-sources/README.md`.
+
+The public-paper extraction is intentionally classed SEARCHABLE-NORMALIZED. For publication authority, use the external TechRxiv record documented in `archive/publication-and-ip/TECHRXIV_PUBLIC_RECORD.md`.
+
+---
+
+## 5. Reconstructing Klear `session.js`
 
 The sanitized Klear session source is preserved as sequential parts because of repository-connector write-size constraints.
 
@@ -67,11 +90,11 @@ bytes:   28599
 sha256:  04ccb4eb0b23d55d3d55e4f94bb10af54428ad1f152b3506e61e418d694269c6
 ```
 
-Do not mistake reconstruction success for frozen-CP conformance. The implementation evidence documents retry-path and reporting behavior that diverges from an ideal reference runtime.
+Do not mistake reconstruction success for frozen-CP conformance. Klear is historical/applied evidence, and the recovered implementation diverges from a clean frozen-v1.0.1 reference implementation.
 
 ---
 
-## 5. Security exclusion verification
+## 6. Security exclusion verification
 
 The secret-bearing historical Klear environment file is **not** reconstructible from this Git repository by design.
 
@@ -81,9 +104,11 @@ Its identity-only SHA-256 is recorded in:
 
 This is an intentional preservation exception. Secret values must not be reintroduced merely for archival completeness.
 
+Third-party ACM template PDFs are likewise excluded and identified by hash in the security record.
+
 ---
 
-## 6. Evidence hierarchy for future work
+## 7. Evidence hierarchy for future work
 
 When two artifacts conflict, use this order of reasoning rather than choosing whichever source supports a preferred conclusion:
 
@@ -99,7 +124,7 @@ A later summary may clarify history, but it must not silently overwrite a primar
 
 ---
 
-## 7. Frozen CP conformance protocol for future runtimes
+## 8. Frozen CP conformance protocol for future runtimes
 
 Any future implementation claiming **CP v1.0.1 conformance** should be tested against the normalized frozen semantic record, not against historical Klear behavior.
 
@@ -122,7 +147,7 @@ A conformance test should fail closed when a required frozen rule is absent. Do 
 
 ---
 
-## 8. Reproducing empirical work
+## 9. Reproducing empirical work
 
 ### Klear finance
 
@@ -134,7 +159,7 @@ Before reporting a final comparative rate:
 4. recompute results from code rather than copying spreadsheet headline cells;
 5. independently rate a blinded subset;
 6. disclose architecture/model differences between systems;
-7. preserve the exact dataset and scoring script hash.
+7. preserve the exact dataset and scoring-script hash.
 
 ### Naturalistic incident corpus
 
@@ -153,7 +178,7 @@ Treat health results as pilot-driven research until qualified clinical reviewers
 
 ---
 
-## 9. Reproducing the current authority-continuity benchmark
+## 10. Reproducing the current authority-continuity benchmark
 
 Use the following causal separation:
 
@@ -173,27 +198,30 @@ For the core benchmark, eliminate ambiguity at authorization time and inject onl
 
 Record exact state versions before approval, at Guardian evaluation, and at mutation execution.
 
+This benchmark family is a **current research direction**, not part of frozen CP v1.0.1 and not yet an empirically established result.
+
 ---
 
-## 10. Future archive additions
+## 11. Future archive additions
 
 For every newly recovered primary artifact:
 
-1. add it without modifying historical bytes;
+1. add it without modifying historical bytes where technically possible;
 2. compute SHA-256;
 3. record source/provider and recovery date;
 4. state what proposition the artifact supports;
 5. state what it does not prove;
 6. classify it as frozen/history/evidence/extension/hypothesis;
-7. update `docs/11_ASSET_REGISTER.md` and the relevant lineage/contradiction records.
+7. record whether its repository representation is exact, normalized, converted, or identity-only;
+8. update `docs/11_ASSET_REGISTER.md` and the relevant lineage/contradiction records.
 
-Do not delete superseded documents. Mark them superseded and preserve the chain.
+Do not delete superseded documents merely because a later account is cleaner. Mark them superseded and preserve the evidentiary chain.
 
 ---
 
-## 11. Independent double-check checklist
+## 12. Independent double-check checklist
 
-Before using this repository for a paper, patent filing, public benchmark, or investor/partner claim, independently check:
+Before using this repository for a paper, patent filing, public benchmark, investor/partner claim, or external research exchange, independently check:
 
 - [ ] provenance dates against external records;
 - [ ] all cited CP terms against the correct lineage;
@@ -202,7 +230,7 @@ Before using this repository for a paper, patent filing, public benchmark, or in
 - [ ] every “validated/proven” word against actual completed evidence;
 - [ ] secrets and personal data before public release;
 - [ ] third-party content/licensing;
-- [ ] source artifact hashes;
+- [ ] source artifact hashes and representation class;
 - [ ] unresolved contradictions register;
 - [ ] whether current working hypotheses have actually been tested.
 
