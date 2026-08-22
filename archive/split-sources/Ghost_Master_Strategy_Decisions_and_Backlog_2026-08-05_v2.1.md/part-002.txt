@@ -1,0 +1,218 @@
+;
+- voice or text;
+- gendered or neutral;
+- warm or formal;
+- humor;
+- animation;
+- name;
+- visual form;
+- proactive appearance frequency.
+
+Persona may never control permission, truth, safety, retention, authority, or supervisor access.
+
+## FD-08 - Version and development method
+
+**Founder decision:** Follow recognized software, secure-development, AI-risk, readiness, evidence-gated, and falsifiable product-development methodologies.
+
+Separate:
+
+1. Product generation.
+2. Product edition.
+3. Capability manifest per integration.
+4. CP kernel or compatibility version.
+
+Do not mix these into one version number.
+
+## FD-09 - Falsification law
+
+**Founder decision:** Approved.
+
+> Ghost's constitutional principles and human need remain protected; every mechanism, market wedge, sensor, persona form, integration, and version sequence is testable and may be narrowed, deferred, replaced, or rejected by evidence.
+
+### Protected principles
+
+- human authorship;
+- memory is not authority;
+- no self-amplification;
+- capability honesty;
+- correction and revocation;
+- local transient raw processing;
+- evidence for material actions;
+- no hidden manipulation.
+
+### Falsifiable mechanisms
+
+- sensing sources;
+- history import;
+- Presence form;
+- market wedge;
+- connector;
+- UI metaphor;
+- action implementation;
+- onboarding technique;
+- version sequence;
+- business packaging.
+
+---
+
+
+## FD-10 - Kivo as a bounded interaction proving ground
+
+**Founder direction:** Selected Ghost and CP interaction mechanics may be explored in Kivo's bounded WhatsApp restaurant environment to gain practical evidence about human-AI cooperation, without turning Kivo into Ghost or making Kivo's architecture authoritative for Ghost.
+
+### Accepted cross-product direction
+
+Kivo may test:
+
+- multiple live work episodes visible together;
+- stable spatial overview rather than a hidden inbox;
+- selection of one or many episodes without opening each one;
+- one human intention compiled into separate Context-specific plans;
+- `READY`, `REVIEW_REQUIRED`, and `EXCLUDED` action partitions;
+- human and AI lead, listener, and participation states;
+- one coherent outward voice;
+- same-window expansion into a detailed work studio;
+- responsibility flow and the next required contribution;
+- small AI microtasks over the selected set.
+
+### Separation laws
+
+1. Kivo remains a restaurant product; Ghost remains a user-owned continuity and governed-action product.
+2. Kivo implementation is evidence of feasibility, not proof of Ghost value.
+3. Kivo market results do not establish Ghost product-market fit.
+4. Restaurant-specific objects, language, permissions, and data do not silently enter the Ghost ontology.
+5. Cross-product evidence must be sanitized and must not transfer customer or tenant data.
+6. Shared mechanisms require independent Ghost threat modeling, accessibility testing, and falsification.
+7. No code-sharing or architecture-sharing decision is implied.
+
+### Current evidence status
+
+The interaction direction is **DESIGN-DERIVED** and partially **IMPLEMENTED ELSEWHERE** through an isolated Kivo prototype branch. It is not yet Ghost-user-tested, pilot-proven, or market-proven.
+
+# 4. THE FOR-YOU LAW
+
+When Mohamed marks a question "for you," the assistant must:
+
+1. Reconstruct the relevant Ghost vision, founder decisions, CP constraints, and product promise.
+2. Research the latest relevant science, standards, production technology, and market approaches.
+3. Separate mature practice, emerging technology, marketing claims, and unsupported assumptions.
+4. Compare the strongest approaches.
+5. Identify what current approaches fail to solve.
+6. Apply Ghost and CP inventions to create a stronger design.
+7. Red-team the result against safety, privacy, usability, human authority, commercial reality, and platform dependence.
+8. Recommend one solution, not only a list of options.
+9. Return to the founder only the remaining value trade-off that evidence cannot decide.
+10. Update the master decision, risk, and backlog state.
+
+The law does not authorize the assistant to decide founder values, company identity, prohibited uses, or moral commitments silently.
+
+---
+
+# 5. GHOST INTERNAL PRODUCT MODEL
+
+The customer experiences one Ghost.
+
+Internally, responsibilities must remain separable.
+
+| System | Responsibility | Prohibited behavior |
+|---|---|---|
+| Human Authority | Defines goals, confirms material meaning, grants and revokes authority | Cannot be silently replaced |
+| Presence | Communicates, appears, leaves, asks, explains, guides | Cannot invent authority |
+| Live Work Field or Episode Surface | Presents multiple active work episodes, selection, responsibility, and focus without losing overview | Cannot create authority, hide material state, or aggregate targets into one undifferentiated action |
+| Continuity Engine | Carries sourced context, projects, corrections, commitments, and history | Memory cannot become binding by itself |
+| Context Engine | Detects candidate Contexts and compiles minimal relevant state | Candidate Context cannot authorize material action |
+| CP Governance Kernel | Detects and governs material interpretation branches | Cannot execute or self-authorize |
+| Intervention and Authority Controller | Applies deterministic floors and semantic intervention policy | Cannot create its own constitutional rules |
+| Orchestrator | Routes work among tools and executors | Routing is not permission |
+| Executor or Connector | Performs permitted actions | Cannot widen permit or scope |
+| Evidence and Recovery Engine | Records, verifies, reconstructs, and assists recovery | Cannot rewrite historical events silently |
+| Independent Verifier | Tests critical updates and control behavior | Must remain separate from the component being verified |
+| Trusted Base | Protects keys, permissions, update verification, safety, revocation, and evidence integrity | Ghost may not directly modify protected roots |
+
+---
+
+# 6. CONTEXT, CONTINUITY, AND MEMORY
+
+## 6.1 General personal layer
+
+Ghost may maintain a user-owned general continuity layer containing:
+
+- explicit preferences;
+- confirmed standing instructions;
+- projects;
+- working methods;
+- communication standards;
+- commitments;
+- relationships and roles;
+- trusted information sources;
+- corrections;
+- selected histories;
+- dreams and Horizons;
+- permissions and prohibitions;
+- provisional observations and inferences.
+
+Every item must carry:
+
+- source;
+- type;
+- Context;
+- status;
+- confidence;
+- sensitivity;
+- freshness;
+- authority effect;
+- retention or review condition;
+- correction and revocation state.
+
+## 6.2 Knowledge states
+
+- Explicit.
+- Confirmed.
+- Observed.
+- Inferred.
+- Imported.
+- Contested.
+- Revoked.
+- Expired.
+
+## 6.3 Context model
+
+Different projects, roles, tasks, and situations require different settings.
+
+Ghost may create a provisional Context quietly, but it must not silently create material authority.
+
+The user must be able to:
+
+- inspect;
+- correct;
+- rename;
+- merge;
+- split;
+- move;
+- confirm;
+- reject;
+- delete.
+
+## 6.4 LLM history recovery
+
+Ghost may use user-authorized histories from existing LLM systems to reduce repetitive onboarding.
+
+Imported material must be treated as provisional because histories may contain:
+
+- AI-generated falsehoods;
+- obsolete views;
+- fictional exploration;
+- third-party data;
+- Context-specific behavior;
+- statements the user rejected later.
+
+History recovery must extract candidates, preserve source and confidence, and confirm material rules through ordinary work rather than silently writing the user's Constitution.
+
+## 6.5 Local data direction
+
+Founder direction:
+
+- Raw environmental inputs remain local.
+- Raw inputs may be processed temporarily.
+- Raw inputs are deleted by default.
+- Only selected memories or derived 
