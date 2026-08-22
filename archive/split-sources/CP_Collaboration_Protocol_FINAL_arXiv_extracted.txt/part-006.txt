@@ -1,0 +1,108 @@
+rationalizationpotentially through domain-specic guidelines or decision trees.
+Without demonstrated agreement, the framework risks being too subjective for standardized use.
+Computational overhead. The proposed IPP detection algorithm involves generating k semantic perturbations and computing semantic volume, which adds latency before response generation. We estimate this overhead at 200800ms depending on model size and k value, which may
+be acceptable for high-ICD tasks (where users explicitly request thorough ambiguity handling) but
+problematic for low-ICD conversational contexts. Future implementation research must optimize
+this trade-o, potentially through cached embeddings, progressive detection, or lightweight proxy
+models. Real-world latency measurements are essential before production deployment.
+Scope limitations. The framework addresses text-based LLM interaction. Generalization to
+multimodal systems, autonomous agents, or non-language AI requires additional work.
+Context Root detection. Identifying reliable Context Roots across sessions requires persistent
+memory and semantic matching capabilities that current LLM deployments handle inconsistently.
+The Context Factor computation depends on accurate staleness estimation and conict detection,
+which remain engineering challenges. Cross-session context is particularly dicult, as it requires
+maintaining user-specic interaction histories while respecting privacy constraints.
+6.5 Illustrative Validation: Applying the IPP Codebook
+To demonstrate how the framework's constructs would be operationalized, we present an illustrative
+annotation of the Egypt/Cairo example from Section 1.
+Original Query: Tell me about the population of Egypt.
+IPP Identication (by two hypothetical coders):
+Hypothetical Inter-Rater Reliability: In this illustrative example, coders agreed on 2 of 4
+potential IPPs fully, with 1 partial agreement (same location, dierent type). Cohen's κ would be
+calculated as approximately 0.58below the 0.7 target but within range that suggests construct
+validity with renement.
+Silent Inferences Actually Made by AI: The AI resolved Egypt to Cairo (the city),
+population to current estimate, and tell me about to a single numerical answer. None of these
+were surfaced to the user.
+IFI Assessment (Hypothetical):
+ Semantic Alignment (SA): 0.3/1.0 (user wanted country, got city)
+ Constraint Preservation (CP): 0.7/1.0 (format was roughly appropriate)
+ Subjective Satisfaction (SS): 0.4/1.0 (user would be confused)
+19\n\n--- PAGE 20 ---\n
+Ambiguous Element
+Coder A Coder B Agreement
+Egypt (country
+vs. city Cairo
+Egypt)
+Scope IPP Scope IPP Yes
+population (current vs. historical)Temporal IPP Temporal IPP Yes
+tell me about
+(statistics vs. demographics vs.
+trends)
+Output Format
+IPP
+Interpretive IPP Partial
+Level of detail expectedScope IPP Not agged No
+ IFI = 0.4(0.3) + 0.3(0.7) + 0.3(0.4) = 0.45 (below acceptable threshold)
+This illustrative application demonstrates how the framework's constructs translate to measurable outcomes. Full validation requires the proposed studies with actual participant data.
+6.6 Simulation Studies: Preliminary Computational Evidence
+Prior to conducting human participant studies, we developed computational simulations to assess
+the feasibility of two key framework requirements: (1) whether materiality judgments can achieve
+inter-rater reliability, and (2) whether IPP detection introduces acceptable latency overhead. These
+simulations provide preliminary evidence supporting the framework's viability, though they do not
+substitute for empirical validation.
+6.6.1 Simulation A: Materiality Calibration
+We modeled ve synthetic annotators with varying levels of expertise (characterized by bias ∈
+[−0.1, 0.1] and noise σ ∈ [0.05, 0.20]) rating 83 ambiguous elements across 50 queries. Each annotator's materiality judgment was simulated as: perceived_impact = true_impact + bias + N (0, σ2
+),
+with binary materiality threshold at 0.5.
+Across 100 Monte Carlo trials, pairwise Cohen's κ = 0.61 ± 0.04 and Fleiss' κ = 0.61 (multirater), indicating moderate agreement approaching the 0.7 threshold. Critically, sensitivity analysis
+revealed that annotator training substantially improves reliability: κ = 0.52 for untrained annotators (σ = 0.20) versus κ = 0.81 for expert annotators (σ = 0.05). This suggests that with a
+structured 2-hour training protocol, the materiality construct can achieve acceptable inter-rater
+reliability.
+6.6.2 Simulation B: Computational Overhead
+We simulated IPP detection latency for 1,000 queries of varying length (10500 tokens, log-normal
+distribution), modeling three components: embedding computation, perturbation generation, and
+semantic volume analysis.
+Results for k = 5 perturbations:
+ Small model (rule-based): 22 ms mean, 33 ms 95th percentile
+20\n\n--- PAGE 21 ---\n
+ Medium model (lightweight LLM): 127 ms mean, 141 ms 95th percentile
+ Large model (API-based): 489 ms mean, 689 ms 95th percentile
+The medium model congurationappropriate for most production deploymentsadds approximately 127 ms overhead, which is imperceptible in typical LLM response latencies (15 seconds).
+For latency-critical applications, the small model (rule-based perturbations) provides adequate detection at 22 ms overhead. These results suggest IPP detection is computationally feasible for
+real-time deployment.
+Table 7: Simulation Study Results: Framework Feasibility
+Metric Value Interpretation
+Materiality Calibration (N=100 trials, 5 annotators)
+Cohen's κ (pairwise) 0.61 ± 0.04 Moderate
+Fleiss' κ (multi-rater) 0.61 Moderate
+κ with expert training 0.81 Substantial
+Computational Overhead (N=1000 queries, k=5)
+Small model latency 22 ms Imperceptible
+Medium model latency 127 ms Minimal impact
+Large model latency 489 ms Noticeable
+Note: These are computational simulations, not empirical ndings. Results are preliminary and await validation
+with human participants in the proposed studies.
+Simulation Limitations. These simulations make simplifying assumptions: annotator behavior is modeled as Gaussian noise around true values, latency components are estimated from
+published benchmarks rather than measured in deployment, and query complexity is synthetically
+generated. The simulations demonstrate plausibility, not validity. Human participant studies remain
+essential.
+6.7 Addressing Interface Burden
+A signicant concern is that surfacing Intent Pivot Points may create choice fatiguethe cognitive
+burden from excessive decision requests [Schwartz, 2004]. We address this through three design
+principles:
+Pivot Impact Hierarchy. Not all pivots carry equal weight. We propose categorizing IPPs
+into three tiers based on consequence severity:
+ Critical: Irreversible or high-stakes decisions (legal interpretation, medical recommendation,
+major scope change). Always surfaced regardless of ICD setting.
+ Signicant: Decisions aecting output quality or direction (tone, format, audience assumptions).
+Surfaced when ICD ≥ 0.5.
+ Minor: Easily reversible or cosmetic choices (word selection, paragraph ordering). Surfaced only
+when ICD ≥ 0.9.
+This hierarchy enables an optimization principle: minimize pivot surfacing count while maximizing intent delity. Study 3 explicitly tests whether users can identify optimal ICD levels for
+dierent task types.
+21\n\n--- PAGE 22 ---\n
+Task-Adaptive ICD. The framework makes no normative claim that higher ICD is universally
+better. Consider two tasks: producing a two-hour cinema lm requires ICD 0.81.0 (irreversible
+decisions, high investment, creative vision critical), while drafting an internal anno
