@@ -1,0 +1,99 @@
+ed on prior HCI research on human-AI collaboration [Bansal et al., 2021, Lai & Tan, 2019], we
+assume medium eect sizes (Cohen's d = 0.5) for behavioral outcomes and somewhat larger eects
+(d = 0.6) for subjective measures where manipulation is salient.
+For Study 1 (prevalence estimation), N=200 provides 95% condence intervals of ±7% for proportions near 60-70%, sucient precision to test our hypotheses.
+For Study 3 (4-group comparison), N=240 (60 per cell) achieves power = 0.80 to detect medium
+eects (f = 0.25) in one-way ANOVA at α = 0.05. The mixed design increases power for withinsubject comparisons.
+For Study 4 (4-group between-subjects), N=160 (40 per cell) achieves power = 0.80 to detect
+medium-large eects (d = 0.55) in planned contrasts between adjacent conditions.
+These sample sizes balance statistical rigor with practical constraints. Sensitivity analyses will
+be conducted to assess robustness to smaller-than-expected eects.
+5.3 Study 2: IPP Annotation Reliability
+Research Question: Can Intent Pivot Points be reliably identied?
+Method: 100 transcripts from Study 1. Four trained coders + two expert validators. Eighthour training on IPP codebook. Independent annotation of all IPPs.
+Success Criteria: κ > 0.7 (acceptable); κ > 0.8 (good).
+5.4 Study 3: ICD Eect on Collaboration Quality
+Research Question: Does Intent Control Degree aect intent delity and satisfaction?
+16\n\n--- PAGE 17 ---\n
+Hypotheses: H3a: Higher ICD → higher IFI. H3b: Eect moderated by task complexity. H3c:
+Higher ICD increases time but reduces revisions.
+Design: 4 (ICD: 0.2, 0.5, 0.8, 1.0) × 3 (Complexity) mixed design. N=240 (60 per ICD
+condition). Custom interface implementing ICD conditions.
+Measures: IFI, task time, revision count, NASA-TLX, satisfaction.
+5.5 Study 4: IPP Intervention Eect
+Research Question: Does intervention at IPPs improve alignment?
+Design: Four between-subjects conditions: Control (no pivot exposure), Post-hoc (pivots after
+generation), Real-time (pivots during generation), Interactive (user edits pivots mid-generation).
+N=160 (40 per condition).
+Prediction: Interactive > Real-time > Post-hoc > Control.
+5.6 Pilot Protocol Summary
+A 30-day pilot study (∼$2,300 budget) can establish baseline Silent Inference prevalence: Week 1
+(task design), Week 2 (n=100 data collection via Prolic), Week 3 (coding), Week 4 (analysis). See
+Supplementary Material for complete protocol.
+6 Discussion
+6.1 Theoretical Implications
+The Collaboration Protocol contributes to human-AI interaction theory by identifying a previously
+unnamed failure modeSilent Intent Inferenceand positioning it as a protocol-level rather than
+capability-level problem. This reframing has signicant implications.
+First, it suggests that improvements in model capability alone will not resolve collaboration
+failures if the underlying interaction protocol permits unauthorized inference. A more capable
+model making silent inferences may produce more sophisticated errors that are harder to detect.
+Second, the framework introduces semantic authority as a rst-class concern in human-AI interaction, complementing existing work on task allocation, explanation, and trust. This lls a gap
+in the theoretical landscape.
+Third, the operationalization of constructs (ICD, IPP, IFI) provides concrete mechanisms for
+translating abstract principles into measurable system behaviors, enabling empirical research on
+intent preservation.
+6.2 Practical Implications
+For system designers, the framework oers concrete guidance: implement adjustable ICD controls,
+surface detected IPPs before generation, maintain audit trails of intent transformations, and preserve
+user override capability throughout interaction.
+For organizations deploying AI systems in high-stakes contexts, CP compliance criteria provide
+an auditable standard for intent governance. The framework supports accountability requirements
+by making inference behavior traceable.
+For users, the Intent Control Degree concept provides a mental model for understanding and
+controlling AI behaviormoving beyond the binary of trust the AI or avoid the AI toward
+nuanced calibration.
+17\n\n--- PAGE 18 ---\n
+6.3 IPP Logging for Enterprise Accountability
+A signicant practical contribution of the Collaboration Protocol is the IPP Loga structured audit trail capturing every intent-critical decision made during human-AI interaction. For enterprises
+deploying AI in regulated or high-stakes contexts (legal, medical, nancial), this log addresses a fundamental accountability gap: the inability to reconstruct why an AI system produced a particular
+output.
+Log Structure. Each IPP Log entry captures:
+ Timestamp and session ID: When and where the decision occurred
+ Original query: The user's input at the decision point
+ Detected IPP: The ambiguous element and its type (Scope, Temporal, etc.)
+ Materiality score: The computed M(a) value from Equation 2
+ Context Root: The source of semantic anchoring (intra-session, cross-session, environmental,
+or null), including source location, anchor text, and condence level
+ Context Factor: The CF value indicating whether prior context resolved (< 1.0) or amplied
+(> 1.0) the ambiguity
+ Interpretations considered: The semantic alternatives the system identied
+ Resolution method: Whether surfaced to user (and their choice) or resolved silently (with ICD
+justication)
+ Final interpretation: The meaning adopted for generation
+Accountability Applications. The IPP Log enables several enterprise-critical functions:
+1. Audit trails: Compliance teams can review exactly which semantic decisions were made and
+whether users authorized themessential for regulated industries.
+2. Dispute resolution: When AI outputs cause harm, the log provides evidence of whether the
+system followed protocol (surfaced material IPPs) or failed (silent inference on critical ambiguity).
+3. Continuous improvement: Aggregated logs reveal patternswhich query types generate the
+most IPPs, which resolutions users most frequently overrideinforming system renement.
+4. Legal defensibility: Organizations can demonstrate due diligence by showing their AI systems
+implement intent governance with documented decision trails.
+Implementation. IPP Logs can be stored as structured JSON, integrated with existing enterprise logging infrastructure, and retained according to organizational data policies. The logging
+overhead is minimal (metadata only, not full conversation storage) and can be implemented independently of the IPP detection algorithm itself.
+This accountability infrastructure transforms the Collaboration Protocol from a theoretical
+framework into a practical compliance tooladdressing the growing regulatory focus on AI transparency and explainability.
+18\n\n--- PAGE 19 ---\n
+6.4 Limitations
+Several limitations bound the current contribution:
+No empirical validation yet. The framework's claims are hypotheses requiring the proposed
+studies. Until validated, they remain theoretical assertions.
+Ecological validity concerns. Lab tasks may not capture real-world complexity. Field studies
+with professional users are needed.
+IPP boundary cases. Despite the taxonomy, edge cases may resist clean classication. Reliability testing will reveal construct boundaries.
+Materiality calibration. The framework asserts that only material ambiguities constitute
+IPPs, but materiality is context-dependent. A critical question is whether dierent annotators
+can reliably agree on what counts as material. Study 2 (IPP Coding Reliability) directly tests
+this: if inter-rater agreement (κ > 0.7) cannot be achieved, the materiality threshold requires
+more precise ope
