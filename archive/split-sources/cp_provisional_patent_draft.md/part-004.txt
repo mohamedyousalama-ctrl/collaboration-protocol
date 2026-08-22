@@ -1,0 +1,72 @@
+nd awaiting user resolution;
+- requiring explicit intent declaration or confirmation from the user;
+- verifying the intent state through explicit user confirmation;
+- constructing a candidate action based on verified intent;
+- evaluating the candidate action at a second checkpoint against pre-execution rules;
+- upon a refuse decision, blocking the action and logging the reason;
+- upon an allow decision, executing the action and logging completion; and
+- emitting output with trace metadata including context identifier, intent identifier, action identifier, and timestamps.
+
+**Claim 2.** A system for intent-verified, constraint-preserving execution in human–AI interaction, comprising:
+- a context store configured to persist scope, constraints, and context lifecycle;
+- an intent store configured to persist declarations, verification status, and lifecycle;
+- a node store configured to persist user commitments and annotations;
+- an action store configured to persist action requests, execution status, and outputs;
+- a friction store configured to persist accountability checkpoints;
+- a log store configured as an append-only audit trail;
+- a guardian module configured as a read-only evaluation component that issues gate decisions at critical checkpoints; and
+- a signal classifier configured to determine signal clarity, intent presence, and context fit.
+
+**Claim 3.** A non-transitory computer-readable medium storing instructions that, when executed by a processor, cause the processor to perform operations comprising the method of Claim 1.
+
+### Dependent Claims
+
+**Claim 4.** The method of Claim 1, wherein the post-classification rules comprise:
+- if signal is ambiguous, then clarify;
+- if signal is out of scope, then clarify;
+- if signal requests action without context, then clarify; and
+- if signal is clear and no action requested, then allow.
+
+**Claim 5.** The method of Claim 1, wherein the pre-execution rules comprise:
+- if no intent exists, then refuse;
+- if intent is not verified or active, then refuse;
+- if intent does not match action, then refuse;
+- if context is not open, then refuse;
+- if agent is not in context's allowed list, then refuse;
+- if agent is not active, then refuse;
+- if agent type prohibits action type, then refuse;
+- if action exceeds agent permissions, then refuse;
+- if action violates context constraints, then refuse;
+- if unresolved friction exists, then refuse; and
+- if all checks pass, then allow.
+
+**Claim 6.** The method of Claim 1, wherein the friction event is triggered by one of: ambiguous signal, unverified intent, scope boundary violation, permission violation, high risk action, missing context, or conflict detected.
+
+**Claim 7.** The method of Claim 1, wherein the friction event is resolved by one of: user clarified, user confirmed, user revised, user abandoned, or system blocked.
+
+**Claim 8.** The method of Claim 1, wherein friction cannot be silently dismissed by the system and only user action resolves friction.
+
+**Claim 9.** The system of Claim 2, wherein the guardian module has no write access and cannot modify what it evaluates.
+
+**Claim 10.** The system of Claim 2, wherein all writes to any store generate log entries in the log store.
+
+**Claim 11.** The system of Claim 2, wherein the log store is append-only.
+
+**Claim 12.** The method of Claim 1, further comprising maintaining a responsibility chain from user signal to action, wherein every link in the chain is logged with timestamp and actor identification, no link may be skipped or compressed, and the chain is reconstructible from logs alone.
+
+---
+
+**End of Provisional Patent Application**
+
+---
+
+## SUMMARY
+
+- Sections completed: 9/9
+- Guardian rules included: 15/15 (4 PC + 11 PE)
+- Friction triggers included: 7/7
+- Friction resolutions included: 5/5
+- Diagrams referenced: 5/5
+- Prohibited terms found outside Background/Non-Goals: 0
+- Total word count: ~3,850
+- New concepts introduced: 0
