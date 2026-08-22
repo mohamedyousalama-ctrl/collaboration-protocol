@@ -60,30 +60,45 @@ Durable outputs:
 
 ## WP3 — Locate and verify seven source conversations
 
-**Status:** ACTIVE — NEXT WORK PACKAGE
+**Status:** ACTIVE — SOURCE DISCOVERY IN PROGRESS
 
 Families: GPT 5, AUD 22, CDX 5, W38 8, W39 7, KBD 4, KPF 1.
 
-Current state:
-- AUD: `PARTIAL` because the preserved research record says its raw transcript was recovered, but the exact primary artifact still must be located and mapped.
-- GPT/CDX/W38/W39/KBD/KPF: primary transcript availability not yet proven.
-- The exact `files(3).zip` research bundle does not by itself prove all seven transcripts are present.
+### WP3 progress
+
+- **GPT — `SOURCE_EXTRACT_ONLY` / 5 of 5 mapped.** Recovered `extract_chatgpt_w1_2026-07-30.md` from the user's file library. Raw size 12,815 bytes; SHA-256 `22ae455d95c1776bb2dac17fd73139c6764c7dc96fd69caddd3215da31396c83`. The report maps exactly to GPT-001..005 and restores full A4 Possible Interpretations for those rows. Its own limitations state that the underlying conversation was truncated/compacted in places, so it is derivative evidence only. GPT primary C9 confirmation remains **0/5**.
+- **AUD — `PARTIAL`.** The preserved research record and AUD-018 state that a raw transcript was recovered from disk. Multiple source-adjacent auditor files are present in the Library, but the exact independently readable raw transcript has not yet been located/mapped.
+- **CDX — `SOURCE_EXTRACT_REFERENCED_NOT_LOCATED`.** CDX-005 names the historical file `outputs/extract_codex_w1_2026-07-30.md`; current Git/Library search has not yet recovered that exact file.
+- **W38 — search pending.** Source-adjacent builder/proof handbacks have been found, but not the exact 8-record extract or complete primary transcript.
+- **W39 — search pending.** No exact 7-record extract/complete transcript proven; W39-002 remains especially important because its A3 trigger is `NOT OBSERVABLE` in v1.
+- **KBD — search pending.** No exact 4-record extract/complete primary transcript proven.
+- **KPF — search pending.** No exact one-record extract/complete primary transcript proven.
+
+Current verification totals:
+- corpus rows tracked in quote register: **52/52**;
+- derivative source-extract mapped: **5/52**;
+- primary-transcript C9 `CONFIRMED`: **0/52**;
+- C9 `CONTRADICTED`: **0/52**.
 
 Tasks:
 - [x] Create source-availability matrix.
-- [ ] Search Git and preserved source bundles for exact transcript/source-extract artifacts.
-- [ ] Classify each family as `PRIMARY_TRANSCRIPT_FOUND`, `SOURCE_EXTRACT_ONLY`, `PARTIAL`, or `NOT_FOUND`.
-- [ ] Map every incident to its best source location.
-- [ ] Verify A3/A8 chronology and quotations where primary evidence exists.
-- [ ] Recommend C9 status only after primary-source checks.
+- [x] Initialize 52-row quote-verification register.
+- [x] Recover and map GPT extraction report 5/5.
+- [x] Recover GPT A4 fields that were absent from workbook v1.
+- [ ] Continue searching Git/Library/source bundles for AUD/CDX/W38/W39/KBD/KPF artifacts.
+- [ ] Locate independently readable primary evidence where available.
+- [ ] Map every incident to best available source location.
+- [ ] Verify A3/A8 chronology and quotations against primary evidence.
+- [ ] Upgrade C9 only after primary-source checks.
 
-Deliverables:
+Durable WP3 outputs:
 - `SOURCE_CONVERSATION_AVAILABILITY.md`
 - `QUOTE_VERIFICATION_REGISTER.md`
+- `source-evidence/GPT_SOURCE_EXTRACT_INDEX.md`
 
 ## WP4 — Classification recommendations
 
-**Status:** WAITING FOR WP3 EVIDENCE
+**Status:** WAITING FOR SUFFICIENT WP3 EVIDENCE
 
 ChatGPT prepares recommendations only for C0, C1, C2, C3, C4, C6, C7, C8, C9, C10. C5 TRUE INTENT remains exclusively Mohamed's researcher decision.
 
@@ -118,7 +133,7 @@ Created under `fan-exchange/`:
 |---|---|---|
 | 1 | Freeze/reconstruct v1 | **COMPLETE** |
 | 2 | Audit all 52 | **COMPLETE — 52/52** |
-| 3 | Source conversations | **ACTIVE — NEXT** |
+| 3 | Source conversations | **ACTIVE — GPT 5/5 extract-mapped; 0/52 primary-confirmed** |
 | 4 | Classification recommendations | WAITING FOR WP3 |
 | 5 | Researcher decisions | WAITING |
 | 6 | Independent QC | DEFERRED |
