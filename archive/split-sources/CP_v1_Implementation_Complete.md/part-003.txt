@@ -1,0 +1,262 @@
+1 | `ctx_001` — open |
+| Intent | 1 | `int_001` — explore, active |
+| Node | 1 | `node_001` — Clinician trust and adoption |
+| Pivot | 1 | `piv_001` — Patient-facing transparency |
+| Action | 1 | `act_001` — executed |
+| FrictionEvent | 0 | None |
+
+---
+
+## 3.4 Accountability Reconstruction
+
+**Question:** How was node_001 created?
+
+**Reconstruction:**
+- **Who initiated:** User (Turn 4)
+- **Under which context:** ctx_001
+- **With which intent:** int_001 (verified)
+- **Why allowed:** User confirmed commitment; within scope; no violation
+
+---
+
+# STEP 4 — FAILURE HANDLING
+
+---
+
+## 4.1 Failure Categories
+
+| Failure Mode | Definition |
+|--------------|------------|
+| **Silent Intent Inference** | System acts on assumed intent without verification |
+| **Context Collapse** | Context boundaries are lost, merged, or ignored |
+| **Unverifiable Action** | Action cannot be traced to verified intent |
+| **Agent Scope Leakage** | Agent operates outside assigned permissions |
+| **Retrospective Justification** | System fabricates rationale after action |
+
+---
+
+## 4.2 Failure Scenarios and Responses
+
+### Scenario A — Silent Intent Inference (Prevented)
+
+**Situation:** User says "It would be nice to have a summary."
+
+**Risk:** System generates summary without verification.
+
+**CP Response:**
+- Signal classified as `ambiguous`
+- FrictionEvent triggered: `ambiguous_signal`
+- System asks: "Would you like me to generate a summary? Please confirm."
+
+**Why CP Preserved:** Intent not inferred; system paused for verification.
+
+---
+
+### Scenario B — Context Collapse (Prevented)
+
+**Situation:** User in Context A says "Also remind me to email about the grant."
+
+**Risk:** Unrelated task merged into current context.
+
+**CP Response:**
+- Signal classified as `out_of_scope`
+- FrictionEvent triggered: `scope_boundary`
+- System offers: Create separate context, note as pivot, or discard
+
+**Why CP Preserved:** Context boundaries remained intact.
+
+---
+
+### Scenario C — Unverifiable Action (Blocked)
+
+**Situation:** Action request reaches execution without verified intent.
+
+**Risk:** Action executes without accountability.
+
+**CP Response:**
+- Gate Decision: `Refuse`
+- Action state: `blocked`
+- FrictionEvent triggered: `unverified_intent`
+- System requests intent confirmation
+
+**Why CP Preserved:** Action did not execute; failure surfaced.
+
+---
+
+### Scenario D — Agent Scope Leakage (Blocked)
+
+**Situation:** Advisory agent attempts to write to file.
+
+**Risk:** Agent exceeds permissions.
+
+**CP Response:**
+- Gate Decision: `Refuse`
+- FrictionEvent triggered: `permission_violation`
+- System explains limitation and offers alternatives
+
+**Why CP Preserved:** Permission boundaries enforced.
+
+---
+
+### Scenario E — Retrospective Justification (Prevented)
+
+**Situation:** User asks "Why did you do that?"
+
+**Risk:** System fabricates rationale.
+
+**CP Response:**
+- System retrieves log for the action
+- Returns factual reconstruction only
+- No post-hoc rationalization
+
+**Why CP Preserved:** Explanation is factual, not fabricated.
+
+---
+
+## 4.3 Failure Response Summary
+
+| Failure Mode | Trigger Type | Response | Resolution |
+|--------------|--------------|----------|------------|
+| Silent Intent Inference | `ambiguous_signal` | Pause, confirm | User confirms or abandons |
+| Context Collapse | `scope_boundary` | Surface boundary | User chooses handling |
+| Unverifiable Action | `unverified_intent` | Block action | User provides intent |
+| Agent Scope Leakage | `permission_violation` | Block action | User reassigns or revises |
+| Retrospective Justification | N/A | Return log only | No fabrication |
+
+---
+
+# STEP 5 — OBSERVABILITY & LOGS
+
+---
+
+## 5.1 Purpose
+
+CP v1.0 mandates:
+> "For any action, the system must reconstruct: Who initiated, Under which context, With which intent, Why the system allowed it."
+
+Logging makes reconstruction possible.
+
+---
+
+## 5.2 Log Categories
+
+| Category | What is Logged | Why It Matters |
+|----------|----------------|----------------|
+| **Context Events** | Creation, transitions, scope changes | Proves boundaries existed |
+| **Intent Events** | Declaration, verification, transitions | Proves action was authorized |
+| **Node Events** | Creation, revision, archival | Proves commitment history |
+| **Pivot Events** | Creation, dismissal | Documents significance markers |
+| **Action Events** | Request, gate decision, execution, block | Proves what happened |
+| **Friction Events** | Trigger, resolution | Proves system paused appropriately |
+
+---
+
+## 5.3 Log Entry Structure
+
+| Field | Description |
+|-------|-------------|
+| `log_id` | Unique identifier |
+| `timestamp` | When the event occurred |
+| `event_type` | Category (context, intent, node, pivot, action, friction, guardian) |
+| `event_subtype` | Specific event (created, verified, blocked, etc.) |
+| `object_id` | Reference to primary object |
+| `context_id` | Context in which event occurred |
+| `intent_id` | Associated intent (if applicable) |
+| `agent_id` | Agent involved (if applicable) |
+| `user_id` | User who triggered the event |
+| `details` | Human-readable description |
+| `reason` | Why this event occurred |
+
+---
+
+## 5.4 Required Log Events
+
+### Context Logs
+| Event | Trigger |
+|-------|---------|
+| `context_created` | User confirms new context |
+| `context_state_changed` | State transitions |
+| `context_scope_revised` | User modifies scope |
+
+### Intent Logs
+| Event | Trigger |
+|-------|---------|
+| `intent_created` | User declares intent |
+| `intent_verified` | User confirms intent |
+| `intent_state_changed` | Any state transition |
+| `intent_abandoned` | User cancels intent |
+
+### Node Logs
+| Event | Trigger |
+|-------|---------|
+| `node_created` | User commits node |
+| `node_revised` | User edits node |
+| `node_archived` | Node deactivated |
+
+### Pivot Logs
+| Event | Trigger |
+|-------|---------|
+| `pivot_created` | User creates pivot |
+| `pivot_dismissed` | User removes pivot |
+
+### Action Logs
+| Event | Trigger |
+|-------|---------|
+| `action_requested` | Action enters pipeline |
+| `action_allowed` | Gate decision = Allow |
+| `action_executed` | Action completes |
+| `action_blocked` | Gate decision = Refuse |
+| `action_failed` | Action did not complete |
+
+### Friction Logs
+| Event | Trigger |
+|-------|---------|
+| `friction_triggered` | System introduces friction |
+| `friction_resolved` | User or system resolves |
+| `friction_escalated` | Could not be resolved |
+
+---
+
+## 5.5 Accountability Reconstruction
+
+| Question | Retrieved From |
+|----------|----------------|
+| Who initiated? | `action_requested` → `intent_created` → `user_id` |
+| Under which context? | `action_requested` → `context_id` |
+| With which intent? | `action_requested` → `intent_id` → `intent_verified` |
+| Why allowed? | `action_allowed` → `reason` |
+
+---
+
+## 5.6 Log Integrity Constraints
+
+| Constraint | Rationale |
+|------------|-----------|
+| Logs are append-only | Prevents tampering |
+| Logs cannot be deleted | Ensures reconstruction |
+| Every transition logged | No silent changes |
+| Every block includes reason | Explains refusals |
+| Timestamps are system-generated | Prevents manipulation |
+
+---
+
+## 5.7 CP Guardian Role (Clarification)
+
+Gate decisions, friction triggering, and invariant enforcement are performed by the **CP Guardian**:
+
+| Property | Description |
+|----------|-------------|
+| **No agency** | Guardian has no goals or intent |
+| **No execution** | Cannot create, modify, or delete objects |
+| **Evaluation only** | Evaluates conditions against constraints |
+| **Enforcement only** | Issues gate decisions, triggers friction |
+| **Recording only** | Writes log entries for its decisions |
+| **Observable** | All Guardian decisions must be logged |
+
+---
+
+# STEP 6 — CP SYSTEM ARCHITECTURE
+
+---
+
+## 6.1 Architectu
