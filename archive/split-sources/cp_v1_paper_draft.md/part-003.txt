@@ -1,0 +1,139 @@
+═════════════╝
+                      │
+                      ▼
+       ┌────────────────────────────┐
+       │  AWAITING USER RESOLUTION  │
+       │  System cannot auto-resolve│
+       └──────────────┬─────────────┘
+                      │
+      ┌───────┬───────┼───────┬───────┐
+      ▼       ▼       ▼       ▼       │
+  clarified confirmed revised abandoned
+      │       │       │       │       │
+      └───────┴───────┴───────┴───────┘
+                      │
+                      ▼
+       ╔═════════════════════════════╗
+       ║     FRICTION RESOLVED       ║
+       ║     ──────── LOGGED ─────── ║
+       ╚═════════════════════════════╝
+```
+**Figure 8.** Friction flow. Friction introduces deliberate pause at critical decision points. It gates commitment and action, not thinking. Resolution requires explicit user action, and all friction events are logged.
+
+### 3.5 State Management
+
+CP maintains persistent state through dedicated stores, each with bounded responsibility and explicit access constraints.
+
+| Store | Owns | Purpose |
+|-------|------|---------|
+| **Context Store** | Context objects | Persists scope, constraints, and context lifecycle |
+| **Intent Store** | Intent objects | Persists declarations, verification status, and lifecycle |
+| **Node Store** | Node and Pivot objects | Persists user commitments and annotations |
+| **Action Store** | Action records | Persists action requests, execution status, and outputs |
+| **Friction Store** | FrictionEvent objects | Persists accountability checkpoints |
+| **Log Store** | All event logs | Append-only audit trail |
+
+**Access Constraints:**
+- Stores accessed by ID only (maintains state boundaries)
+- All writes generate log entries (ensures reconstructibility)
+- Log Store is append-only (prevents tampering)
+- Cross-store queries require explicit joins (no implicit data merging)
+
+### 3.6 Architecture Positioning
+
+CP operates as an execution-time mediation layer, positioned between external governance systems and underlying execution infrastructure.
+
+```
+┌─────────────────────────────────────────────┐
+│ External Governance / Institutions          │
+│ (policy, law, org processes, audits)        │
+└───────────────▲─────────────────────────────┘
+                │ composable, optional
+┌───────────────┴─────────────────────────────┐
+│ Collaboration Protocol (CP)                 │
+│ • Context                                   │
+│ • Intent                                    │
+│ • Verification                              │
+│ • Accountability                            │
+│ • Friction                                  │
+│ • Annotation (pivots)                       │
+└───────────────▲─────────────────────────────┘
+                │ runtime host
+┌───────────────┴─────────────────────────────┐
+│ UI / LLMs / Agents / Tools                  │
+└─────────────────────────────────────────────┘
+```
+**Figure 2.** Architecture positioning. CP operates as an execution-time mediation layer, composable with external governance above and agnostic to implementation details below.
+
+---
+
+## 4. Evaluation
+
+This evaluation framework measures whether CP fulfills its interaction-level accountability claims. It does not measure optimization, efficiency, or user satisfaction, as these are explicitly outside CP's scope.
+
+### 4.1 Evaluation Objectives
+
+CP makes specific claims about its operation:
+
+| Claim | Mechanism |
+|-------|-----------|
+| No action without verified intent | Intent constraints, PE-1, PE-2 |
+| Context boundaries are enforced | Scope boundary friction, PE-4 |
+| All actions are traceable to user decisions | Responsibility chain, logging |
+| Ambiguity surfaces as friction, not silent failure | Friction mechanism, PC-1, PC-2 |
+| Accountability is reconstructible from logs | Log Store constraints |
+| Agents cannot self-authorize or escape scope | Agent constraints, PE-5 through PE-8 |
+
+Success is defined at the interaction level only. Success criteria are binary: every executed action traces to a verified intent, every verified intent traces to explicit user confirmation, every friction event is logged, every Guardian decision is logged, and a user can reconstruct the decision chain for any action using logs alone.
+
+### 4.2 Instrumented Sessions
+
+All metrics are derived from existing log event types. No additional instrumentation is required beyond the existing logging implementation.
+
+**Primary Metrics:**
+- Intent verification rate: proportion of declared intents that reach verified state
+- Node creation count: total user-committed structural constraints
+- Friction trigger count by type: distribution across trigger categories
+- Friction resolution rate: proportion of frictions resolved vs abandoned
+- Guardian decision distribution: proportion of Allow / Clarify / Refuse decisions
+
+**Collection Method:** Export session data, parse log entries, filter and group by event type and subtype, calculate counts and rates.
+
+### 4.3 Comparative Study Design
+
+**Conditions:**
+- Baseline: Standard chat interface without CP constructs
+- Treatment: CP-enabled interface with full protocol
+
+**Dependent Variables (from frozen claims):**
+- Misalignment rate: proportion of executed actions the user did not intend
+- User correction frequency: number of explicit corrections or reversals
+- Accountability reconstruction success: whether user can explain decision chain
+
+**Variables NOT Measured:** Task completion speed, task completion quality, user preference, cognitive load, or learning curve. These imply optimization, which is outside CP's scope.
+
+**Hypotheses:**
+- H1: In the CP condition, executed actions will have a lower misalignment rate
+- H2: In the CP condition, users will be able to reconstruct decision chains; in baseline, they will not
+- H3: In the CP condition, ambiguous signals will surface as friction events rather than proceeding silently
+
+These hypotheses test CP's accountability claims, not its superiority as a collaboration tool.
+
+### 4.4 Trace Reconstruction Protocol
+
+**Purpose:** Verify that CP's accountability guarantee holds—a user can explain how any decision was made using available logs.
+
+**Method:**
+1. Select an executed action from the session
+2. Present the user with the action and its output
+3. Ask: "Can you explain how this decision was made?"
+4. Provide access to session log entries
+5. Document reconstruction attempt
+
+**Success Criterion:** The user identifies all four elements from logs:
+- The context in which the action occurred
+- The intent that authorized the action
+- Evidence that the intent was verified
+- The Guardian decision that allowed execution
+
+Reconstruction success is binary. Partial reconstruction is recorded but does not con
