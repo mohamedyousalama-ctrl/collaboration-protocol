@@ -1,0 +1,296 @@
+       []
+    active_goals:       ["Identify relevant literature"]
+    active_intents:     []
+    allowed_agents:     []
+    state:              "open"
+    created_at:         "2025-01-26T10:00:00Z"
+    created_by:         "user_01"
+}
+```
+
+---
+
+## 1.2 Intent (Skeleton)
+
+```
+Intent {
+    intent_id:          string (unique)
+    context_id:         string (reference)
+    intent_type:        enum [explore, decide, generate, act, verify]
+    declaration_text:   string
+    declaration_origin: enum [user_typed, user_confirmed, user_revised]
+    scope_topic:        string
+    scope_depth:        string
+    scope_sources:      list of strings
+    scope_authority:    string
+    scope_risk:         string
+    confidence_level:   string | null
+    state:              enum [draft, declared, verified, active, executed, revised, abandoned, locked]
+    created_at:         timestamp
+    verified_at:        timestamp | null
+    executed_at:        timestamp | null
+}
+```
+
+**Example:**
+```
+{
+    intent_id:          "int_001"
+    context_id:         "ctx_001"
+    intent_type:        "explore"
+    declaration_text:   "Begin literature review on AI transparency in healthcare"
+    declaration_origin: "user_typed"
+    scope_topic:        "AI transparency in healthcare"
+    scope_depth:        "survey level"
+    scope_sources:      ["academic literature"]
+    scope_authority:    "information gathering only"
+    scope_risk:         "low"
+    confidence_level:   "high"
+    state:              "declared"
+    created_at:         "2025-01-26T10:00:30Z"
+    verified_at:        null
+    executed_at:        null
+}
+```
+
+---
+
+## 1.3 Node (Skeleton)
+
+```
+Node {
+    node_id:            string (unique)
+    context_id:         string (reference)
+    content:            string
+    commitment_type:    enum [fact, decision, constraint, artifact]
+    scope:              string
+    mutability_rule:    string
+    state:              enum [active, revised, archived]
+    created_at:         timestamp
+    created_by:         string (user_id)
+}
+```
+
+**Example:**
+```
+{
+    node_id:            "node_001"
+    context_id:         "ctx_001"
+    content:            "Clinician trust and adoption of AI recommendations"
+    commitment_type:    "fact"
+    scope:              "key theme for literature review"
+    mutability_rule:    "user explicit revision only"
+    state:              "active"
+    created_at:         "2025-01-26T10:05:00Z"
+    created_by:         "user_01"
+}
+```
+
+---
+
+## 1.4 Pivot (Skeleton)
+
+```
+Pivot {
+    pivot_id:           string (unique)
+    context_id:         string (reference)
+    anchor_id:          string (reference)
+    anchor_type:        enum [node, text, pivot]
+    pivot_text:         string
+    declared_by_user:   boolean
+    state:              enum [active, dismissed, archived]
+    created_at:         timestamp
+}
+```
+
+**Example:**
+```
+{
+    pivot_id:           "piv_001"
+    context_id:         "ctx_001"
+    anchor_id:          "turn_003_text"
+    anchor_type:        "text"
+    pivot_text:         "Patient-facing transparency — explore later"
+    declared_by_user:   true
+    state:              "active"
+    created_at:         "2025-01-26T10:07:00Z"
+}
+```
+
+---
+
+## 1.5 Action (Skeleton)
+
+```
+Action {
+    action_id:          string (unique)
+    intent_id:          string (reference)
+    context_id:         string (reference)
+    agent_id:           string | null (reference)
+    action_type:        enum [generate, modify, retrieve, communicate, external]
+    description:        string
+    inputs:             string | structured data
+    outputs:            string | structured data | null
+    state:              enum [pending, blocked, executed, failed, reverted]
+    requested_at:       timestamp
+    executed_at:        timestamp | null
+    executed_by:        string | null
+}
+```
+
+**Example:**
+```
+{
+    action_id:          "act_001"
+    intent_id:          "int_001"
+    context_id:         "ctx_001"
+    agent_id:           null
+    action_type:        "generate"
+    description:        "Create node for key theme"
+    inputs:             "User confirmed theme: Clinician trust and adoption"
+    outputs:            "node_001"
+    state:              "executed"
+    requested_at:       "2025-01-26T10:04:45Z"
+    executed_at:        "2025-01-26T10:05:00Z"
+    executed_by:        "system"
+}
+```
+
+---
+
+## 1.6 FrictionEvent (Skeleton)
+
+```
+FrictionEvent {
+    friction_id:            string (unique)
+    context_id:             string (reference)
+    intent_id:              string | null (reference)
+    action_id:              string | null (reference)
+    trigger_type:           enum [ambiguous_signal, unverified_intent, scope_boundary, 
+                                  permission_violation, high_risk_action, missing_context, 
+                                  conflict_detected]
+    trigger_description:    string
+    resolution:             enum [user_clarified, user_confirmed, user_revised, 
+                                  user_abandoned, system_blocked, unresolved]
+    resolution_details:     string | null
+    state:                  enum [active, resolved, escalated]
+    triggered_at:           timestamp
+    resolved_at:            timestamp | null
+}
+```
+
+**Example:**
+```
+{
+    friction_id:            "fric_001"
+    context_id:             "ctx_001"
+    intent_id:              null
+    action_id:              null
+    trigger_type:           "ambiguous_signal"
+    trigger_description:    "User signal unclear: 'It would be nice to summarize these'"
+    resolution:             "unresolved"
+    resolution_details:     null
+    state:                  "active"
+    triggered_at:           "2025-01-26T10:08:00Z"
+    resolved_at:            null
+}
+```
+
+---
+
+## 1.7 LogEntry (Skeleton)
+
+```
+LogEntry {
+    log_id:             string (unique)
+    timestamp:          timestamp
+    event_type:         enum [context, intent, node, pivot, action, friction, guardian]
+    event_subtype:      string
+    object_id:          string (reference)
+    context_id:         string (reference)
+    intent_id:          string | null (reference)
+    agent_id:           string | null (reference)
+    user_id:            string | null
+    details:            string
+    reason:             string | null
+}
+```
+
+**Example:**
+```
+{
+    log_id:             "log_001"
+    timestamp:          "2025-01-26T10:00:00Z"
+    event_type:         "context"
+    event_subtype:      "created"
+    object_id:          "ctx_001"
+    context_id:         "ctx_001"
+    intent_id:          null
+    agent_id:           null
+    user_id:            "user_01"
+    details:            "Context created: Literature Review — AI Transparency in Healthcare"
+    reason:             null
+}
+```
+
+---
+
+## 1.8 State Stores
+
+```
+ContextStore {
+    contexts: map of context_id → Context
+}
+
+IntentStore {
+    intents: map of intent_id → Intent
+}
+
+NodeStore {
+    nodes: map of node_id → Node
+    pivots: map of pivot_id → Pivot
+}
+
+ActionStore {
+    actions: map of action_id → Action
+}
+
+FrictionStore {
+    frictions: map of friction_id → FrictionEvent
+}
+
+LogStore {
+    entries: ordered list of LogEntry (append-only)
+}
+```
+
+---
+
+# PHASE 2 — GUARDIAN RULES (READ-ONLY ENFORCEMENT)
+
+---
+
+## 2.1 Guardian Definition
+
+```
+CPGuardian {
+    // No internal state
+    // No write access to any store
+    // Invoked at checkpoints, returns decisions
+}
+```
+
+The Guardian is **stateless**. It receives inputs, reads from stores, evaluates rules, and returns a decision.
+
+---
+
+## 2.2 Guardian Inputs
+
+```
+GuardianRequest {
+    checkpoint:             enum [post_classification, pre_execution]
+    context_id:             string | null
+    intent_id:              string | null
+    action_id:              string | null
+    agent_id:               string | null
+    signal_clas
