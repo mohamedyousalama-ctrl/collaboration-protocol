@@ -1,0 +1,20 @@
+{
+  "identity_verified": true,
+  "base64_chars": 41964,
+  "decoded_bytes": 31471,
+  "sha256": "3a5d4e82c2d65473b1117d70b68428efd89319386a89978871f38edf8ee8ed4a",
+  "worksheets": [
+    "README",
+    "Codebook",
+    "Incidents",
+    "Aggregates"
+  ],
+  "source_parts": [
+    "CP_Incident_Database_v1.xlsx.b64.part-00",
+    "CP_Incident_Database_v1.xlsx.b64.part-01",
+    "CP_Incident_Database_v1.xlsx.b64.part-02",
+    "CP_Incident_Database_v1.xlsx.b64.part-03",
+    "CP_Incident_Database_v1.xlsx.b64.part-04"
+  ],
+  "reconstructed_path": "research/fan-corpus-validation/work/CP_Incident_Database_v1.authoritative.xlsx"
+}
