@@ -8,11 +8,12 @@
 ## Governing evidence rules
 
 1. Preserve historical `CP_Incident_Database_v1.xlsx` evidence unchanged.
-2. Never mark an incident quote `CONFIRMED` unless the primary source transcript is independently available and checked.
-3. Assistant-generated Part-C classifications are recommendations only until Mohamed Salama makes the researcher decision.
-4. Ground-truth intent (`C5`) can only be finalized by Mohamed Salama.
-5. Do not force the final analyzable corpus to remain 52. Exclude or retain as unverified any record that fails evidence checks.
-6. Preserve all limitations, contradictions, exclusions, source-access gaps, and recovery defects.
+2. Never mark an incident C9 `CONFIRMED` unless primary interaction evidence is independently available and sufficient to check A3/A8/chronology.
+3. Original task artifacts may corroborate A3/context, but do not automatically confirm the whole incident.
+4. Assistant-generated Part-C classifications are recommendations only until Mohamed Salama makes the researcher decision.
+5. Ground-truth intent (`C5`) can only be finalized by Mohamed Salama.
+6. Do not force the final analyzable corpus to remain 52. Exclude or retain as unverified any record that fails evidence checks.
+7. Preserve all limitations, contradictions, exclusions, source-access gaps, and recovery defects.
 
 ## WP1 — Freeze and reconstruct v1
 
@@ -60,52 +61,69 @@ Durable outputs:
 
 ## WP3 — Locate and verify seven source conversations
 
-**Status:** ACTIVE — SOURCE DISCOVERY IN PROGRESS
+**Status:** ACTIVE — SOURCE RECOVERY HAS ADVANCED; NO C9 CONFIRMATIONS YET
 
 Families: GPT 5, AUD 22, CDX 5, W38 8, W39 7, KBD 4, KPF 1.
 
-### WP3 progress
+### WP3 source classes now established
 
-- **GPT — `SOURCE_EXTRACT_ONLY` / 5 of 5 mapped.** Recovered `extract_chatgpt_w1_2026-07-30.md` from the user's file library. Raw size 12,815 bytes; SHA-256 `22ae455d95c1776bb2dac17fd73139c6764c7dc96fd69caddd3215da31396c83`. The report maps exactly to GPT-001..005 and restores full A4 Possible Interpretations for those rows. Its own limitations state that the underlying conversation was truncated/compacted in places, so it is derivative evidence only. GPT primary C9 confirmation remains **0/5**.
-- **AUD — `PARTIAL`.** The preserved research record and AUD-018 state that a raw transcript was recovered from disk. Multiple source-adjacent auditor files are present in the Library, but the exact independently readable raw transcript has not yet been located/mapped.
-- **CDX — `SOURCE_EXTRACT_REFERENCED_NOT_LOCATED`.** CDX-005 names the historical file `outputs/extract_codex_w1_2026-07-30.md`; current Git/Library search has not yet recovered that exact file.
-- **W38 — search pending.** Source-adjacent builder/proof handbacks have been found, but not the exact 8-record extract or complete primary transcript.
-- **W39 — search pending.** No exact 7-record extract/complete transcript proven; W39-002 remains especially important because its A3 trigger is `NOT OBSERVABLE` in v1.
-- **KBD — search pending.** No exact 4-record extract/complete primary transcript proven.
-- **KPF — search pending.** No exact one-record extract/complete primary transcript proven.
+- **GPT — `SOURCE_EXTRACT_ONLY` / 5 of 5 mapped.** Recovered `extract_chatgpt_w1_2026-07-30.md` (12,815 bytes; SHA-256 `22ae455d95c1776bb2dac17fd73139c6764c7dc96fd69caddd3215da31396c83`). It maps GPT-001..005 and restores A4, but its own limitations disclose transcript truncation/compaction. C9 remains 0/5 confirmed.
+- **AUD — `PARTIAL`.** Preserved records state that a 26-human-turn raw transcript was recovered from disk for verbatim checking. Source-adjacent auditor files were searched, but the exact independently readable raw transcript is still not located/mapped.
+- **CDX — `SOURCE_EXTRACT_REFERENCED_NOT_LOCATED`.** CDX-005 names `outputs/extract_codex_w1_2026-07-30.md`; targeted Git/Library/materialized-archive searches have not recovered it.
+- **W38 — `PRIMARY_TASK_ARTIFACT_FOUND`.** Original `WO_PROOF_3_SAFETY_REPRO.md` and `WO_PROOF_4_C04_DISPUTE.md` corroborate exact A3 instructions for W38-001..006. W38-007/008 are not source-mapped. C9 remains unverified because A8/turn chronology is missing.
+- **W39 — `PRIMARY_TASK_ARTIFACT_FOUND / PARTIAL`.** `FOUR_WINDOW_CHARTER.md`, `WO_VERIFY_FIX_RPC_SHAPES.md`, `schema_contract_extract.sql`, and `RAW_CATALOG_APPENDIX.md` corroborate A3/source content for W39-001, W39-003, W39-004 and W39-007. W39-002 remains structurally unresolved; W39-005/006 are not mapped.
+- **KBD — `NOT_FOUND_IN_CURRENT_PRESERVATION_SCOPE`.** Broad search across Git, July Library exports, handover archives and recovered source archives did not locate an exact four-record KIVO-BUILDER extract or sufficiently complete gh-auth/device-code/draft-PR interaction.
+- **KPF — `PRIMARY_TASK_ARTIFACT_FOUND`.** `FOUR_WINDOW_CHARTER.md` corroborates exact A3 rebase governance and A12 no-PR/no-merge instruction for KPF-001. A8/chronology still lacks the primary interaction.
 
-Current verification totals:
-- corpus rows tracked in quote register: **52/52**;
+### Primary task-artifact archive
+
+Recovered Library archive `all.zip`:
+- size **803,462 bytes**;
+- SHA-256 `d045661795fe195baebd53693ad94c4f1db5cf67cc31ebeee90803d305cad1ad`.
+
+Exact A3/source-content corroboration added for **11/52 rows**:
+- W38 — 6 rows;
+- W39 — 4 rows;
+- KPF — 1 row.
+
+This is recorded separately from transcript verification in `source-evidence/PRIMARY_TASK_ARTIFACT_INDEX.md`.
+
+### WP3 verification totals
+
+- corpus rows tracked: **52/52**;
 - derivative source-extract mapped: **5/52**;
-- primary-transcript C9 `CONFIRMED`: **0/52**;
+- exact primary task-artifact A3/source-content corroboration: **11/52**;
+- primary interaction/transcript C9 `CONFIRMED`: **0/52**;
 - C9 `CONTRADICTED`: **0/52**.
 
-Tasks:
-- [x] Create source-availability matrix.
-- [x] Initialize 52-row quote-verification register.
-- [x] Recover and map GPT extraction report 5/5.
-- [x] Recover GPT A4 fields that were absent from workbook v1.
-- [ ] Continue searching Git/Library/source bundles for AUD/CDX/W38/W39/KBD/KPF artifacts.
-- [ ] Locate independently readable primary evidence where available.
-- [ ] Map every incident to best available source location.
-- [ ] Verify A3/A8 chronology and quotations against primary evidence.
-- [ ] Upgrade C9 only after primary-source checks.
+The 5 extract-mapped and 11 task-artifact-corroborated rows are different evidence classes and must **not** be reported as "16 verified incidents".
+
+### Remaining WP3 priorities
+
+1. Recover the AUD raw transcript explicitly referenced by the preserved research record.
+2. Recover the named CDX extraction file and, if possible, the underlying Codex interaction.
+3. Search for W38/W39/KPF interaction logs to pair A3 task artifacts with A8/chronology.
+4. Carry KBD as unverified unless new preservation evidence is discovered.
+5. Do not upgrade any C9 status merely because A3 matches an original work order.
 
 Durable WP3 outputs:
 - `SOURCE_CONVERSATION_AVAILABILITY.md`
 - `QUOTE_VERIFICATION_REGISTER.md`
 - `source-evidence/GPT_SOURCE_EXTRACT_INDEX.md`
+- `source-evidence/PRIMARY_TASK_ARTIFACT_INDEX.md`
 
 ## WP4 — Classification recommendations
 
-**Status:** WAITING FOR SUFFICIENT WP3 EVIDENCE
+**Status:** READY TO START IN PARALLEL FOR EVIDENCE-ELIGIBLE ROWS, WHILE C9 REMAINS UNVERIFIED
 
-ChatGPT prepares recommendations only for C0, C1, C2, C3, C4, C6, C7, C8, C9, C10. C5 TRUE INTENT remains exclusively Mohamed's researcher decision.
+WP2 is complete and WP3 has now established evidence classes. ChatGPT may prepare explicit **recommendations** for C0, C1, C2, C3, C4, C6, C7, C8, C9, C10 without pretending they are researcher decisions. Any recommendation dependent on missing primary interaction evidence must be marked provisional/unverified.
+
+`C5 TRUE INTENT` remains exclusively Mohamed's researcher decision.
 
 ## WP5 — Researcher decisions
 
 **Owner:** Mohamed Salama  
-**Status:** WAITING FOR WP4
+**Status:** WAITING FOR WP4 REVIEW CARDS
 
 ## WP6 — Independent quality check
 
@@ -133,9 +151,9 @@ Created under `fan-exchange/`:
 |---|---|---|
 | 1 | Freeze/reconstruct v1 | **COMPLETE** |
 | 2 | Audit all 52 | **COMPLETE — 52/52** |
-| 3 | Source conversations | **ACTIVE — GPT 5/5 extract-mapped; 0/52 primary-confirmed** |
-| 4 | Classification recommendations | WAITING FOR WP3 |
-| 5 | Researcher decisions | WAITING |
+| 3 | Source conversations | **ACTIVE — 5 extract-mapped; 11 A3 artifact-corroborated; 0 C9 confirmed** |
+| 4 | Classification recommendations | **READY TO START IN PARALLEL** |
+| 5 | Researcher decisions | WAITING FOR WP4 |
 | 6 | Independent QC | DEFERRED |
 | 7 | Freeze v1.1 | BLOCKED |
 | 8 | Fan methods exchange | DRAFT CREATED |
