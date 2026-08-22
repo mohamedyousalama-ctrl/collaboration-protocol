@@ -1,0 +1,223 @@
+// ============================================================
+router.post('/message', async (req, res) => {
+  try {
+    const { session_id, message, icd_override, is_retry } = req.body;
+
+    if (!session_id || !message) {
+      return res.status(400).json({ error: 'session_id and message are required' });
+    }
+
+    // --- SSE headers — set at the very top before any other logic ---
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.flushHeaders();
+
+    // --- Step 1: Load session state (parallel DB reads) ---
+    const [session, context, intent, nodes] = await Promise.all([
+      db.getSession(session_id),
+      db.getContextBySession(session_id),
+      db.getActiveIntent(session_id),
+      db.getActiveNodes(session_id),
+    ]);
+    const user_id = session.user_id;
+
+    const user = await db.getUserById(user_id);
+    let roots = [];
+    if (!user.is_anonymous) {
+      roots = await db.getActiveContextRoots(user_id);
+    }
+
+    // Log incoming signal (fire-and-forget)
+    logEvent({ session_id, user_id, event_type: 'signal', event_subtype: 'received', payload: { content: message, is_retry: !!is_retry } });
+
+    const icdValue = icd_override !== undefined && icd_override !== null
+      ? parseFloat(icd_override)
+      : (parseFloat(session.icd_value) || 0.5);
+
+    const { computeSimilarity, getHealthStatus } = require('../cp/decay');
+
+    let allIPPs = [];
+    let filteredIPPs = [];
+    let unsurfacedIPPs = [];
+    let threshold = 1 - icdValue;
+    let decayResult = { delta: 0, session_score: 0, health_status: 'good', should_trigger_friction: false };
+
+    if (is_retry) {
+      // --- RETRY PATH: Skip IPP classification, ICD filter, and Guardian CP1 ---
+      if (intent) {
+        const [similarity, previousDecay] = await Promise.all([
+          computeSimilarity(message, intent.declaration_text),
+          db.getDecayBySession(session_id),
+        ]);
+        const delta = Math.round((1 - similarity) * 1000) / 1000;
+        const allDeltas = previousDecay.map(e => parseFloat(e.delta));
+        allDeltas.push(delta);
+        const sessionScore = Math.round((allDeltas.reduce((s, d) => s + d, 0) / allDeltas.length) * 1000) / 1000;
+        const healthStatus = getHealthStatus(sessionScore);
+        decayResult = { delta, session_score: sessionScore, health_status: healthStatus, should_trigger_friction: false };
+      }
+
+      logEvent({ session_id, user_id, event_type: 'guardian', event_subtype: 'post_classification', payload: { decision: 'allow', rule: 'RETRY', trigger_type: null, ipp_type: null } });
+
+    } else {
+      // --- NORMAL PATH: Full IPP + ICD + Guardian CP1 pipeline ---
+
+      const [ippResult, decayCalc] = await Promise.all([
+        classifyIPP({
+          context_description: context?.description,
+          declaration_text: intent?.declaration_text,
+          user_message: message,
+        }),
+        (async () => {
+          if (!intent) return { delta: 0, session_score: 0, health_status: 'good', should_trigger_friction: false };
+          const [similarity, previousDecay] = await Promise.all([
+            computeSimilarity(message, intent.declaration_text),
+            db.getDecayBySession(session_id),
+          ]);
+          const delta = Math.round((1 - similarity) * 1000) / 1000;
+          const allDeltas = previousDecay.map(e => parseFloat(e.delta));
+          allDeltas.push(delta);
+          const sessionScore = Math.round((allDeltas.reduce((s, d) => s + d, 0) / allDeltas.length) * 1000) / 1000;
+          const healthStatus = getHealthStatus(sessionScore);
+          return { delta, session_score: sessionScore, health_status: healthStatus, should_trigger_friction: sessionScore > 0.5 };
+        })(),
+      ]);
+
+      allIPPs = ippResult;
+      decayResult = decayCalc;
+
+      console.log('IPP RAW (before ICD filter):', JSON.stringify(allIPPs));
+      console.log('ICD value:', icdValue, '| threshold:', Math.round((1 - icdValue) * 100) / 100);
+
+      const icdFiltered = applyICDFilter(allIPPs, icdValue);
+      filteredIPPs = icdFiltered.surfaced;
+      unsurfacedIPPs = icdFiltered.unsurfaced;
+      threshold = icdFiltered.threshold;
+
+      logEvent({ session_id, user_id, event_type: 'ipp', event_subtype: 'classified', payload: { all_ipps: allIPPs, count: allIPPs.length } });
+      logEvent({ session_id, user_id, event_type: 'ipp', event_subtype: 'filtered', payload: { surfaced: filteredIPPs, unsurfaced: unsurfacedIPPs, threshold } });
+
+      const cp1 = checkpoint1({ filteredIPPs, allIPPs, intent, context, user_message: message });
+      logEvent({ session_id, user_id, event_type: 'guardian', event_subtype: 'post_classification', payload: { decision: cp1.decision, rule: cp1.rule, trigger_type: cp1.trigger_type, ipp_type: cp1.ipp_type } });
+
+      // Check decay friction → send as SSE friction event
+      if (decayResult.should_trigger_friction) {
+        const decayFriction = await triggerFriction({
+          session_id, user_id, trigger_type: 'decay_warning',
+          clarification_question: 'Your conversation has drifted significantly from your original goal. Would you like to refocus or update your intent?',
+        });
+        logEvent({ session_id, user_id, event_type: 'decay', event_subtype: 'calculated', payload: decayResult });
+        res.write(`event: friction\ndata: ${JSON.stringify(decayFriction)}\n\n`);
+        res.end();
+        return;
+      }
+
+      // If CP1 = Clarify/Refuse → send as SSE friction event
+      if (cp1.decision === 'clarify' || cp1.decision === 'refuse') {
+        const frictionCard = await triggerFriction({
+          session_id, user_id, trigger_type: cp1.trigger_type,
+          ipp_type: cp1.ipp_type, clarification_question: cp1.clarification_question, confidence: cp1.confidence,
+        });
+        res.write(`event: friction\ndata: ${JSON.stringify(frictionCard)}\n\n`);
+        res.end();
+        return;
+      }
+    }
+
+    // --- Step 8: Domain classifier (both paths converge here) ---
+    const domainCheck = await evaluateMessageDomain(message, session.domain);
+    if (domainCheck.shifted) {
+      db.updateSession(session_id, { domain: domainCheck.domain, safety_floor_active: domainCheck.safety_floor_active });
+      logEvent({ session_id, user_id, event_type: 'domain', event_subtype: 'shift', payload: { from: session.domain, to: domainCheck.domain, notification: domainCheck.notification } });
+    }
+
+    const activeDomain = domainCheck.shifted ? domainCheck.domain : session.domain;
+    const safetyFloorActive = activeDomain !== 'general';
+
+    // --- Hand off to streaming handler with Checkpoint 1.5 ---
+    // This takes over the response completely. Do not write to res after this call.
+    await handleStreamingMessage({
+      res,
+      sessionState: {
+        session_id, user_id, context, intent, nodes, roots,
+        icd: icdValue, decayResult, domain: activeDomain, safetyFloorActive,
+        domainNotification: domainCheck.shifted ? domainCheck.notification : null,
+        message, allIPPs, filteredIPPs, threshold,
+      },
+      anthropic,
+      db,
+    });
+
+  } catch (error) {
+    console.error('Session message error:', error);
+    // If headers already sent (SSE mode), send error event
+    if (res.headersSent) {
+      try {
+        res.write(`event: error\ndata: ${JSON.stringify({ error: 'Failed to process message' })}\n\n`);
+        res.end();
+      } catch(e) {}
+    } else {
+      res.status(500).json({ error: 'Failed to process message' });
+    }
+  }
+});
+
+// ============================================================
+// POST /api/session/resolve
+// ============================================================
+router.post('/resolve', async (req, res) => {
+  try {
+    const { session_id, friction_id, resolution, input } = req.body;
+
+    if (!session_id || !friction_id || !resolution) {
+      return res.status(400).json({ error: 'session_id, friction_id, and resolution are required' });
+    }
+
+    const session = await db.getSession(session_id);
+    const result = await resolveFriction({
+      session_id,
+      user_id: session.user_id,
+      friction_id,
+      resolution,
+      input,
+    });
+
+    res.json(result);
+  } catch (error) {
+    console.error('Session resolve error:', error);
+    res.status(500).json({ error: 'Failed to resolve friction' });
+  }
+});
+
+// ============================================================
+// POST /api/session/satisfaction
+// ============================================================
+router.post('/satisfaction', async (req, res) => {
+  try {
+    const { session_id, action_id, ss_rating } = req.body;
+
+    if (!session_id || !action_id || !ss_rating) {
+      return res.status(400).json({ error: 'session_id, action_id, and ss_rating are required' });
+    }
+
+    const session = await db.getSession(session_id);
+    const result = await calculatePhase2(action_id, ss_rating);
+
+    // Log IFI Phase 2 to Klear Events Store
+    await logEvent({
+      session_id,
+      user_id: session.user_id,
+      action_id,
+      event_type: 'ifi',
+      event_subtype: 'phase2',
+      payload: { ss: result.ss, composite: result.composite },
+    });
+
+    res.json({
+      ifi: result.composite,
+      components: { sa: result.sa, cp: result.cp, ss: result.ss },
+      cp2_skipped: result.cp2_skipped,
+    });
+  } catch (error) {
+    console.error('Session satisfaction error:', error);
