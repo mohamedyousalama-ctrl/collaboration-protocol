@@ -1,0 +1,150 @@
+{
+  "status": "PASS",
+  "source_bundle_sha256": "4998d3a509114a46d54232d6e6d7f6bc0353b271bfde75fd3ba7af66956cffa8",
+  "base64_chars": 41964,
+  "decoded_bytes": 31471,
+  "sha256": "3a5d4e82c2d65473b1117d70b68428efd89319386a89978871f38edf8ee8ed4a",
+  "sheet_count": 4,
+  "sheet_names": [
+    "README",
+    "Codebook",
+    "Incidents",
+    "Aggregates"
+  ],
+  "incident_rows": 52,
+  "incident_columns": 30,
+  "incident_headers": [
+    "GID",
+    "Window",
+    "Local ID",
+    "A1 Location",
+    "A2 Task context",
+    "A3 User words (verbatim, may be trimmed)",
+    "A5 Interpretation chosen",
+    "A6 Asked?",
+    "Resolution style",
+    "A7 Assumption",
+    "A8 Mismatch signal",
+    "A9 Turns to detect",
+    "A10 Consequence",
+    "A11 Resolution",
+    "A12 Prior context",
+    "A13 Conf.",
+    "C0 SUGGESTED",
+    "Outcome (sugg.)",
+    "Recurrence link",
+    "C0 FINAL",
+    "C1 IPP type",
+    "C2 Materiality",
+    "C3 CF",
+    "C4 ICD",
+    "C5 Ground-truth intent",
+    "C6 Cost",
+    "C7 Hyp",
+    "C8 Bench",
+    "C9 Valid",
+    "C10 Notes"
+  ],
+  "blank_counts": {
+    "GID": 0,
+    "Window": 0,
+    "Local ID": 0,
+    "A1 Location": 0,
+    "A2 Task context": 0,
+    "A3 User words (verbatim, may be trimmed)": 0,
+    "A5 Interpretation chosen": 0,
+    "A6 Asked?": 0,
+    "Resolution style": 0,
+    "A7 Assumption": 0,
+    "A8 Mismatch signal": 0,
+    "A9 Turns to detect": 0,
+    "A10 Consequence": 0,
+    "A11 Resolution": 0,
+    "A12 Prior context": 0,
+    "A13 Conf.": 0,
+    "C0 SUGGESTED": 0,
+    "Outcome (sugg.)": 0,
+    "Recurrence link": 38,
+    "C0 FINAL": 52,
+    "C1 IPP type": 52,
+    "C2 Materiality": 52,
+    "C3 CF": 52,
+    "C4 ICD": 52,
+    "C5 Ground-truth intent": 52,
+    "C6 Cost": 52,
+    "C7 Hyp": 52,
+    "C8 Bench": 52,
+    "C9 Valid": 52,
+    "C10 Notes": 52
+  },
+  "parts": [
+    {
+      "name": "CP_Incident_Database_v1.xlsx.b64.part-000",
+      "chars": 4000,
+      "sha256": "466266724a4739803562798a0be3a41ac9922edbf0009ea28bdcf485ec99192e"
+    },
+    {
+      "name": "CP_Incident_Database_v1.xlsx.b64.part-001",
+      "chars": 8000,
+      "sha256": "bfc769ce3ebb34d812bb6bf502ee5041f2344d97d5db2274ba710bb0c3d27580"
+    },
+    {
+      "name": "CP_Incident_Database_v1.xlsx.b64.part-002",
+      "chars": 8000,
+      "sha256": "720ff1399c4cebf7e772a022488b82acd0c4eb6bac9de0fe059de0120e164056"
+    },
+    {
+      "name": "CP_Incident_Database_v1.xlsx.b64.part-003",
+      "chars": 8000,
+      "sha256": "e182d124e564cfc57ac8d1cb0684a254e02f712574ec40b72073265a346c8987"
+    },
+    {
+      "name": "CP_Incident_Database_v1.xlsx.b64.part-004",
+      "chars": 8000,
+      "sha256": "f3b38d9949dfbf76b277ef2b5821c5cf5c6a77c71f18aeb3756f91ab9b34b713"
+    },
+    {
+      "name": "CP_Incident_Database_v1.xlsx.b64.part-005",
+      "chars": 5964,
+      "sha256": "236c57f7235d4bb0098f1e0a92ec3b7dc2f738da85183766a9a10ac3af85f8d2"
+    }
+  ],
+  "sheets": [
+    {
+      "name": "README",
+      "used_range": "A1:A16",
+      "max_row": 16,
+      "max_col": 1,
+      "nonempty_cells": 13,
+      "formula_count": 0,
+      "merged_ranges": []
+    },
+    {
+      "name": "Codebook",
+      "used_range": "A1:C15",
+      "max_row": 15,
+      "max_col": 3,
+      "nonempty_cells": 45,
+      "formula_count": 0,
+      "merged_ranges": []
+    },
+    {
+      "name": "Incidents",
+      "used_range": "A1:AD53",
+      "max_row": 53,
+      "max_col": 30,
+      "nonempty_cells": 980,
+      "formula_count": 0,
+      "merged_ranges": []
+    },
+    {
+      "name": "Aggregates",
+      "used_range": "A1:C13",
+      "max_row": 13,
+      "max_col": 3,
+      "nonempty_cells": 37,
+      "formula_count": 12,
+      "merged_ranges": []
+    }
+  ]
+}

@@ -1,0 +1,1691 @@
+sheet	ref	row	col	value	formula	style	type
+README	A1	1	1	CP EMPIRICAL CORPUS — INCIDENT DATABASE v1.0		1	s
+README	A2	2	1	Owner: Mohamed Salama | Built: 2026-07-30 | 52 records / 7 windows		2	s
+README	A3	3	1			3	
+README	A4	4	1	HOW TO USE		4	s
+README	A5	5	1	1. Sheet 'Incidents' holds one row per extracted incident. A-fields were pre-loaded from the extraction reports (condensed where long; full text lives in the source extract files).		3	s
+README	A6	6	1	2. YELLOW columns (C0 FINAL .. C10) are researcher-only. Complete them yourself — never delegate to an LLM (Protocol Part C).		3	s
+README	A7	7	1	3. 'C0 SUGGESTED' is Claude's triage proposal only. Accept or overrule it in 'C0 FINAL'. Your decision is the one that counts.		3	s
+README	A8	8	1	4. Set C9=CONFIRMED only after checking the A3/A8 quotes against the real transcript (Part D rule 1). Rows left UNVERIFIED cannot enter the paper's analysis.		3	s
+README	A9	9	1	5. 'Aggregates' computes headline metrics automatically from C0 FINAL + outcome fields as you fill them.		3	s
+README	A10	10	1			3	
+README	A11	11	1	ROW COLOR KEY (suggestion only)		4	s
+README	A12	12	1	GREEN = suggested intent-interpretation event (feeds SII analysis)		3	s
+README	A13	13	1	ORANGE = suggested competence/premise error (comparison class, NOT SII)		3	s
+README	A14	14	1	BLUE = meta or counter-pattern record (report separately)		3	s
+README	A15	15	1			3	
+README	A16	16	1	STANDING RULES: No unverified quote enters analysis. Ground-truth intent (C5) has exactly one source: you.		4	s
+Codebook	A1	1	1	FIELD		5	s
+Codebook	B1	1	2	ALLOWED VALUES		5	s
+Codebook	C1	1	3	DEFINITION		5	s
+Codebook	A2	2	1	C0 FINAL — Incident class		6	s
+Codebook	B2	2	2	INTENT / COMPETENCE / PREMISE / MIXED / META		6	s
+Codebook	C2	2	3	INTENT = model chose among readings of your words. COMPETENCE = model held a false belief about facts/tech. PREMISE = required input/environment assumption failed. MIXED = both. META = extraction-about-extraction or counter-pattern record.		6	s
+Codebook	A3	3	1	C1 — IPP type		6	s
+Codebook	B3	3	2	TEMPORAL / SCOPE / DEFINITION / AUTHORITY / OUTPUT-FORM / ABSTRACTION / STANDING-INSTRUCTION / NEW:<name>		6	s
+Codebook	C3	3	3	Original CP taxonomy + STANDING-INSTRUCTION (new class from this corpus: instructions that must re-fire at every occurrence but decay into one-time).		6	s
+Codebook	A4	4	1	C2 — Materiality		6	s
+Codebook	B4	4	2	MATERIAL / TRIVIAL		6	s
+Codebook	C4	4	3	Semantic Materiality Proxy: would the readings lead to substantially different outcomes?		6	s
+Codebook	A5	5	1	C3 — Context Factor		6	s
+Codebook	B5	5	2	1.0 / 1.25 / 1.5		6	s
+Codebook	C5	5	3	1.0 no relevant prior context; 1.25 weak/stale; 1.5 conflicting (per paper Eq., based on A12).		6	s
+Codebook	A6	6	1	C4 — Effective ICD		6	s
+Codebook	B6	6	2	0.0 - 1.0		6	s
+Codebook	C6	6	3	How much resolution authority you had implicitly delegated at that moment.		6	s
+Codebook	A7	7	1	C5 — Ground-truth intent		6	s
+Codebook	B7	7	2	free text		6	s
+Codebook	C7	7	3	What you actually meant. Only you may write this.		6	s
+Codebook	A8	8	1	C6 — Cost estimate		6	s
+Codebook	B8	8	2	free text (min/hrs, restarts, LoC)		6	s
+Codebook	C8	8	3	Observable + your estimate.		6	s
+Codebook	A9	9	1	C7 — Hypothesis relevance		6	s
+Codebook	B9	9	2	H1 / H2 / ICD / OTHER		6	s
+Codebook	C9	9	3	H1 prevalence, H2 awareness gap, ICD effect.		6	s
+Codebook	A10	10	1	C8 — Benchmark candidate		6	s
+Codebook	B10	10	2	YES / NO		6	s
+Codebook	C10	10	3	Convertible into an IFI-Bench item?		6	s
+Codebook	A11	11	1	C9 — Validation		6	s
+Codebook	B11	11	2	CONFIRMED / UNVERIFIED		6	s
+Codebook	C11	11	3	CONFIRMED only after quote check vs transcript.		6	s
+Codebook	A12	12	1	C10 — Notes		6	s
+Codebook	B12	12	2	free text		6	s
+Codebook	C12	12	3	Anything else.		6	s
+Codebook	A13	13	1	Resolution style		6	s
+Codebook	B13	13	2	ASKED / SILENT / DISCLOSED-PROCEED / DISCLOSED-WAIT		6	s
+Codebook	C13	13	3	New middle category discovered in corpus (AUD INC-017, W38 INC-007).		6	s
+Codebook	A14	14	1	Outcome		6	s
+Codebook	B14	14	2	HARMFUL / BENIGN / UNRESOLVED		6	s
+Codebook	C14	14	3	BENIGN = silent inference never corrected & later validated — keep these, they are the base rate.		6	s
+Codebook	A15	15	1	Recurrence link		6	s
+Codebook	B15	15	2	Global IDs		6	s
+Codebook	C15	15	3	Cross-window repeats (e.g., stale-base cluster).		6	s
+Incidents	A1	1	1	GID		5	s
+Incidents	B1	1	2	Window		5	s
+Incidents	C1	1	3	Local ID		5	s
+Incidents	D1	1	4	A1 Location		5	s
+Incidents	E1	1	5	A2 Task context		5	s
+Incidents	F1	1	6	A3 User words (verbatim, may be trimmed)		5	s
+Incidents	G1	1	7	A5 Interpretation chosen		5	s
+Incidents	H1	1	8	A6 Asked?		5	s
+Incidents	I1	1	9	Resolution style		5	s
+Incidents	J1	1	10	A7 Assumption		5	s
+Incidents	K1	1	11	A8 Mismatch signal		5	s
+Incidents	L1	1	12	A9 Turns to detect		5	s
+Incidents	M1	1	13	A10 Consequence		5	s
+Incidents	N1	1	14	A11 Resolution		5	s
+Incidents	O1	1	15	A12 Prior context		5	s
+Incidents	P1	1	16	A13 Conf.		5	s
+Incidents	Q1	1	17	C0 SUGGESTED		5	s
+Incidents	R1	1	18	Outcome (sugg.)		5	s
+Incidents	S1	1	19	Recurrence link		5	s
+Incidents	T1	1	20	C0 FINAL		5	s
+Incidents	U1	1	21	C1 IPP type		5	s
+Incidents	V1	1	22	C2 Materiality		5	s
+Incidents	W1	1	23	C3 CF		5	s
+Incidents	X1	1	24	C4 ICD		5	s
+Incidents	Y1	1	25	C5 Ground-truth intent		5	s
+Incidents	Z1	1	26	C6 Cost		5	s
+Incidents	AA1	1	27	C7 Hyp		5	s
+Incidents	AB1	1	28	C8 Bench		5	s
+Incidents	AC1	1	29	C9 Valid		5	s
+Incidents	AD1	1	30	C10 Notes		5	s
+Incidents	A2	2	1	GPT-001		7	s
+Incidents	B2	2	2	GPT		7	s
+Incidents	C2	2	3	001		7	s
+Incidents	D2	2	4	early middle; after PR#557 merged		7	s
+Incidents	E2	2	5	Coordinating builder & auditor windows post-merge		7	s
+Incidents	F2	2	6	done, please be sure we are following the roadmap strictly and we never leave anything behind without solving, I do not need any errors in my project		7	s
+Incidents	G2	2	7	Generated new next-task dispatch to builder while builder was occupied		7	s
+Incidents	H2	2	8	NO		7	s
+Incidents	I2	2	9	SILENT		7	s
+Incidents	J2	2	10	Builder window assumed free; standing governance instruction treated as immediate dispatch authority		7	s
+Incidents	K2	2	11	but the builder is working on (KIVO-BUILDER-CLAUDE WO-GOV-PR557-POSTMERGE-METADATA…		7	s
+Incidents	L2	2	12	1		7	s
+Incidents	M2	2	13	Duplicate/conflicting assignment avoided only by user intervention; sequence stopped		7	s
+Incidents	N2	2	14	User re-explained both windows busy; task held		7	s
+Incidents	O2	2	15	Repeated references to 'the 2 only working windows'		7	s
+Incidents	P2	2	16	HIGH		7	s
+Incidents	Q2	2	17	INTENT		7	s
+Incidents	R2	2	18	HARMFUL		7	s
+Incidents	S2	2	19			7	
+Incidents	T2	2	20			8	
+Incidents	U2	2	21			8	
+Incidents	V2	2	22			8	
+Incidents	W2	2	23			8	
+Incidents	X2	2	24			8	
+Incidents	Y2	2	25			8	
+Incidents	Z2	2	26			8	
+Incidents	AA2	2	27			8	
+Incidents	AB2	2	28			8	
+Incidents	AC2	2	29			8	
+Incidents	AD2	2	30			8	
+Incidents	A3	3	1	GPT-002		7	s
+Incidents	B3	3	2	GPT		7	s
+Incidents	C3	3	3	002		7	s
+Incidents	D3	3	4	middle; post-PR#558 status		7	s
+Incidents	E3	3	5	Consolidated roadmap/backlog status from both windows		7	s
+Incidents	F3	3	6	both windows are working, where we are now on the roadmap and what we still have in the backlog list		7	s
+Incidents	G3	3	7	Addressed one window's reply; second attached reply ignored		7	s
+Incidents	H3	3	8	NO		7	s
+Incidents	I3	3	9	SILENT		7	s
+Incidents	J3	3	10	Most recent handback treated as complete evidence set		7	s
+Incidents	K3	3	11	read my last message again it has the 2 windows replies, not one… never skip a word… never skip files		7	s
+Incidents	L3	3	12	1		7	s
+Incidents	M3	3	13	Status incomplete; had to be redone; user added standing rule		7	s
+Incidents	N3	3	14	Reread required incl. both attachments		7	s
+Incidents	O3	3	15	Numbered status lines showed both streams material		7	s
+Incidents	P3	3	16	HIGH		7	s
+Incidents	Q3	3	17	INTENT		7	s
+Incidents	R3	3	18	HARMFUL		7	s
+Incidents	S3	3	19			7	
+Incidents	T3	3	20			8	
+Incidents	U3	3	21			8	
+Incidents	V3	3	22			8	
+Incidents	W3	3	23			8	
+Incidents	X3	3	24			8	
+Incidents	Y3	3	25			8	
+Incidents	Z3	3	26			8	
+Incidents	AA3	3	27			8	
+Incidents	AB3	3	28			8	
+Incidents	AC3	3	29			8	
+Incidents	AD3	3	30			8	
+Incidents	A4	4	1	GPT-003		7	s
+Incidents	B4	4	2	GPT		7	s
+Incidents	C4	4	3	003		7	s
+Incidents	D4	4	4	middle; SCOPE006 transport & PR#559 sequencing		7	s
+Incidents	E4	4	5	Deciding what to send to auditor now vs later		7	s
+Incidents	F4	4	6	1. I did not the builder message yet, please confirm 2. the auditor reply is attached		7	s
+Incidents	G4	4	7	Multi-step reply mixing send-now and send-later without clear boundary		7	s
+Incidents	H4	4	8	NO		7	s
+Incidents	I4	4	9	SILENT		7	s
+Incidents	J4	4	10	User would infer dependency order himself		7	s
+Incidents	K4	4	11	I do not understand my tasks in your last message, please explain in simple way…		7	s
+Incidents	L4	4	12	1		7	s
+Incidents	M4	4	13	User paused before sending; ambiguity resurfaced next turn		7	s
+Incidents	N4	4	14	Sequence separated into immediate vs dependent message		7	s
+Incidents	O4	4	15	Window availability was recoverable from context		7	s
+Incidents	P4	4	16	HIGH		7	s
+Incidents	Q4	4	17	INTENT		7	s
+Incidents	R4	4	18	HARMFUL		7	s
+Incidents	S4	4	19			7	
+Incidents	T4	4	20			8	
+Incidents	U4	4	21			8	
+Incidents	V4	4	22			8	
+Incidents	W4	4	23			8	
+Incidents	X4	4	24			8	
+Incidents	Y4	4	25			8	
+Incidents	Z4	4	26			8	
+Incidents	AA4	4	27			8	
+Incidents	AB4	4	28			8	
+Incidents	AC4	4	29			8	
+Incidents	AD4	4	30			8	
+Incidents	A5	5	1	GPT-004		7	s
+Incidents	B5	5	2	GPT		7	s
+Incidents	C5	5	3	004		7	s
+Incidents	D5	5	4	late middle; vendor questions		7	s
+Incidents	E5	5	5	Backlog + questions for candidate tech companies		7	s
+Incidents	F5	5	6	…1. what is the lowest ai cost/conversation 2. what is the best… way to build our ai system… 3. you decide what other questions I have to ask them		7	s
+Incidents	G5	5	7	Produced comprehensive 53-question due-diligence pack		7	s
+Incidents	H5	5	8	NO		7	s
+Incidents	I5	5	9	SILENT		7	s
+Incidents	J5	5	10	User wanted full procurement questionnaire, not short screening list		7	s
+Incidents	K5	5	11	summarize these 5 to the most important urgent 5 questions, becasue this company does not have the git yet…		7	s
+Incidents	L5	5	12	1		7	s
+Incidents	M5	5	13	Long output condensed to 5 questions + project brief added		7	s
+Incidents	N5	5	14	User redefined output as 5-question pre-Git doc		7	s
+Incidents	O5	5	15	No max count stated; Git-access fact only in correction		7	s
+Incidents	P5	5	16	HIGH		7	s
+Incidents	Q5	5	17	INTENT		7	s
+Incidents	R5	5	18	HARMFUL		7	s
+Incidents	S5	5	19			7	
+Incidents	T5	5	20			8	
+Incidents	U5	5	21			8	
+Incidents	V5	5	22			8	
+Incidents	W5	5	23			8	
+Incidents	X5	5	24			8	
+Incidents	Y5	5	25			8	
+Incidents	Z5	5	26			8	
+Incidents	AA5	5	27			8	
+Incidents	AB5	5	28			8	
+Incidents	AC5	5	29			8	
+Incidents	AD5	5	30			8	
+Incidents	A6	6	1	GPT-005		7	s
+Incidents	B6	6	2	GPT		7	s
+Incidents	C6	6	3	005		7	s
+Incidents	D6	6	4	near end; one-page partner PDF		7	s
+Incidents	E6	6	5	Convert brief + 5 questions to single-page PDF		7	s
+Incidents	F6	6	6	good , make them short and put the 5 questions with the brief in one page pdf		7	s
+Incidents	G6	6	7	PDF reused stale scope (WhatsApp+cash/COD) without revalidating against Saudi investor scope		7	s
+Incidents	H6	6	8	NO		7	s
+Incidents	I6	6	9	SILENT		7	s
+Incidents	J6	6	10	Earlier governed V1 scope assumed still correct for new investor brief		7	s
+Incidents	K6	6	11	mistakes 1. payment is by visa and Apple Pay, this project for Saudi only… 2. ass what finished and what not finished		7	s
+Incidents	L6	6	12	1		7	s
+Incidents	M6	6	13	PDF unusable; repo rechecked; bilingual replacement built		7	s
+Incidents	N6	6	14	User supplied corrected ground truth; output replaced		7	s
+Incidents	O6	6	15	Prior context pointed in conflicting directions (V1 vs investor scope)		7	s
+Incidents	P6	6	16	HIGH		7	s
+Incidents	Q6	6	17	INTENT		7	s
+Incidents	R6	6	18	HARMFUL		7	s
+Incidents	S6	6	19			7	
+Incidents	T6	6	20			8	
+Incidents	U6	6	21			8	
+Incidents	V6	6	22			8	
+Incidents	W6	6	23			8	
+Incidents	X6	6	24			8	
+Incidents	Y6	6	25			8	
+Incidents	Z6	6	26			8	
+Incidents	AA6	6	27			8	
+Incidents	AB6	6	28			8	
+Incidents	AC6	6	29			8	
+Incidents	AD6	6	30			8	
+Incidents	A7	7	1	AUD-001		9	s
+Incidents	B7	7	2	AUD		9	s
+Incidents	C7	7	3	001		9	s
+Incidents	D7	7	4	beginning; turn 2/26		9	s
+Incidents	E7	7	5	Emission of Rev 10 of KV-D06 secure-control spec		9	s
+Incidents	F7	7	6	Revision 10 is REJECTED… The following source-written columns do NOT exist in production… Do not silently add these columns…		9	s
+Incidents	G7	7	7	Source-declared columns treated as live schema (a)		9	s
+Incidents	H7	7	8	NO		9	s
+Incidents	I7	7	9	SILENT		9	s
+Incidents	J7	7	10	Deployed-source columns assumed present in production; grant matrix derivable without catalog check		9	s
+Incidents	K7	7	11	Revision 10 is REJECTED.		9	s
+Incidents	L7	7	12	1		9	s
+Incidents	M7	7	13	Whole-doc rewrite: Rev10 (41,891B/709L) → Rev11 (86,186B/1,344L)		9	s
+Incidents	N7	7	14	12-point correction list; full new revision		9	s
+Incidents	O7	7	15	NOT OBSERVABLE (design pre-dates window)		9	s
+Incidents	P7	7	16	MEDIUM		9	s
+Incidents	Q7	7	17	COMPETENCE		9	s
+Incidents	R7	7	18	HARMFUL		9	s
+Incidents	S7	7	19			9	
+Incidents	T7	7	20			8	
+Incidents	U7	7	21			8	
+Incidents	V7	7	22			8	
+Incidents	W7	7	23			8	
+Incidents	X7	7	24			8	
+Incidents	Y7	7	25			8	
+Incidents	Z7	7	26			8	
+Incidents	AA7	7	27			8	
+Incidents	AB7	7	28			8	
+Incidents	AC7	7	29			8	
+Incidents	AD7	7	30			8	
+Incidents	A8	8	1	AUD-002		9	s
+Incidents	B8	8	2	AUD		9	s
+Incidents	C8	8	3	002		9	s
+Incidents	D8	8	4	early middle; turn 3/26		9	s
+Incidents	E8	8	5	Rev 11 ruling — no-op contradiction		9	s
+Incidents	F8	8	6	Section 8.11 says create_safety_conversation has no D6 no-op, while §17 CASE 1 and PR6 require a no-op… Choose one binding rule…		9	s
+Incidents	G8	8	7	Per-operation exemption coexisting with universal rule (a)		9	s
+Incidents	H8	8	8	NO		9	s
+Incidents	I8	8	9	SILENT		9	s
+Incidents	J8	8	10	Local exemptions could coexist with universal decision order without reconciliation		9	s
+Incidents	K8	8	11	Revision 11 is rejected by KIVO-PM.		9	s
+Incidents	L8	8	12	1		9	s
+Incidents	M8	8	13	Whole-doc rewrite Rev11 → Rev12 (119,116B/1,796L)		9	s
+Incidents	N8	8	14	11-point correction list; new revision		9	s
+Incidents	O8	8	15	NONE		9	s
+Incidents	P8	8	16	MEDIUM		9	s
+Incidents	Q8	8	17	COMPETENCE		9	s
+Incidents	R8	8	18	HARMFUL		9	s
+Incidents	S8	8	19			9	
+Incidents	T8	8	20			8	
+Incidents	U8	8	21			8	
+Incidents	V8	8	22			8	
+Incidents	W8	8	23			8	
+Incidents	X8	8	24			8	
+Incidents	Y8	8	25			8	
+Incidents	Z8	8	26			8	
+Incidents	AA8	8	27			8	
+Incidents	AB8	8	28			8	
+Incidents	AC8	8	29			8	
+Incidents	AD8	8	30			8	
+Incidents	A9	9	1	AUD-003		9	s
+Incidents	B9	9	2	AUD		9	s
+Incidents	C9	9	3	003		9	s
+Incidents	D9	9	4	early middle; turn 3 item 2		9	s
+Incidents	E9	9	5	Same correction order — SQL uniqueness		9	s
+Incidents	F9	9	6	UNIQUE (...) WHERE ... is not a table constraint. Specify it as a named partial unique index…		9	s
+Incidents	G9	9	7	Treated predicated UNIQUE as valid table-constraint syntax (a)		9	s
+Incidents	H9	9	8	NO		9	s
+Incidents	I9	9	9	SILENT		9	s
+Incidents	J9	9	10	Constraint and index interchangeable for conflict targeting		9	s
+Incidents	K9	9	11	UNIQUE (...) WHERE ... is not a table constraint.		9	s
+Incidents	L9	9	12	1		9	s
+Incidents	M9	9	13	A3-2 mechanism replaced; dependent proofs rewritten		9	s
+Incidents	N9	9	14	User specified correct mechanism; adopted		9	s
+Incidents	O9	9	15	NONE		9	s
+Incidents	P9	9	16	HIGH		9	s
+Incidents	Q9	9	17	COMPETENCE		9	s
+Incidents	R9	9	18	HARMFUL		9	s
+Incidents	S9	9	19			9	
+Incidents	T9	9	20			8	
+Incidents	U9	9	21			8	
+Incidents	V9	9	22			8	
+Incidents	W9	9	23			8	
+Incidents	X9	9	24			8	
+Incidents	Y9	9	25			8	
+Incidents	Z9	9	26			8	
+Incidents	AA9	9	27			8	
+Incidents	AB9	9	28			8	
+Incidents	AC9	9	29			8	
+Incidents	AD9	9	30			8	
+Incidents	A10	10	1	AUD-004		9	s
+Incidents	B10	10	2	AUD		9	s
+Incidents	C10	10	3	004		9	s
+Incidents	D10	10	4	early middle; turn 4/26		9	s
+Incidents	E10	10	5	Transport of Rev 12 artefact		9	s
+Incidents	F10	10	6	The received transfer is missing exactly 80 lines and 80 bytes. It therefore cannot be cleared.		9	s
+Incidents	G10	10	7	Assumed inline chat rendering is byte-preserving (a)		9	s
+Incidents	H10	10	8	NO		9	s
+Incidents	I10	10	9	SILENT		9	s
+Incidents	J10	10	10	Delivery channel preserves bytes so pre-output digest holds		9	s
+Incidents	K10	10	11	The received transfer is missing exactly 80 lines and 80 bytes…		9	s
+Incidents	L10	10	12	1		9	s
+Incidents	M10	10	13	Artefact not clearable; transport-only WO consumed a full exchange; file attachments mandated		9	s
+Incidents	N10	10	14	WO-XFER-KVD06-REV12-001 issued		9	s
+Incidents	O10	10	15	NONE		9	s
+Incidents	P10	10	16	HIGH		9	s
+Incidents	Q10	10	17	PREMISE		9	s
+Incidents	R10	10	18	HARMFUL		9	s
+Incidents	S10	10	19			9	
+Incidents	T10	10	20			8	
+Incidents	U10	10	21			8	
+Incidents	V10	10	22			8	
+Incidents	W10	10	23			8	
+Incidents	X10	10	24			8	
+Incidents	Y10	10	25			8	
+Incidents	Z10	10	26			8	
+Incidents	AA10	10	27			8	
+Incidents	AB10	10	28			8	
+Incidents	AC10	10	29			8	
+Incidents	AD10	10	30			8	
+Incidents	A11	11	1	AUD-005		9	s
+Incidents	B11	11	2	AUD		9	s
+Incidents	C11	11	3	005		9	s
+Incidents	D11	11	4	middle; turn 5 item 1		9	s
+Incidents	E11	11	5	Diagnosis of Rev 12 transport loss		9	s
+Incidents	F11	11	6	The inline transfer did not lose only 80 empty lines… Withdraw the claim that no content line or character was altered…		9	s
+Incidents	G11	11	7	80/80 delta assumed explainable only by blank lines (a)		9	s
+Incidents	H11	11	8	NO		9	s
+Incidents	I11	11	9	SILENT		9	s
+Incidents	J11	11	10	Matching arithmetic proves content identity; only one explanation exists		9	s
+Incidents	K11	11	11	Withdraw the claim…		9	s
+Incidents	L11	11	12	1		9	s
+Incidents	M11	11	13	Two published claims withdrawn; TR1–TR4 transport rules adopted; digest-over-file only thereafter		9	s
+Incidents	N11	11	14	Withdrawal + replacement rule		9	s
+Incidents	O11	11	15	Turn 4 gave the triples; did not say blank-line-only		9	s
+Incidents	P11	11	16	HIGH		9	s
+Incidents	Q11	11	17	COMPETENCE		9	s
+Incidents	R11	11	18	HARMFUL		9	s
+Incidents	S11	11	19			9	
+Incidents	T11	11	20			8	
+Incidents	U11	11	21			8	
+Incidents	V11	11	22			8	
+Incidents	W11	11	23			8	
+Incidents	X11	11	24			8	
+Incidents	Y11	11	25			8	
+Incidents	Z11	11	26			8	
+Incidents	AA11	11	27			8	
+Incidents	AB11	11	28			8	
+Incidents	AC11	11	29			8	
+Incidents	AD11	11	30			8	
+Incidents	A12	12	1	AUD-006		9	s
+Incidents	B12	12	2	AUD		9	s
+Incidents	C12	12	3	006		9	s
+Incidents	D12	12	4	middle; turn 5 item 7		9	s
+Incidents	E12	12	5	System-actor rule verification		9	s
+Incidents	F12	12	6	…a direct postgres catalog session returns NULL. That does not prove what the production service-role PostgREST/RPC request returns…		9	s
+Incidents	G12	12	7	Catalog-session observation generalized to service-role path (a)		9	s
+Incidents	H12	12	8	NO		9	s
+Incidents	I12	12	9	SILENT		9	s
+Incidents	J12	12	10	Observation in one execution context generalizes to another		9	s
+Incidents	K12	12	11	That does not prove what the production service-role…returns.		9	s
+Incidents	L12	12	12	1		9	s
+Incidents	M12	12	13	Rule demoted to unproven; SA2/SA3/SA6 + blocker B-10 created; VP-1 unexecuted		9	s
+Incidents	N12	12	14	Retained as blocker		9	s
+Incidents	O12	12	15	NONE		9	s
+Incidents	P12	12	16	HIGH		9	s
+Incidents	Q12	12	17	COMPETENCE		9	s
+Incidents	R12	12	18	HARMFUL		9	s
+Incidents	S12	12	19			9	
+Incidents	T12	12	20			8	
+Incidents	U12	12	21			8	
+Incidents	V12	12	22			8	
+Incidents	W12	12	23			8	
+Incidents	X12	12	24			8	
+Incidents	Y12	12	25			8	
+Incidents	Z12	12	26			8	
+Incidents	AA12	12	27			8	
+Incidents	AB12	12	28			8	
+Incidents	AC12	12	29			8	
+Incidents	AD12	12	30			8	
+Incidents	A13	13	1	AUD-007		9	s
+Incidents	B13	13	2	AUD		9	s
+Incidents	C13	13	3	007		9	s
+Incidents	D13	13	4	middle; turn 5 item 10		9	s
+Incidents	E13	13	5	F19 sweep concurrency		9	s
+Incidents	F13	13	6	F19 takes a blocking tenant advisory lock and also claims concurrent same-tenant sweeps never block. Both cannot be true…		9	s
+Incidents	G13	13	7	Blocking lock treated as compatible with non-blocking claim (a)		9	s
+Incidents	H13	13	8	NO		9	s
+Incidents	I13	13	9	SILENT		9	s
+Incidents	J13	13	10	Mechanism statement and behaviour claim authored independently without cross-check		9	s
+Incidents	K13	13	11	Both cannot be true.		9	s
+Incidents	L13	13	12	1		9	s
+Incidents	M13	13	13	Lock model respecified; L4/X4/X7 + proofs rewritten		9	s
+Incidents	N13	13	14	User named alternatives; one adopted		9	s
+Incidents	O13	13	15	NONE		9	s
+Incidents	P13	13	16	HIGH		9	s
+Incidents	Q13	13	17	COMPETENCE		9	s
+Incidents	R13	13	18	HARMFUL		9	s
+Incidents	S13	13	19			9	
+Incidents	T13	13	20			8	
+Incidents	U13	13	21			8	
+Incidents	V13	13	22			8	
+Incidents	W13	13	23			8	
+Incidents	X13	13	24			8	
+Incidents	Y13	13	25			8	
+Incidents	Z13	13	26			8	
+Incidents	AA13	13	27			8	
+Incidents	AB13	13	28			8	
+Incidents	AC13	13	29			8	
+Incidents	AD13	13	30			8	
+Incidents	A14	14	1	AUD-008		7	s
+Incidents	B14	14	2	AUD		7	s
+Incidents	C14	14	3	008		7	s
+Incidents	D14	14	4	middle; turn 5 item 11		7	s
+Incidents	E14	14	5	A3 alert-intent structure		7	s
+Incidents	F14	14	6	A3 records only realert intent. It does not: deliver an alert… Do not describe the operational alert contract as complete while B-7 and B-8 remain open.		7	s
+Incidents	G14	14	7	Specifying data structure treated as specifying capability (a)		7	s
+Incidents	H14	14	8	NO		7	s
+Incidents	I14	14	9	SILENT		7	s
+Incidents	J14	14	10	Record-keeping design discharges the operational capability it records		7	s
+Incidents	K14	14	11	Do not describe the operational alert contract as complete…		7	s
+Incidents	L14	14	12	1		7	s
+Incidents	M14	14	13	Contract split from structure; B-7/B-8 held open; became AD-3 + PM ruling 5		7	s
+Incidents	N14	14	14	Completeness description forbidden; separation adopted		7	s
+Incidents	O14	14	15	NONE		7	s
+Incidents	P14	14	16	HIGH		7	s
+Incidents	Q14	14	17	INTENT		7	s
+Incidents	R14	14	18	HARMFUL		7	s
+Incidents	S14	14	19			7	
+Incidents	T14	14	20			8	
+Incidents	U14	14	21			8	
+Incidents	V14	14	22			8	
+Incidents	W14	14	23			8	
+Incidents	X14	14	24			8	
+Incidents	Y14	14	25			8	
+Incidents	Z14	14	26			8	
+Incidents	AA14	14	27			8	
+Incidents	AB14	14	28			8	
+Incidents	AC14	14	29			8	
+Incidents	AD14	14	30			8	
+Incidents	A15	15	1	AUD-009		7	s
+Incidents	B15	15	2	AUD		7	s
+Incidents	C15	15	3	009		7	s
+Incidents	D15	15	4	middle; turn 6 item 1		7	s
+Incidents	E15	15	5	Rev 13 rollout staging — 'additive'		7	s
+Incidents	F15	15	6	Do not call a stage additive if it revokes permissions, transfers ownership, forces security, backfills existing rows, or drops triggers.		7	s
+Incidents	G15	15	7	'Additive' read as net-effect adds capability (a)		7	s
+Incidents	H15	15	8	NO		7	s
+Incidents	I15	15	9	SILENT		7	s
+Incidents	J15	15	10	Stage labelled additive may contain revocations/drops because overall purpose adds control plane		7	s
+Incidents	K15	15	11	Do not call a stage additive if…		7	s
+Incidents	L15	15	12	1		7	s
+Incidents	M15	15	13	Rollout restaged M-0…M-9 with AD1–AD4; Rev13 → Rev14		7	s
+Incidents	N15	15	14	User gave definitional test; staging rebuilt		7	s
+Incidents	O15	15	15	NONE — 'additive' never defined earlier		7	s
+Incidents	P15	15	16	HIGH		7	s
+Incidents	Q15	15	17	INTENT		7	s
+Incidents	R15	15	18	HARMFUL		7	s
+Incidents	S15	15	19			7	
+Incidents	T15	15	20			8	
+Incidents	U15	15	21			8	
+Incidents	V15	15	22			8	
+Incidents	W15	15	23			8	
+Incidents	X15	15	24			8	
+Incidents	Y15	15	25			8	
+Incidents	Z15	15	26			8	
+Incidents	AA15	15	27			8	
+Incidents	AB15	15	28			8	
+Incidents	AC15	15	29			8	
+Incidents	AD15	15	30			8	
+Incidents	A16	16	1	AUD-010		7	s
+Incidents	B16	16	2	AUD		7	s
+Incidents	C16	16	3	010		7	s
+Incidents	D16	16	4	middle; turn 6 item 4		7	s
+Incidents	E16	16	5	B-11 member-identity framing		7	s
+Incidents	F16	16	6	Replace the B-11 false two-choice framing. Evaluate at least: immutable membership identity/version records; insert-time identity validation…; restrictive composite foreign keys.		7	s
+Incidents	G16	16	7	Problem reduced to binary business choice (a)		7	s
+Incidents	H16	16	8	NO		7	s
+Incidents	I16	16	9	SILENT		7	s
+Incidents	J16	16	10	Solution space contained exactly two options; choice was founder's decision		7	s
+Incidents	K16	16	11	Replace the B-11 false two-choice framing.		7	s
+Incidents	L16	16	12	1		7	s
+Incidents	M16	16	13	Dichotomy withdrawn as modelling failure; 3 options evaluated; Option A adopted; B-11 reduced to governance approval		7	s
+Incidents	N16	16	14	User named alternatives; framing replaced		7	s
+Incidents	O16	16	15	NONE		7	s
+Incidents	P16	16	16	HIGH		7	s
+Incidents	Q16	16	17	INTENT		7	s
+Incidents	R16	16	18	HARMFUL		7	s
+Incidents	S16	16	19			7	
+Incidents	T16	16	20			8	
+Incidents	U16	16	21			8	
+Incidents	V16	16	22			8	
+Incidents	W16	16	23			8	
+Incidents	X16	16	24			8	
+Incidents	Y16	16	25			8	
+Incidents	Z16	16	26			8	
+Incidents	AA16	16	27			8	
+Incidents	AB16	16	28			8	
+Incidents	AC16	16	29			8	
+Incidents	AD16	16	30			8	
+Incidents	A17	17	1	AUD-011		7	s
+Incidents	B17	17	2	AUD		7	s
+Incidents	C17	17	3	011		7	s
+Incidents	D17	17	4	middle; turn 6 item 7		7	s
+Incidents	E17	17	5	Evidence-preservation wording		7	s
+Incidents	F17	17	6	Existing A1 rows cannot be byte-identical after new fields are added and populated. State precisely which pre-existing columns remain unchanged…		7	s
+Incidents	G17	17	7	'Byte-identical' used for rows with untouched existing values (a)		7	s
+Incidents	H17	17	8	NO		7	s
+Incidents	I17	17	9	SILENT		7	s
+Incidents	J17	17	10	'Byte-identical' could mean 'existing values preserved'		7	s
+Incidents	K17	17	11	Existing A1 rows cannot be byte-identical…		7	s
+Incidents	L17	17	12	1		7	s
+Incidents	M17	17	13	Claim replaced by column-level statement (11 preserved / 4 populated / 4 NULL)		7	s
+Incidents	N17	17	14	Wording corrected to scoped form		7	s
+Incidents	O17	17	15	NONE		7	s
+Incidents	P17	17	16	HIGH		7	s
+Incidents	Q17	17	17	DEFINITION→INTENT		7	s
+Incidents	R17	17	18	HARMFUL		7	s
+Incidents	S17	17	19			7	
+Incidents	T17	17	20			8	
+Incidents	U17	17	21			8	
+Incidents	V17	17	22			8	
+Incidents	W17	17	23			8	
+Incidents	X17	17	24			8	
+Incidents	Y17	17	25			8	
+Incidents	Z17	17	26			8	
+Incidents	AA17	17	27			8	
+Incidents	AB17	17	28			8	
+Incidents	AC17	17	29			8	
+Incidents	AD17	17	30			8	
+Incidents	A18	18	1	AUD-012		9	s
+Incidents	B18	18	2	AUD		9	s
+Incidents	C18	18	3	012		9	s
+Incidents	D18	18	4	late middle; turns 7→8		9	s
+Incidents	E18	18	5	First audit of SCOPE006 evidence report		9	s
+Incidents	F18	18	6	Independently audit the exact SCOPE006.md artefact: SHA-256:…365 … Verify all three fingerprint values before content review.		9	s
+Incidents	G18	18	7	Returned BLOCKED — no file supplied (c)		9	s
+Incidents	H18	18	8	NO		9	s
+Incidents	I18	18	9	SILENT		9	s
+Incidents	J18	18	10	Absence of retrievable artefact itself the reportable outcome		9	s
+Incidents	K18	18	11	The exact SCOPE006.md file is attached. (user supplying input)		9	s
+Incidents	L18	18	12	1		9	s
+Incidents	M18	18	13	One exchange consumed; audit completed next turn		9	s
+Incidents	N18	18	14	WO re-sent with file + Resume instruction		9	s
+Incidents	O18	18	15	Turn 7 had no attachment reference		9	s
+Incidents	P18	18	16	MEDIUM		9	s
+Incidents	Q18	18	17	PREMISE		9	s
+Incidents	R18	18	18	BENIGN		9	s
+Incidents	S18	18	19			9	
+Incidents	T18	18	20			8	
+Incidents	U18	18	21			8	
+Incidents	V18	18	22			8	
+Incidents	W18	18	23			8	
+Incidents	X18	18	24			8	
+Incidents	Y18	18	25			8	
+Incidents	Z18	18	26			8	
+Incidents	AA18	18	27			8	
+Incidents	AB18	18	28			8	
+Incidents	AC18	18	29			8	
+Incidents	AD18	18	30			8	
+Incidents	A19	19	1	AUD-013		9	s
+Incidents	B19	19	2	AUD		9	s
+Incidents	C19	19	3	013		9	s
+Incidents	D19	19	4	late middle; turn 10 item 9		9	s
+Incidents	E19	19	5	SCOPE007 writer-inventory reconciliation		9	s
+Incidents	F19	19	6	Specifically reconcile your previous 35-line observation with the builder's 31-row DML inventory. Do not approve until the difference is completely explained.		9	s
+Incidents	G19	19	7	grep -A6 context lines counted as DML sites (a) → 35		9	s
+Incidents	H19	19	8	NO		9	s
+Incidents	I19	19	9	SILENT		9	s
+Incidents	J19	19	10	Context-window lines map 1:1 to mutating sites; counting method need not be published		9	s
+Incidents	K19	19	11	Do not approve until the difference is completely explained.		9	s
+Incidents	L19	19	12	NOT OBSERVABLE		9	s
+Incidents	M19	19	13	Full re-derivation; second count error (47 via rg -n) fixed with --count-matches; 35 withdrawn; builder's 31 upheld		9	s
+Incidents	N19	19	14	Approval withheld until explained		9	s
+Incidents	O19	19	15	Builder's artefact showed the correct reproducible method		9	s
+Incidents	P19	19	16	HIGH		9	s
+Incidents	Q19	19	17	COMPETENCE		9	s
+Incidents	R19	19	18	HARMFUL		9	s
+Incidents	S19	19	19			9	
+Incidents	T19	19	20			8	
+Incidents	U19	19	21			8	
+Incidents	V19	19	22			8	
+Incidents	W19	19	23			8	
+Incidents	X19	19	24			8	
+Incidents	Y19	19	25			8	
+Incidents	Z19	19	26			8	
+Incidents	AA19	19	27			8	
+Incidents	AB19	19	28			8	
+Incidents	AC19	19	29			8	
+Incidents	AD19	19	30			8	
+Incidents	A20	20	1	AUD-014		7	s
+Incidents	B20	20	2	AUD		7	s
+Incidents	C20	20	3	014		7	s
+Incidents	D20	20	4	late middle; turns 21→22		7	s
+Incidents	E20	20	5	Audit of PR #560		7	s
+Incidents	F20	20	6	Clearance may apply only to exact head: b21e2fae… Any later push voids clearance…		7	s
+Incidents	G20	20	7	Audited the pinned head; no re-check that head was current (a)		7	s
+Incidents	H20	20	8	NO		7	s
+Incidents	I20	20	9	SILENT		7	s
+Incidents	J20	20	10	Pin assumed still current; fetch-time match needs no re-check before verdict		7	s
+Incidents	K20	20	11	Your last reply repeated the previous audit of rejected head… It did not audit the corrected PR head.		7	s
+Incidents	L20	20	12	1		7	s
+Incidents	M20	20	13	Entire first audit discarded; ref deleted/re-fetched; full audit duplicated on a2f761a7…		7	s
+Incidents	N20	20	14	Transport/head-correction order; full re-execution		7	s
+Incidents	O20	20	15	Pin named twice; wording contemplated movement but no re-check instruction		7	s
+Incidents	P20	20	16	HIGH		7	s
+Incidents	Q20	20	17	INTENT		7	s
+Incidents	R20	20	18	HARMFUL		7	s
+Incidents	S20	20	19	AUD-014↔stale-base cluster (temporal currency)		7	s
+Incidents	T20	20	20			8	
+Incidents	U20	20	21			8	
+Incidents	V20	20	22			8	
+Incidents	W20	20	23			8	
+Incidents	X20	20	24			8	
+Incidents	Y20	20	25			8	
+Incidents	Z20	20	26			8	
+Incidents	AA20	20	27			8	
+Incidents	AB20	20	28			8	
+Incidents	AC20	20	29			8	
+Incidents	AD20	20	30			8	
+Incidents	A21	21	1	AUD-015		7	s
+Incidents	B21	21	2	AUD		7	s
+Incidents	C21	21	3	015		7	s
+Incidents	D21	21	4	late middle; turn 21 req 8+14		7	s
+Incidents	E21	21	5	Verdict threshold on PR #560		7	s
+Incidents	F21	21	6	Return APPROVE only if all requirements pass and no contradiction, omission… remains. Separate optional stylistic preferences from actual defects…		7	s
+Incidents	G21	21	7	Strict absolute-bar reading chosen; REJECT issued (a)		7	s
+Incidents	H21	21	8	NO		7	s
+Incidents	I21	21	9	SILENT		7	s
+Incidents	J21	21	10	'No omission remains' = absolute bar; founder wanted stricter reading without confirmation		7	s
+Incidents	K21	21	11	NOT OBSERVABLE — no mismatch surfaced; corrections implemented and re-audit ordered		7	s
+Incidents	L21	21	12	N/A		7	s
+Incidents	M21	21	13	One correction commit (+4/−1); one re-audit cycle; nothing discarded		7	s
+Incidents	N21	21	14	Implicit acceptance via corrections + re-audit		7	s
+Incidents	O21	21	15	SCOPE012 audit had surfaced this same threshold question; never answered		7	s
+Incidents	P21	21	16	MEDIUM		7	s
+Incidents	Q21	21	17	INTENT		7	s
+Incidents	R21	21	18	BENIGN		7	s
+Incidents	S21	21	19	AUD-015↔AUD-022 (surfaced-then-silent decay)		7	s
+Incidents	T21	21	20			8	
+Incidents	U21	21	21			8	
+Incidents	V21	21	22			8	
+Incidents	W21	21	23			8	
+Incidents	X21	21	24			8	
+Incidents	Y21	21	25			8	
+Incidents	Z21	21	26			8	
+Incidents	AA21	21	27			8	
+Incidents	AB21	21	28			8	
+Incidents	AC21	21	29			8	
+Incidents	AD21	21	30			8	
+Incidents	A22	22	1	AUD-016		9	s
+Incidents	B22	22	2	AUD		9	s
+Incidents	C22	22	3	016		9	s
+Incidents	D22	22	4	end; turns 23→24		9	s
+Incidents	E22	22	5	Audit of SCOPE013		9	s
+Incidents	F22	22	6	SCOPE013.md is attached. Audit it independently and read the complete file.		9	s
+Incidents	G22	22	7	Returned BLOCKED — digest matched no delivered file (b)		9	s
+Incidents	H22	22	8	NO		9	s
+Incidents	I22	22	9	SILENT		9	s
+Incidents	J22	22	10	Stated digest sole identity test; no substitute file acceptable		9	s
+Incidents	K22	22	11	SCOPE013.md is attached to this message as a file… Do not treat any predecessor file as SCOPE013…		9	s
+Incidents	L22	22	12	1		9	s
+Incidents	M22	22	13	One exchange consumed; audit completed next turn		9	s
+Incidents	N22	22	14	Re-sent with genuine attachment + two prohibitions		9	s
+Incidents	O22	22	15	Identical precedent at turns 7→8 (SCOPE006)		9	s
+Incidents	P22	22	16	MEDIUM		9	s
+Incidents	Q22	22	17	PREMISE		9	s
+Incidents	R22	22	18	BENIGN		9	s
+Incidents	S22	22	19	AUD-012↔AUD-016 (repeat premise failure)		9	s
+Incidents	T22	22	20			8	
+Incidents	U22	22	21			8	
+Incidents	V22	22	22			8	
+Incidents	W22	22	23			8	
+Incidents	X22	22	24			8	
+Incidents	Y22	22	25			8	
+Incidents	Z22	22	26			8	
+Incidents	AA22	22	27			8	
+Incidents	AB22	22	28			8	
+Incidents	AC22	22	29			8	
+Incidents	AD22	22	30			8	
+Incidents	A23	23	1	AUD-017		7	s
+Incidents	B23	23	2	AUD		7	s
+Incidents	C23	23	3	017		7	s
+Incidents	D23	23	4	end; turn 20 req 3		7	s
+Incidents	E23	23	5	SCOPE012 diff statistics		7	s
+Incidents	F23	23	6	Confirm the complete diff contains exactly four hunks, 13 removed lines and 27 added lines.		7	s
+Incidents	G23	23	7	Computed BOTH readings (30 total / 27 non-blank) and disclosed which matched		7	s
+Incidents	H23	23	8	NO		7	s
+Incidents	I23	23	9	DISCLOSED-PROCEED		7	s
+Incidents	J23	23	10	Reporting both readings + discriminator acceptable substitute for asking		7	s
+Incidents	K23	23	11	NOT OBSERVABLE — accepted; convention reused by user in later WOs		7	s
+Incidents	L23	23	12	N/A		7	s
+Incidents	M23	23	13	None		7	s
+Incidents	N23	23	14	User adopted the convention in turn 23		7	s
+Incidents	O23	23	15	SCOPE011 order had same phrasing; convention pre-established		7	s
+Incidents	P23	23	16	LOW		7	s
+Incidents	Q23	23	17	INTENT		7	s
+Incidents	R23	23	18	BENIGN		7	s
+Incidents	S23	23	19	AUD-017↔W38-007 (resolution-by-disclosure)		7	s
+Incidents	T23	23	20			8	
+Incidents	U23	23	21			8	
+Incidents	V23	23	22			8	
+Incidents	W23	23	23			8	
+Incidents	X23	23	24			8	
+Incidents	Y23	23	25			8	
+Incidents	Z23	23	26			8	
+Incidents	AA23	23	27			8	
+Incidents	AB23	23	28			8	
+Incidents	AC23	23	29			8	
+Incidents	AD23	23	30			8	
+Incidents	A24	24	1	AUD-018		10	s
+Incidents	B24	24	2	AUD		10	s
+Incidents	C24	24	3	018		10	s
+Incidents	D24	24	4	end; turn 26 (live)		10	s
+Incidents	E24	24	5	Performing this extraction		10	s
+Incidents	F24	24	6	Go through our entire conversation… Report ONLY what is observable in the transcript. Quote the exact words.		10	s
+Incidents	G24	24	7	Retrieved raw transcript from disk for verbatim quotes (b)		10	s
+Incidents	H24	24	8	NO		10	s
+Incidents	I24	24	9	SILENT		10	s
+Incidents	J24	24	10	'The transcript' = session record on disk, not retained context		10	s
+Incidents	K24	24	11	NOT OBSERVABLE — live		10	s
+Incidents	L24	24	12	N/A		10	s
+Incidents	M24	24	13	26 human turns recovered verbatim; INC-001..013 quotes direct		10	s
+Incidents	N24	24	14	Unresolved		10	s
+Incidents	O24	24	15	Compaction notice pointed to transcript path		10	s
+Incidents	P24	24	16	MEDIUM		10	s
+Incidents	Q24	24	17	META		10	s
+Incidents	R24	24	18	BENIGN		10	s
+Incidents	S24	24	19	AUD-018↔CDX-005 (self-referential extraction)		10	s
+Incidents	T24	24	20			8	
+Incidents	U24	24	21			8	
+Incidents	V24	24	22			8	
+Incidents	W24	24	23			8	
+Incidents	X24	24	24			8	
+Incidents	Y24	24	25			8	
+Incidents	Z24	24	26			8	
+Incidents	AA24	24	27			8	
+Incidents	AB24	24	28			8	
+Incidents	AC24	24	29			8	
+Incidents	AD24	24	30			8	
+Incidents	A25	25	1	AUD-019		10	s
+Incidents	B25	25	2	AUD		10	s
+Incidents	C25	25	3	019		10	s
+Incidents	D25	25	4	end; turn 26 (live)		10	s
+Incidents	E25	25	5	Role framing for extraction		10	s
+Incidents	F25	25	6	You are acting as a neutral court reporter, NOT as an analyst…		10	s
+Incidents	G25	25	7	KIVO-AUDITOR header retained (b)		10	s
+Incidents	H25	25	8	NO		10	s
+Incidents	I25	25	9	SILENT		10	s
+Incidents	J25	25	10	Header governs formatting, survives role change		10	s
+Incidents	K25	25	11	NOT OBSERVABLE — live		10	s
+Incidents	L25	25	12	N/A		10	s
+Incidents	M25	25	13	None		10	s
+Incidents	N25	25	14	Unresolved		10	s
+Incidents	O25	25	15	25 consecutive prior replies used the header		10	s
+Incidents	P25	25	16	LOW		10	s
+Incidents	Q25	25	17	META		10	s
+Incidents	R25	25	18	BENIGN		10	s
+Incidents	S25	25	19			10	
+Incidents	T25	25	20			8	
+Incidents	U25	25	21			8	
+Incidents	V25	25	22			8	
+Incidents	W25	25	23			8	
+Incidents	X25	25	24			8	
+Incidents	Y25	25	25			8	
+Incidents	Z25	25	26			8	
+Incidents	AA25	25	27			8	
+Incidents	AB25	25	28			8	
+Incidents	AC25	25	29			8	
+Incidents	AD25	25	30			8	
+Incidents	A26	26	1	AUD-020		7	s
+Incidents	B26	26	2	AUD		7	s
+Incidents	C26	26	3	020		7	s
+Incidents	D26	26	4	end; turn 25 §2–3 (live)		7	s
+Incidents	E26	26	5	Executing probe VP-1 in authorized preflight		7	s
+Incidents	F26	26	6	Allowed:… a read-only HTTP GET through the genuine PostgREST service-role path if required for VP-1… If no existing read-only surface can expose auth.uid()… return VP-1: BLOCKED… Do not create one.		7	s
+Incidents	G26	26	7	GET permitted only if existing surface exposes auth.uid(); searched catalog, none found, no request attempted (b)		7	s
+Incidents	H26	26	8	NO		7	s
+Incidents	I26	26	9	SILENT		7	s
+Incidents	J26	26	10	Allowance conditional on pre-existing surface; constructing request = 'creating one'; service-role credential impermissible		7	s
+Incidents	K26	26	11	NOT OBSERVABLE — unanswered		7	s
+Incidents	L26	26	12	N/A		7	s
+Incidents	M26	26	13	VP-1 BLOCKED; B-10 open; SA2 unproven; migration drafting still blocked		7	s
+Incidents	N26	26	14	Two exit options described for founder		7	s
+Incidents	O26	26	15	INC-006 precedent + §3 repetition pointed to (b)		7	s
+Incidents	P26	26	16	MEDIUM		7	s
+Incidents	Q26	26	17	INTENT		7	s
+Incidents	R26	26	18	UNRESOLVED		7	s
+Incidents	S26	26	19			7	
+Incidents	T26	26	20			8	
+Incidents	U26	26	21			8	
+Incidents	V26	26	22			8	
+Incidents	W26	26	23			8	
+Incidents	X26	26	24			8	
+Incidents	Y26	26	25			8	
+Incidents	Z26	26	26			8	
+Incidents	AA26	26	27			8	
+Incidents	AB26	26	28			8	
+Incidents	AC26	26	29			8	
+Incidents	AD26	26	30			8	
+Incidents	A27	27	1	AUD-021		7	s
+Incidents	B27	27	2	AUD		7	s
+Incidents	C27	27	3	021		7	s
+Incidents	D27	27	4	end; turn 25 §2 (live)		7	s
+Incidents	E27	27	5	Preflight prohibited-function rule		7	s
+Incidents	F27	27	6	Prohibited:… calling any user-defined function or RPC unless its complete production definition is first inspected and it is mechanically proven non-mutating		7	s
+Incidents	G27	27	7	auth.uid()/auth.role() treated as built-ins; called then inspected (b)		7	s
+Incidents	H27	27	8	NO		7	s
+Incidents	I27	27	9	SILENT		7	s
+Incidents	J27	27	10	Platform 'auth' schema helpers outside 'user-defined'; inspection may follow call		7	s
+Incidents	K27	27	11	Self-detected & disclosed within same reply ('the order deviated from §2's stated sequence and I am recording it')		7	s
+Incidents	L27	27	12	0		7	s
+Incidents	M27	27	13	None; retroactive inspection confirmed non-mutating		7	s
+Incidents	N27	27	14	Self-disclosed; unaddressed		7	s
+Incidents	O27	27	15	§2 also banned temp objects/DDL (observed); ambiguity confined to 'user-defined'		7	s
+Incidents	P27	27	16	MEDIUM		7	s
+Incidents	Q27	27	17	INTENT		7	s
+Incidents	R27	27	18	BENIGN		7	s
+Incidents	S27	27	19			7	
+Incidents	T27	27	20			8	
+Incidents	U27	27	21			8	
+Incidents	V27	27	22			8	
+Incidents	W27	27	23			8	
+Incidents	X27	27	24			8	
+Incidents	Y27	27	25			8	
+Incidents	Z27	27	26			8	
+Incidents	AA27	27	27			8	
+Incidents	AB27	27	28			8	
+Incidents	AC27	27	29			8	
+Incidents	AD27	27	30			8	
+Incidents	A28	28	1	AUD-022		10	s
+Incidents	B28	28	2	AUD		10	s
+Incidents	C28	28	3	022		10	s
+Incidents	D28	28	4	late middle; turn 18		10	s
+Incidents	E28	28	5	Counter-pattern record — SCOPE010/011 audits		10	s
+Incidents	F28	28	6	Confirm O-D is fully disclosed (five sub-conditions)		10	s
+Incidents	G28	28	7	Three ambiguities surfaced explicitly as alternatives instead of silent resolution		10	s
+Incidents	H28	28	8	N/A		10	s
+Incidents	I28	28	9	ASKED/DISCLOSED		10	s
+Incidents	J28	28	10	N/A — inverse pattern		10	s
+Incidents	K28	28	11	None arose		10	s
+Incidents	L28	28	12	N/A		10	s
+Incidents	M28	28	13	No rework; builder's next revision adopted surfaced readings		10	s
+Incidents	N28	28	14	Adopted readings; zero rework		10	s
+Incidents	O28	28	15	Pattern begins after AUD-005 correction		10	s
+Incidents	P28	28	16	LOW		10	s
+Incidents	Q28	28	17	META		10	s
+Incidents	R28	28	18	BENIGN		10	s
+Incidents	S28	28	19	AUD-005→AUD-022 (post-correction adaptation)		10	s
+Incidents	T28	28	20			8	
+Incidents	U28	28	21			8	
+Incidents	V28	28	22			8	
+Incidents	W28	28	23			8	
+Incidents	X28	28	24			8	
+Incidents	Y28	28	25			8	
+Incidents	Z28	28	26			8	
+Incidents	AA28	28	27			8	
+Incidents	AB28	28	28			8	
+Incidents	AC28	28	29			8	
+Incidents	AD28	28	30			8	
+Incidents	A29	29	1	CDX-001		9	s
+Incidents	B29	29	2	CDX		9	s
+Incidents	C29	29	3	001		9	s
+Incidents	D29	29	4	beginning; WO-QTY setup		9	s
+Incidents	E29	29	5	Implement WO-QTY fix on branch off latest main		9	s
+Incidents	F29	29	6	Branch: wo-qty off latest main (3326580). git config user.email…user.name…		9	s
+Incidents	G29	29	7	Fresh clone created at work/MaitreAI; branch from origin/main		9	s
+Incidents	H29	29	8	NO		9	s
+Incidents	I29	29	9	SILENT		9	s
+Incidents	J29	29	10	Cloning fresh acceptable vs using pre-existing checkout		9	s
+Incidents	K29	29	11	(self) The given workspace folder itself is just the Codex container, not the repo root…		9	s
+Incidents	L29	29	12	1		9	s
+Incidents	M29	29	13	Fresh clone; no user-visible rework		9	s
+Incidents	N29	29	14	Task continued from clone		9	s
+Incidents	O29	29	15	cwd path in environment context		9	s
+Incidents	P29	29	16	LOW		9	s
+Incidents	Q29	29	17	PREMISE		9	s
+Incidents	R29	29	18	BENIGN		9	s
+Incidents	S29	29	19			9	
+Incidents	T29	29	20			8	
+Incidents	U29	29	21			8	
+Incidents	V29	29	22			8	
+Incidents	W29	29	23			8	
+Incidents	X29	29	24			8	
+Incidents	Y29	29	25			8	
+Incidents	Z29	29	26			8	
+Incidents	AA29	29	27			8	
+Incidents	AB29	29	28			8	
+Incidents	AC29	29	29			8	
+Incidents	AD29	29	30			8	
+Incidents	A30	30	1	CDX-002		7	s
+Incidents	B30	30	2	CDX		7	s
+Incidents	C30	30	3	002		7	s
+Incidents	D30	30	4	early; proof planning		7	s
+Incidents	E30	30	5	Add proof-typed-quantity + reruns		7	s
+Incidents	F30	30	6	PROOFS: new proof-typed-quantity (≥10: tap 3; type ٢; type تلاتة; non-numeric passes through; no pending question passes through; flag OFF byte-identical)…		7	s
+Incidents	G30	30	7	Focused pure-check proof with source assertions; 27 assertions		7	s
+Incidents	H30	30	8	NO		7	s
+Incidents	I30	30	9	SILENT		7	s
+Incidents	J30	30	10	Pure checks + source assertions satisfy 'proof' requirement		7	s
+Incidents	K30	30	11	NOT OBSERVABLE		7	s
+Incidents	L30	30	12	N/O		7	s
+Incidents	M30	30	13	Proof added; no correction visible		7	s
+Incidents	N30	30	14	Proof passed; reported		7	s
+Incidents	O30	30	15	Assistant pre-stated the plan		7	s
+Incidents	P30	30	16	LOW		7	s
+Incidents	Q30	30	17	INTENT		7	s
+Incidents	R30	30	18	BENIGN		7	s
+Incidents	S30	30	19			7	
+Incidents	T30	30	20			8	
+Incidents	U30	30	21			8	
+Incidents	V30	30	22			8	
+Incidents	W30	30	23			8	
+Incidents	X30	30	24			8	
+Incidents	Y30	30	25			8	
+Incidents	Z30	30	26			8	
+Incidents	AA30	30	27			8	
+Incidents	AB30	30	28			8	
+Incidents	AC30	30	29			8	
+Incidents	AD30	30	30			8	
+Incidents	A31	31	1	CDX-003		7	s
+Incidents	B31	31	2	CDX		7	s
+Incidents	C31	31	3	003		7	s
+Incidents	D31	31	4	early middle; typed rail		7	s
+Incidents	E31	31	5	Deterministic quantity buttons + typed replies		7	s
+Incidents	F31	31	6	2. Agent-generated quantity buttons: register their ids in the typed rail (lib/messaging/typed-actions.ts) so taps route deterministically.		7	s
+Incidents	G31	31	7	Existing qty:N ids treated as already emitted; handling added in rail only		7	s
+Incidents	H31	31	8	NO		7	s
+Incidents	I31	31	9	SILENT		7	s
+Incidents	J31	31	10	No separate change needed in button-generation tool		7	s
+Incidents	K31	31	11	NOT OBSERVABLE		7	s
+Incidents	L31	31	12	N/O		7	s
+Incidents	M31	31	13	No visible mismatch		7	s
+Incidents	N31	31	14	Completed; proofs reported		7	s
+Incidents	O31	31	15	Assistant status noted existing handler + live gap		7	s
+Incidents	P31	31	16	LOW		7	s
+Incidents	Q31	31	17	INTENT		7	s
+Incidents	R31	31	18	BENIGN		7	s
+Incidents	S31	31	19			7	
+Incidents	T31	31	20			8	
+Incidents	U31	31	21			8	
+Incidents	V31	31	22			8	
+Incidents	W31	31	23			8	
+Incidents	X31	31	24			8	
+Incidents	Y31	31	25			8	
+Incidents	Z31	31	26			8	
+Incidents	AA31	31	27			8	
+Incidents	AB31	31	28			8	
+Incidents	AC31	31	29			8	
+Incidents	AD31	31	30			8	
+Incidents	A32	32	1	CDX-004		7	s
+Incidents	B32	32	2	CDX		7	s
+Incidents	C32	32	3	004		7	s
+Incidents	D32	32	4	end; handback		7	s
+Incidents	E32	32	5	Commit + handback		7	s
+Incidents	F32	32	6	HANDBACK: SHA + proof counts. NOT MERGED.		7	s
+Incidents	G32	32	7	Committed locally AND pushed origin/wo-qty unmerged		7	s
+Incidents	H32	32	8	NO		7	s
+Incidents	I32	32	9	SILENT		7	s
+Incidents	J32	32	10	'NOT MERGED' permits pushing a remote handoff branch		7	s
+Incidents	K32	32	11	NOT OBSERVABLE		7	s
+Incidents	L32	32	12	N/O		7	s
+Incidents	M32	32	13	Remote branch created; no PR/merge		7	s
+Incidents	N32	32	14	Handback reported pushed unmerged state		7	s
+Incidents	O32	32	15	Assistant pre-stated push intent		7	s
+Incidents	P32	32	16	MEDIUM		7	s
+Incidents	Q32	32	17	INTENT		7	s
+Incidents	R32	32	18	BENIGN		7	s
+Incidents	S32	32	19			7	
+Incidents	T32	32	20			8	
+Incidents	U32	32	21			8	
+Incidents	V32	32	22			8	
+Incidents	W32	32	23			8	
+Incidents	X32	32	24			8	
+Incidents	Y32	32	25			8	
+Incidents	Z32	32	26			8	
+Incidents	AA32	32	27			8	
+Incidents	AB32	32	28			8	
+Incidents	AC32	32	29			8	
+Incidents	AD32	32	30			8	
+Incidents	A33	33	1	CDX-005		10	s
+Incidents	B33	33	2	CDX		10	s
+Incidents	C33	33	3	005		10	s
+Incidents	D33	33	4	end; protocol request		10	s
+Incidents	E33	33	5	Acting on attached IPP protocol		10	s
+Incidents	F33	33	6	The attached pasted text file(s) contain the user's request. Read and act on that content.		10	s
+Incidents	G33	33	7	Applied protocol to current Codex thread; saved outputs/extract_codex_w1_2026-07-30.md		10	s
+Incidents	H33	33	8	NO		10	s
+Incidents	I33	33	9	SILENT		10	s
+Incidents	J33	33	10	Intended window = current thread; saving file part of 'act'		10	s
+Incidents	K33	33	11	NOT OBSERVABLE		10	s
+Incidents	L33	33	12	N/O		10	s
+Incidents	M33	33	13	Extraction file created		10	s
+Incidents	N33	33	14	N/O		10	s
+Incidents	O33	33	15	Protocol text pointed both ways (open each window / save per naming)		10	s
+Incidents	P33	33	16	LOW		10	s
+Incidents	Q33	33	17	META		10	s
+Incidents	R33	33	18	BENIGN		10	s
+Incidents	S33	33	19	CDX-005↔AUD-018		10	s
+Incidents	T33	33	20			8	
+Incidents	U33	33	21			8	
+Incidents	V33	33	22			8	
+Incidents	W33	33	23			8	
+Incidents	X33	33	24			8	
+Incidents	Y33	33	25			8	
+Incidents	Z33	33	26			8	
+Incidents	AA33	33	27			8	
+Incidents	AB33	33	28			8	
+Incidents	AC33	33	29			8	
+Incidents	AD33	33	30			8	
+Incidents	A34	34	1	W38-001		7	s
+Incidents	B34	34	2	W38		7	s
+Incidents	C34	34	3	001		7	s
+Incidents	D34	34	4	beginning; WO-PROOF-3 handback prep		7	s
+Incidents	E34	34	5	Safety-repro branch prepared for push		7	s
+Incidents	F34	34	6	Rebase before every push and verify — git fetch origin && git rebase origin/main, then git diff --name-status origin/main must show only files under scripts/, with zero D lines.		7	s
+Incidents	G34	34	7	Work remained based on f7882c1 while main advanced to c38c6b6…		7	s
+Incidents	H34	34	8	NO		7	s
+Incidents	I34	34	9	SILENT		7	s
+Incidents	J34	34	10	Pinned implementation revision sufficient working base after main advanced		7	s
+Incidents	K34	34	11	Do not open a PR — your branch has a stale base and would delete merged work… three R0 files as deletions…		7	s
+Incidents	L34	34	12	~1 cycle		7	s
+Incidents	M34	34	13	PR stopped; rebase + reverify + push; no deletion merged		7	s
+Incidents	N34	34	14	User re-explained base + guard; rebased to c38c6b6		7	s
+Incidents	O34	34	15	'Four stale-base incidents…would each have deleted a day of merged work'		7	s
+Incidents	P34	34	16	HIGH		7	s
+Incidents	Q34	34	17	INTENT		7	s
+Incidents	R34	34	18	HARMFUL		7	s
+Incidents	S34	34	19	STALE-BASE cluster: W38-001,W39-001,KPF-001		7	s
+Incidents	T34	34	20			8	
+Incidents	U34	34	21			8	
+Incidents	V34	34	22			8	
+Incidents	W34	34	23			8	
+Incidents	X34	34	24			8	
+Incidents	Y34	34	25			8	
+Incidents	Z34	34	26			8	
+Incidents	AA34	34	27			8	
+Incidents	AB34	34	28			8	
+Incidents	AC34	34	29			8	
+Incidents	AD34	34	30			8	
+Incidents	A35	35	1	W38-002		7	s
+Incidents	B35	35	2	W38		7	s
+Incidents	C35	35	3	002		7	s
+Incidents	D35	35	4	beginning→end; WO-PROOF-3		7	s
+Incidents	E35	35	5	Intentionally failing safety suite		7	s
+Incidents	F35	35	6	Your job is to reproduce all three as failing tests. You are not fixing them. A test that fails is the deliverable.		7	s
+Incidents	G35	35	7	Red suite kept out of default test/CI commands; explicit invocation only		7	s
+Incidents	H35	35	8	NO		7	s
+Incidents	I35	35	9	SILENT		7	s
+Incidents	J35	35	10	Red suite should not poison default execution		7	s
+Incidents	K35	35	11	NOT OBSERVABLE		7	s
+Incidents	L35	35	12	N/O		7	s
+Incidents	M35	35	13	None; PM later verified default CI does not execute it		7	s
+Incidents	N35	35	14	PM verified agent-eval.yml uses path only as filter		7	s
+Incidents	O35	35	15	WO named the path; silent on default discovery		7	s
+Incidents	P35	35	16	LOW		7	s
+Incidents	Q35	35	17	INTENT		7	s
+Incidents	R35	35	18	BENIGN		7	s
+Incidents	S35	35	19			7	
+Incidents	T35	35	20			8	
+Incidents	U35	35	21			8	
+Incidents	V35	35	22			8	
+Incidents	W35	35	23			8	
+Incidents	X35	35	24			8	
+Incidents	Y35	35	25			8	
+Incidents	Z35	35	26			8	
+Incidents	AA35	35	27			8	
+Incidents	AB35	35	28			8	
+Incidents	AC35	35	29			8	
+Incidents	AD35	35	30			8	
+Incidents	A36	36	1	W38-003		7	s
+Incidents	B36	36	2	W38		7	s
+Incidents	C36	36	3	003		7	s
+Incidents	D36	36	4	early middle; C-04 scope		7	s
+Incidents	E36	36	5	Coalesced-burst disclosure finding		7	s
+Incidents	F36	36	6	C-04 — a disclosure inside a coalesced message burst can be dropped when inbound_coalescing is on.		7	s
+Incidents	G36	36	7	Ordinary two-text reproduction treated as disproving entire finding		7	s
+Incidents	H36	36	8	NO		7	s
+Incidents	I36	36	9	SILENT		7	s
+Incidents	J36	36	10	Specified ordinary burst representative of whole C-04 class		7	s
+Incidents	K36	36	11	But the auditor has ruled that disproving the ordinary case does not withdraw the finding…		7	s
+Incidents	L36	36	12	~1		7	s
+Incidents	M36	36	13	Second WO; 7 burst shapes tested; claim narrowed; ownership loss reassigned to C-02		7	s
+Incidents	N36	36	14	Scope re-explained; 7 cases run; narrowed recommendation accepted		7	s
+Incidents	O36	36	15	User had also written 'Your C-04 finding is correct and the audit was wrong'		7	s
+Incidents	P36	36	16	MEDIUM		7	s
+Incidents	Q36	36	17	INTENT		7	s
+Incidents	R36	36	18	HARMFUL		7	s
+Incidents	S36	36	19			7	
+Incidents	T36	36	20			8	
+Incidents	U36	36	21			8	
+Incidents	V36	36	22			8	
+Incidents	W36	36	23			8	
+Incidents	X36	36	24			8	
+Incidents	Y36	36	25			8	
+Incidents	Z36	36	26			8	
+Incidents	AA36	36	27			8	
+Incidents	AB36	36	28			8	
+Incidents	AC36	36	29			8	
+Incidents	AD36	36	30			8	
+Incidents	A37	37	1	W38-004		7	s
+Incidents	B37	37	2	W38		7	s
+Incidents	C37	37	3	004		7	s
+Incidents	D37	37	4	middle; WO-PROOF-4		7	s
+Incidents	E37	37	5	Seven auditor-named burst shapes		7	s
+Incidents	F37	37	6	This work order tests the seven the auditor named. If they all pass, C-04 is withdrawn…		7	s
+Incidents	G37	37	7	Separate file scripts/proof-c04-dispute.test.ts created		7	s
+Incidents	H37	37	8	NO		7	s
+Incidents	I37	37	9	SILENT		7	s
+Incidents	J37	37	10	Seven cases belong in one new dedicated file with chosen name		7	s
+Incidents	K37	37	11	NOT OBSERVABLE		7	s
+Incidents	L37	37	12	N/O		7	s
+Incidents	M37	37	13	One scripts-only file added; accepted		7	s
+Incidents	N37	37	14	Later msgs accepted; only fixture/labels corrected		7	s
+Incidents	O37	37	15	Earlier WO named other file; PROOF-4 silent on filename		7	s
+Incidents	P37	37	16	LOW		7	s
+Incidents	Q37	37	17	INTENT		7	s
+Incidents	R37	37	18	BENIGN		7	s
+Incidents	S37	37	19			7	
+Incidents	T37	37	20			8	
+Incidents	U37	37	21			8	
+Incidents	V37	37	22			8	
+Incidents	W37	37	23			8	
+Incidents	X37	37	24			8	
+Incidents	Y37	37	25			8	
+Incidents	Z37	37	26			8	
+Incidents	AA37	37	27			8	
+Incidents	AB37	37	28			8	
+Incidents	AC37	37	29			8	
+Incidents	AD37	37	30			8	
+Incidents	A38	38	1	W38-005		7	s
+Incidents	B38	38	2	W38		7	s
+Incidents	C38	38	3	005		7	s
+Incidents	D38	38	4	late middle; fixture provenance		7	s
+Incidents	E38	38	5	Shared production flag-vector fixture		7	s
+Incidents	F38	38	6	Build a shared flag-vector fixture that mirrors the real tenant exactly, and use it in every test.		7	s
+Incidents	G38	38	7	Fixture = full vector + date comment; no timestamp/hash		7	s
+Incidents	H38	38	8	NO		7	s
+Incidents	I38	38	9	SILENT		7	s
+Incidents	J38	38	10	Exact content + human-readable date sufficient provenance		7	s
+Incidents	K38	38	11	The fixture needs a hash, not only a date… capture timestamp and a hash… so drift can be detected mechanically…		7	s
+Incidents	L38	38	12	~1 cycle		7	s
+Incidents	M38	38	13	Fixture edited: timestamp, canonicalization, SHA-256, frozen hash, integrity assertions		7	s
+Incidents	N38	38	14	Provenance requirement re-explained; conditionally approved		7	s
+Incidents	O38	38	15	WO said 'continue using your captured production fixture'; silent on hashing		7	s
+Incidents	P38	38	16	MEDIUM		7	s
+Incidents	Q38	38	17	INTENT		7	s
+Incidents	R38	38	18	HARMFUL		7	s
+Incidents	S38	38	19			7	
+Incidents	T38	38	20			8	
+Incidents	U38	38	21			8	
+Incidents	V38	38	22			8	
+Incidents	W38	38	23			8	
+Incidents	X38	38	24			8	
+Incidents	Y38	38	25			8	
+Incidents	Z38	38	26			8	
+Incidents	AA38	38	27			8	
+Incidents	AB38	38	28			8	
+Incidents	AC38	38	29			8	
+Incidents	AD38	38	30			8	
+Incidents	A39	39	1	W38-006		7	s
+Incidents	B39	39	2	W38		7	s
+Incidents	C39	39	3	006		7	s
+Incidents	D39	39	4	beginning→end; defect labeling		7	s
+Incidents	E39	39	5	Red assertions distinguishable from spec		7	s
+Incidents	F39	39	6	If no durable disclosure is recorded and no alert is raised, the test asserts that — and is marked as reproducing the defect		7	s
+Incidents	G39	39	7	Assertion names + EXPECTED RED footer used instead of adjacent greppable labels		7	s
+Incidents	H39	39	8	NO		7	s
+Incidents	I39	39	9	SILENT		7	s
+Incidents	J39	39	10	Names + suite-level footer sufficient marking		7	s
+Incidents	K39	39	11	Defect assertions must be explicitly labelled as current broken behaviour… Every assertion…needs a comment on or beside it…		7	s
+Incidents	L39	39	12	~2 cycles		7	s
+Incidents	M39	39	13	5 labels added; second correction; 3 more labels; extra commit+push		7	s
+Incidents	N39	39	14	Exact label text dictated; applied		7	s
+Incidents	O39	39	15	'marked as reproducing the defect' / 'greppable' / 'consistency is cheap'		7	s
+Incidents	P39	39	16	HIGH		7	s
+Incidents	Q39	39	17	INTENT		7	s
+Incidents	R39	39	18	HARMFUL		7	s
+Incidents	S39	39	19			7	
+Incidents	T39	39	20			8	
+Incidents	U39	39	21			8	
+Incidents	V39	39	22			8	
+Incidents	W39	39	23			8	
+Incidents	X39	39	24			8	
+Incidents	Y39	39	25			8	
+Incidents	Z39	39	26			8	
+Incidents	AA39	39	27			8	
+Incidents	AB39	39	28			8	
+Incidents	AC39	39	29			8	
+Incidents	AD39	39	30			8	
+Incidents	A40	40	1	W38-007		7	s
+Incidents	B40	40	2	W38		7	s
+Incidents	C40	40	3	007		7	s
+Incidents	D40	40	4	late middle; fixture hash work		7	s
+Incidents	E40	40	5	Capture timestamp for frozen fixture		7	s
+Incidents	F40	40	6	The auditor requires a capture timestamp and a hash of the captured flag vector		7	s
+Incidents	G40	40	7	Original fixture commit time recorded as capture instant, with explicit note		7	s
+Incidents	H40	40	8	NO		7	s
+Incidents	I40	40	9	DISCLOSED-PROCEED		7	s
+Incidents	J40	40	10	Commit timestamp acceptable proxy for unavailable DB-read instant		7	s
+Incidents	K40	40	11	NOT OBSERVABLE		7	s
+Incidents	L40	40	12	N/O		7	s
+Incidents	M40	40	13	Commit-derived timestamp used; no later correction		7	s
+Incidents	N40	40	14	Later msg: only labeling correction remained		7	s
+Incidents	O40	40	15	Assistant pre-stated the proxy; user did not answer before edit		7	s
+Incidents	P40	40	16	LOW		7	s
+Incidents	Q40	40	17	INTENT		7	s
+Incidents	R40	40	18	BENIGN		7	s
+Incidents	S40	40	19	AUD-017↔W38-007 (disclosure)		7	s
+Incidents	T40	40	20			8	
+Incidents	U40	40	21			8	
+Incidents	V40	40	22			8	
+Incidents	W40	40	23			8	
+Incidents	X40	40	24			8	
+Incidents	Y40	40	25			8	
+Incidents	Z40	40	26			8	
+Incidents	AA40	40	27			8	
+Incidents	AB40	40	28			8	
+Incidents	AC40	40	29			8	
+Incidents	AD40	40	30			8	
+Incidents	A41	41	1	W38-008		9	s
+Incidents	B41	41	2	W38		9	s
+Incidents	C41	41	3	008		9	s
+Incidents	D41	41	4	late middle; validation runs		9	s
+Incidents	E41	41	5	tsc + build for handback		9	s
+Incidents	F41	41	6	npx tsc --noEmit and npm run build results		9	s
+Incidents	G41	41	7	First tsc + next build run concurrently		9	s
+Incidents	H41	41	8	NO		9	s
+Incidents	I41	41	9	SILENT		9	s
+Incidents	J41	41	10	tsc could safely read .next/types during regeneration		9	s
+Incidents	K41	41	11	(self) The first TypeScript invocation collided with the simultaneous Next build…		9	s
+Incidents	L41	41	12	0 (same turn)		9	s
+Incidents	M41	41	13	TS6053 transient errors; rerun sequential; no code change		9	s
+Incidents	N41	41	14	Sequential rerun; clean results reported		9	s
+Incidents	O41	41	15	NONE		9	s
+Incidents	P41	41	16	LOW		9	s
+Incidents	Q41	41	17	COMPETENCE		9	s
+Incidents	R41	41	18	BENIGN		9	s
+Incidents	S41	41	19			9	
+Incidents	T41	41	20			8	
+Incidents	U41	41	21			8	
+Incidents	V41	41	22			8	
+Incidents	W41	41	23			8	
+Incidents	X41	41	24			8	
+Incidents	Y41	41	25			8	
+Incidents	Z41	41	26			8	
+Incidents	AA41	41	27			8	
+Incidents	AB41	41	28			8	
+Incidents	AC41	41	29			8	
+Incidents	AD41	41	30			8	
+Incidents	A42	42	1	W39-001		7	s
+Incidents	B42	42	2	W39		7	s
+Incidents	C42	42	3	001		7	s
+Incidents	D42	42	4	early middle; pre-WO-ENG-3		7	s
+Incidents	E42	42	5	Allergen engine branch prepared for push		7	s
+Incidents	F42	42	6	Rebase immediately before every push, and verify… The output must show only files in your territory, with zero deletions. If anything else appears, stop and report it — do not push.		7	s
+Incidents	G42	42	7	Branch left on stale base; merged files showed as deletions		7	s
+Incidents	H42	42	8	NO		7	s
+Incidents	I42	42	9	SILENT		7	s
+Incidents	J42	42	10	Existing base treated as sufficiently current		7	s
+Incidents	K42	42	11	Do not open a PR — stale base. main advanced after you branched (WO-PROOF-1 merged…). Your diff shows both as deletions, which would erase them.		7	s
+Incidents	L42	42	12	N/O		7	s
+Incidents	M42	42	13	PR stopped; fetch+rebase+recheck+force-with-lease		7	s
+Incidents	N42	42	14	Exact commands supplied; new SHA handed back		7	s
+Incidents	O42	42	15	'a stale branch previously came close to deleting a full day of merged work'		7	s
+Incidents	P42	42	16	HIGH		7	s
+Incidents	Q42	42	17	INTENT		7	s
+Incidents	R42	42	18	HARMFUL		7	s
+Incidents	S42	42	19	STALE-BASE cluster		7	s
+Incidents	T42	42	20			8	
+Incidents	U42	42	21			8	
+Incidents	V42	42	22			8	
+Incidents	W42	42	23			8	
+Incidents	X42	42	24			8	
+Incidents	Y42	42	25			8	
+Incidents	Z42	42	26			8	
+Incidents	AA42	42	27			8	
+Incidents	AB42	42	28			8	
+Incidents	AC42	42	29			8	
+Incidents	AD42	42	30			8	
+Incidents	A43	43	1	W39-002		7	s
+Incidents	B43	43	2	W39		7	s
+Incidents	C43	43	3	002		7	s
+Incidents	D43	43	4	middle; E0 proof cycle		7	s
+Incidents	E43	43	5	Flag values before fixture existed		7	s
+Incidents	F43	43	6	NOT OBSERVABLE — original E0 WO text not retained		7	s
+Incidents	G43	43	7	Local flag approximations used in E0 proof		7	s
+Incidents	H43	43	8	NO		7	s
+Incidents	I43	43	9	SILENT		7	s
+Incidents	J43	43	10	Locally specified flags acceptable stand-in for production config		7	s
+Incidents	K43	43	11	The auditor has ruled that local flag approximations are no longer acceptable…		7	s
+Incidents	L43	43	12	N/O		7	s
+Incidents	M43	43	13	Rebase; consume committed fixture; rerun acceptance proofs		7	s
+Incidents	N43	43	14	Fixture imported; named per-test overrides		7	s
+Incidents	O43	43	15	'The flag fixture is merged. Rebase E0 and consume it.'		7	s
+Incidents	P43	43	16	LOW		7	s
+Incidents	Q43	43	17	INTENT		7	s
+Incidents	R43	43	18	HARMFUL		7	s
+Incidents	S43	43	19			7	
+Incidents	T43	43	20			8	
+Incidents	U43	43	21			8	
+Incidents	V43	43	22			8	
+Incidents	W43	43	23			8	
+Incidents	X43	43	24			8	
+Incidents	Y43	43	25			8	
+Incidents	Z43	43	26			8	
+Incidents	AA43	43	27			8	
+Incidents	AB43	43	28			8	
+Incidents	AC43	43	29			8	
+Incidents	AD43	43	30			8	
+Incidents	A44	44	1	W39-003		7	s
+Incidents	B44	44	2	W39		7	s
+Incidents	C44	44	3	003		7	s
+Incidents	D44	44	4	late middle; VERIFY-FIX→FIX-2		7	s
+Incidents	E44	44	5	Rollback-only verification script corrections		7	s
+Incidents	F44	44	6	This is not a design task. Six call sites are wrong. Correct only those. Add nothing.		7	s
+Incidents	G44	44	7	Only six expressions changed; five other live-contract defects not flagged		7	s
+Incidents	H44	44	8	NO		7	s
+Incidents	I44	44	9	SILENT		7	s
+Incidents	J44	44	10	Values/keys outside the six expressions outside verification boundary		7	s
+Incidents	K44	44	11	The PM has accepted the raw catalog capture and approved this dispatch. Five corrections are specified below…		7	s
+Incidents	L44	44	12	~3 exchanges		7	s
+Incidents	M44	44	13	Second correction WO; fresh transfer branch; earlier branch preserved as evidence		7	s
+Incidents	N44	44	14	Five exact corrections applied; extra mismatches reported unchanged		7	s
+Incidents	O44	44	15	Same order also said 'Verify every argument against the identity signatures above'		7	s
+Incidents	P44	44	16	HIGH		7	s
+Incidents	Q44	44	17	INTENT		7	s
+Incidents	R44	44	18	HARMFUL		7	s
+Incidents	S44	44	19			7	
+Incidents	T44	44	20			8	
+Incidents	U44	44	21			8	
+Incidents	V44	44	22			8	
+Incidents	W44	44	23			8	
+Incidents	X44	44	24			8	
+Incidents	Y44	44	25			8	
+Incidents	Z44	44	26			8	
+Incidents	AA44	44	27			8	
+Incidents	AB44	44	28			8	
+Incidents	AC44	44	29			8	
+Incidents	AD44	44	30			8	
+Incidents	A45	45	1	W39-004		7	s
+Incidents	B45	45	2	W39		7	s
+Incidents	C45	45	3	004		7	s
+Incidents	D45	45	4	late middle; artefact delivery		7	s
+Incidents	E45	45	5	Corrected SQL to PM for verification		7	s
+Incidents	F45	45	6	1. The complete corrected file		7	s
+Incidents	G45	45	7	Local outputs file + link treated as delivery		7	s
+Incidents	H45	45	8	NO		7	s
+Incidents	I45	45	9	SILENT		7	s
+Incidents	J45	45	10	Local clickable path sufficient transfer to PM		7	s
+Incidents	K45	45	11	Five upload attempts failed… The PM has ruled that the file must reach it through the repository as a transport envelope…		7	s
+Incidents	L45	45	12	1		7	s
+Incidents	M45	45	13	5 failed transfers; clean worktree; non-mergeable transport branch; blob-hash check; push		7	s
+Incidents	N45	45	14	Committed at prescribed path on transfer/e0-verification-…; 3-item packet sent		7	s
+Incidents	O45	45	15	No transport channel specified		7	s
+Incidents	P45	45	16	HIGH		7	s
+Incidents	Q45	45	17	INTENT		7	s
+Incidents	R45	45	18	HARMFUL		7	s
+Incidents	S45	45	19	AUD-004↔W39-004 (transport premise)		7	s
+Incidents	T45	45	20			8	
+Incidents	U45	45	21			8	
+Incidents	V45	45	22			8	
+Incidents	W45	45	23			8	
+Incidents	X45	45	24			8	
+Incidents	Y45	45	25			8	
+Incidents	Z45	45	26			8	
+Incidents	AA45	45	27			8	
+Incidents	AB45	45	28			8	
+Incidents	AC45	45	29			8	
+Incidents	AD45	45	30			8	
+Incidents	A46	46	1	W39-005		7	s
+Incidents	B46	46	2	W39		7	s
+Incidents	C46	46	3	005		7	s
+Incidents	D46	46	4	late middle; bare attachment		7	s
+Incidents	E46	46	5	SQL file attached with empty request label		7	s
+Incidents	F46	46	6	My request for Codex:		7	s
+Incidents	G46	46	7	Hashed + compared read-only; no edit made		7	s
+Incidents	H46	46	8	NO		7	s
+Incidents	I46	46	9	SILENT		7	s
+Incidents	J46	46	10	Safest action = identify/compare rather than correct/transfer		7	s
+Incidents	K46	46	11	NOT OBSERVABLE		7	s
+Incidents	L46	46	12	N/O		7	s
+Incidents	M46	46	13	No file edited/executed		7	s
+Incidents	N46	46	14	Next msg supplied explicit transfer procedure		7	s
+Incidents	O46	46	15	Preceding handback identified corrected artefact + SHA		7	s
+Incidents	P46	46	16	MEDIUM		7	s
+Incidents	Q46	46	17	INTENT		7	s
+Incidents	R46	46	18	BENIGN		7	s
+Incidents	S46	46	19			7	
+Incidents	T46	46	20			8	
+Incidents	U46	46	21			8	
+Incidents	V46	46	22			8	
+Incidents	W46	46	23			8	
+Incidents	X46	46	24			8	
+Incidents	Y46	46	25			8	
+Incidents	Z46	46	26			8	
+Incidents	AA46	46	27			8	
+Incidents	AB46	46	28			8	
+Incidents	AC46	46	29			8	
+Incidents	AD46	46	30			8	
+Incidents	A47	47	1	W39-006		7	s
+Incidents	B47	47	2	W39		7	s
+Incidents	C47	47	3	006		7	s
+Incidents	D47	47	4	late middle; transport of artefact		7	s
+Incidents	E47	47	5	Three-item PM packet rule		7	s
+Incidents	F47	47	6	Send the PM only three things: the branch name, the commit SHA, and the repository path. Nothing else — no summary, no diff, no commentary.		7	s
+Incidents	G47	47	7	Progress commentary during task; final packet exactly 3 lines		7	s
+Incidents	H47	47	8	NO		7	s
+Incidents	I47	47	9	SILENT		7	s
+Incidents	J47	47	10	Restriction applies to final handback only		7	s
+Incidents	K47	47	11	NOT OBSERVABLE		7	s
+Incidents	L47	47	12	N/O		7	s
+Incidents	M47	47	13	None; final response = 3 lines		7	s
+Incidents	N47	47	14	No later resolution		7	s
+Incidents	O47	47	15	NONE		7	s
+Incidents	P47	47	16	MEDIUM		7	s
+Incidents	Q47	47	17	INTENT		7	s
+Incidents	R47	47	18	BENIGN		7	s
+Incidents	S47	47	19			7	
+Incidents	T47	47	20			8	
+Incidents	U47	47	21			8	
+Incidents	V47	47	22			8	
+Incidents	W47	47	23			8	
+Incidents	X47	47	24			8	
+Incidents	Y47	47	25			8	
+Incidents	Z47	47	26			8	
+Incidents	AA47	47	27			8	
+Incidents	AB47	47	28			8	
+Incidents	AC47	47	29			8	
+Incidents	AD47	47	30			8	
+Incidents	A48	48	1	W39-007		7	s
+Incidents	B48	48	2	W39		7	s
+Incidents	C48	48	3	007		7	s
+Incidents	D48	48	4	late middle; B1–B9 block		7	s
+Incidents	E48	48	5	Nine catalog/parent-row SQL queries supplied		7	s
+Incidents	F48	48	6	-- B1. Function contracts		7	s
+Incidents	G48	48	7	Queries executed read-only against production; results summarized		7	s
+Incidents	H48	48	8	NO		7	s
+Incidents	I48	48	9	SILENT		7	s
+Incidents	J48	48	10	Supplying SQL without imperative = authorization to execute against production		7	s
+Incidents	K48	48	11	NOT OBSERVABLE		7	s
+Incidents	L48	48	12	N/O		7	s
+Incidents	M48	48	13	Production catalog metadata + 2-row tenant count read; no mutation		7	s
+Incidents	N48	48	14	'The PM has accepted the raw catalog capture and approved this dispatch.'		7	s
+Incidents	O48	48	15	Execution permissions had varied by WO		7	s
+Incidents	P48	48	16	HIGH		7	s
+Incidents	Q48	48	17	INTENT		7	s
+Incidents	R48	48	18	BENIGN		7	s
+Incidents	S48	48	19	AUTHORITY: content-as-command; cf. Klear FIN-C		7	s
+Incidents	T48	48	20			8	
+Incidents	U48	48	21			8	
+Incidents	V48	48	22			8	
+Incidents	W48	48	23			8	
+Incidents	X48	48	24			8	
+Incidents	Y48	48	25			8	
+Incidents	Z48	48	26			8	
+Incidents	AA48	48	27			8	
+Incidents	AB48	48	28			8	
+Incidents	AC48	48	29			8	
+Incidents	AD48	48	30			8	
+Incidents	A49	49	1	KBD-001		9	s
+Incidents	B49	49	2	KBD		9	s
+Incidents	C49	49	3	001		9	s
+Incidents	D49	49	4	early; brew install		9	s
+Incidents	E49	49	5	Install GitHub CLI via Homebrew		9	s
+Incidents	F49	49	6	If Homebrew is available, install GitHub CLI: brew install gh		9	s
+Incidents	G49	49	7	Proceeded with authorization not covering Homebrew log dir		9	s
+Incidents	H49	49	8	NO		9	s
+Incidents	I49	49	9	SILENT		9	s
+Incidents	J49	49	10	Approved paths covered all writes brew needs		9	s
+Incidents	K49	49	11	Error: The following directories are not writable by your user: /Users/…/Library/Logs/Homebrew		9	s
+Incidents	L49	49	12	0		9	s
+Incidents	M49	49	13	Install stopped; permission diagnosis; second narrow attempt		9	s
+Incidents	N49	49	14	Retried after new approval; sandbox cause named		9	s
+Incidents	O49	49	15	NONE		9	s
+Incidents	P49	49	16	LOW		9	s
+Incidents	Q49	49	17	PREMISE		9	s
+Incidents	R49	49	18	HARMFUL		9	s
+Incidents	S49	49	19			9	
+Incidents	T49	49	20			8	
+Incidents	U49	49	21			8	
+Incidents	V49	49	22			8	
+Incidents	W49	49	23			8	
+Incidents	X49	49	24			8	
+Incidents	Y49	49	25			8	
+Incidents	Z49	49	26			8	
+Incidents	AA49	49	27			8	
+Incidents	AB49	49	28			8	
+Incidents	AC49	49	29			8	
+Incidents	AD49	49	30			8	
+Incidents	A50	50	1	KBD-002		7	s
+Incidents	B50	50	2	KBD		7	s
+Incidents	C50	50	3	002		7	s
+Incidents	D50	50	4	early middle; gh auth		7	s
+Incidents	E50	50	5	Browser auth; wait for Mohamed		7	s
+Incidents	F50	50	6	Stop while Mohamed completes the GitHub browser authorization.		7	s
+Incidents	G50	50	7	Relied on command output to expose one-time code; code not shown to user		7	s
+Incidents	H50	50	8	NO		7	s
+Incidents	I50	50	9	SILENT		7	s
+Incidents	J50	50	10	User could see the device code in tool/terminal output		7	s
+Incidents	K50	50	11	where is the code		7	s
+Incidents	L50	50	12	1		7	s
+Incidents	M50	50	13	Authorization paused; code requested		7	s
+Incidents	N50	50	14	Code supplied; auth continued		7	s
+Incidents	O50	50	15	'Use browser authentication'		7	s
+Incidents	P50	50	16	HIGH		7	s
+Incidents	Q50	50	17	INTENT		7	s
+Incidents	R50	50	18	HARMFUL		7	s
+Incidents	S50	50	19			7	
+Incidents	T50	50	20			8	
+Incidents	U50	50	21			8	
+Incidents	V50	50	22			8	
+Incidents	W50	50	23			8	
+Incidents	X50	50	24			8	
+Incidents	Y50	50	25			8	
+Incidents	Z50	50	26			8	
+Incidents	AA50	50	27			8	
+Incidents	AB50	50	28			8	
+Incidents	AC50	50	29			8	
+Incidents	AD50	50	30			8	
+Incidents	A51	51	1	KBD-003		9	s
+Incidents	B51	51	2	KBD		9	s
+Incidents	C51	51	3	003		9	s
+Incidents	D51	51	4	middle; config storage		9	s
+Incidents	E51	51	5	Retain gh config outside workspace		9	s
+Incidents	F51	51	6	Then request approval for the interactive authentication command: gh auth login…		9	s
+Incidents	G51	51	7	Child path approval requested; parent .config not created/authorized first		9	s
+Incidents	H51	51	8	NO		9	s
+Incidents	I51	51	9	SILENT		9	s
+Incidents	J51	51	10	Child-path authorization sufficient to create missing parent		9	s
+Incidents	K51	51	11	mkdir /Users/…/.config: operation not permitted		9	s
+Incidents	L51	51	12	1		9	s
+Incidents	M51	51	13	Auth completed but not retained; new mkdir approval + repeat auth needed		9	s
+Incidents	N51	51	14	Revised instruction: mkdir -p …/.config/gh; flow repeated		9	s
+Incidents	O51	51	15	'Use macOS Keychain/native secure storage if prompted'		9	s
+Incidents	P51	51	16	MEDIUM		9	s
+Incidents	Q51	51	17	PREMISE		9	s
+Incidents	R51	51	18	HARMFUL		9	s
+Incidents	S51	51	19			9	
+Incidents	T51	51	20			8	
+Incidents	U51	51	21			8	
+Incidents	V51	51	22			8	
+Incidents	W51	51	23			8	
+Incidents	X51	51	24			8	
+Incidents	Y51	51	25			8	
+Incidents	Z51	51	26			8	
+Incidents	AA51	51	27			8	
+Incidents	AB51	51	28			8	
+Incidents	AC51	51	29			8	
+Incidents	AD51	51	30			8	
+Incidents	A52	52	1	KBD-004		7	s
+Incidents	B52	52	2	KBD		7	s
+Incidents	C52	52	3	004		7	s
+Incidents	D52	52	4	late; WO-DOC-K2 Rev 3		7	s
+Incidents	E52	52	5	One commit + one DRAFT PR		7	s
+Incidents	F52	52	6	Make one commit and open one DRAFT PR.		7	s
+Incidents	G52	52	7	Local gh CLI auth treated as prerequisite; stopped on gh auth status failure		7	s
+Incidents	H52	52	8	NO		7	s
+Incidents	I52	52	9	SILENT		7	s
+Incidents	J52	52	10	WO required CLI auth though it specified outcome, not transport		7	s
+Incidents	K52	52	11	KIVO-PM — corrected transport instruction: GitHub CLI authentication is no longer a prerequisite…		7	s
+Incidents	L52	52	12	~5 exchanges		7	s
+Incidents	M52	52	13	WO stalled pre-preconditions; repeated auth retries; connector-only correction; no edit discarded		7	s
+Incidents	N52	52	14	'No GitHub CLI retry is authorized.' Connector used; branch+commit+draft PR created		7	s
+Incidents	O52	52	15	Plugin reference in context		7	s
+Incidents	P52	52	16	HIGH		7	s
+Incidents	Q52	52	17	INTENT		7	s
+Incidents	R52	52	18	HARMFUL		7	s
+Incidents	S52	52	19	LONGEST awareness gap (means-vs-outcome)		7	s
+Incidents	T52	52	20			8	
+Incidents	U52	52	21			8	
+Incidents	V52	52	22			8	
+Incidents	W52	52	23			8	
+Incidents	X52	52	24			8	
+Incidents	Y52	52	25			8	
+Incidents	Z52	52	26			8	
+Incidents	AA52	52	27			8	
+Incidents	AB52	52	28			8	
+Incidents	AC52	52	29			8	
+Incidents	AD52	52	30			8	
+Incidents	A53	53	1	KPF-001		7	s
+Incidents	B53	53	2	KPF		7	s
+Incidents	C53	53	3	001		7	s
+Incidents	D53	53	4	early middle; pre-WO-PROOF-2		7	s
+Incidents	E53	53	5	KIVO-PROOF branch under strict rebase/no-PR rules		7	s
+Incidents	F53	53	6	Rebase immediately before every push, and verify… The output must show only files in your territory, with zero deletions.		7	s
+Incidents	G53	53	7	Branch not kept current vs latest origin/main before handoff		7	s
+Incidents	H53	53	8	NO		7	s
+Incidents	I53	53	9	SILENT		7	s
+Incidents	J53	53	10	Existing base/prior verification remained valid after main advanced		7	s
+Incidents	K53	53	11	Do not open a PR — your branch has a stale base. main advanced after you branched (WO-ENG-1 merged…). A diff…shows that file as a deletion, which would erase it.		7	s
+Incidents	L53	53	12	N/O		7	s
+Incidents	M53	53	13	PR path stopped; rebase + re-verification; deletion caught pre-merge		7	s
+Incidents	N53	53	14	Rebase sequence re-explained; force-with-lease only after clean verify		7	s
+Incidents	O53	53	15	'Never open a pull request and never merge. Push your branch only.'		7	s
+Incidents	P53	53	16	MEDIUM		7	s
+Incidents	Q53	53	17	INTENT		7	s
+Incidents	R53	53	18	HARMFUL		7	s
+Incidents	S53	53	19	STALE-BASE cluster		7	s
+Incidents	T53	53	20			8	
+Incidents	U53	53	21			8	
+Incidents	V53	53	22			8	
+Incidents	W53	53	23			8	
+Incidents	X53	53	24			8	
+Incidents	Y53	53	25			8	
+Incidents	Z53	53	26			8	
+Incidents	AA53	53	27			8	
+Incidents	AB53	53	28			8	
+Incidents	AC53	53	29			8	
+Incidents	AD53	53	30			8	
+Aggregates	A1	1	1	METRIC		5	s
+Aggregates	B1	1	2	FORMULA RESULT		5	s
+Aggregates	C1	1	3	NOTE		5	s
+Aggregates	A2	2	1	Total records		6	s
+Aggregates	B2	2	2	52	COUNTA(Incidents!A2:A53)	6	n
+Aggregates	C2	2	3			6	
+Aggregates	A3	3	1	Confirmed (C9)		6	s
+Aggregates	B3	3	2	0	"COUNTIF(Incidents!AC2:AC53,""CONFIRMED"")"	6	n
+Aggregates	C3	3	3	Only these enter the paper		6	s
+Aggregates	A4	4	1	C0 FINAL = INTENT		6	s
+Aggregates	B4	4	2	0	"COUNTIF(Incidents!T2:T53,""INTENT"")"	6	n
+Aggregates	C4	4	3	SII analysis set		6	s
+Aggregates	A5	5	1	C0 FINAL = COMPETENCE		6	s
+Aggregates	B5	5	2	0	"COUNTIF(Incidents!T2:T53,""COMPETENCE"")"	6	n
+Aggregates	C5	5	3	Comparison class		6	s
+Aggregates	A6	6	1	C0 FINAL = PREMISE		6	s
+Aggregates	B6	6	2	0	"COUNTIF(Incidents!T2:T53,""PREMISE"")"	6	n
+Aggregates	C6	6	3	Comparison class		6	s
+Aggregates	A7	7	1	C0 FINAL = META		6	s
+Aggregates	B7	7	2	0	"COUNTIF(Incidents!T2:T53,""META"")"	6	n
+Aggregates	C7	7	3	Report separately		6	s
+Aggregates	A8	8	1	Silent (A6=NO) among INTENT		6	s
+Aggregates	B8	8	2	0	"SUMPRODUCT((Incidents!T2:T53=""INTENT"")*(Incidents!H2:H53=""NO""))"	6	n
+Aggregates	C8	8	3	Numerator of silent-inference rate		6	s
+Aggregates	A9	9	1	Disclosure-style resolutions		6	s
+Aggregates	B9	9	2	2	"COUNTIF(Incidents!I2:I53,""DISCLOSED-PROCEED"")+COUNTIF(Incidents!I2:I53,""DISCLOSED-WAIT"")"	6	n
+Aggregates	C9	9	3	Third resolution strategy		6	s
+Aggregates	A10	10	1	Benign outcomes (suggested)		6	s
+Aggregates	B10	10	2	20	"COUNTIF(Incidents!R2:R53,""BENIGN"")"	6	n
+Aggregates	C10	10	3	Base-rate honesty		6	s
+Aggregates	A11	11	1	Harmful outcomes (suggested)		6	s
+Aggregates	B11	11	2	31	"COUNTIF(Incidents!R2:R53,""HARMFUL"")"	6	n
+Aggregates	C11	11	3			6	
+Aggregates	A12	12	1	Material (C2)		6	s
+Aggregates	B12	12	2	0	"COUNTIF(Incidents!V2:V53,""MATERIAL"")"	6	n
+Aggregates	C12	12	3	Fill C2 first		6	s
+Aggregates	A13	13	1	Benchmark candidates (C8)		6	s
+Aggregates	B13	13	2	0	"COUNTIF(Incidents!AB2:AB53,""YES"")"	6	n
+Aggregates	C13	13	3	Feeds IFI-Bench v0.1		6	s
