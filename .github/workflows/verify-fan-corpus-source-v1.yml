@@ -1,0 +1,40 @@
+name: Verify exact CP incident corpus v1 source
+
+on:
+  push:
+    branches:
+      - research/fan-corpus-validation-2026-08-22
+    paths:
+      - '.github/workflows/verify-fan-corpus-source-v1.yml'
+      - 'research/fan-corpus-validation/source-v1-exact/**'
+      - 'research/fan-corpus-validation/tools/verify_exact_source.py'
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout research branch
+        uses: actions/checkout@v4
+        with:
+          ref: research/fan-corpus-validation-2026-08-22
+          fetch-depth: 1
+
+      - name: Reconstruct and verify authoritative source workbook
+        run: python3 research/fan-corpus-validation/tools/verify_exact_source.py
+
+      - name: Commit verification evidence and reconstructed working copy
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add research/fan-corpus-validation/work/CP_Incident_Database_v1.authoritative.xlsx \
+                  research/fan-corpus-validation/work/EXACT_SOURCE_VERIFICATION.md \
+                  research/fan-corpus-validation/work/exact_source_verification.json
+          if git diff --cached --quiet; then
+            echo "No generated changes to commit."
+          else
+            git commit -m "research: verify and freeze exact 52-row corpus v1 source [skip ci]"
+            git push origin HEAD:research/fan-corpus-validation-2026-08-22
+          fi
