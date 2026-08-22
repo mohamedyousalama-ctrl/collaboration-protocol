@@ -1,0 +1,113 @@
+ugh runtime mechanisms (ICD, IPP) rather than design-time allocation or post-hoc explanation. Italic
+entries indicate CP's distinctive contributions.
+1. Accountability Gaps: When inferences are invisible, responsibility for outcomes becomes unclear, undermining legal and organizational governance.
+2. Untraceable Decisions: Silent inferences leave no audit trail. In high-stakes domains, this
+opacity creates compliance risks.
+3. Reduced User Oversight: Repeated silent inference may condition users to accept outputs
+passively, potentially reducing capacity for meaningful oversight.
+4. Semantic Authority Shift: The AI determines meaning without explicit consent, shifting
+semantic authority from human to machine.
+5. Trust Miscalibration: Users cannot appropriately calibrate trust in systems whose inference
+behavior is opaque.
+3.3 Prevalence Hypotheses
+We hypothesize that Silent Intent Inference is prevalent in current AI interaction paradigms. These
+hypotheses are preliminary and await empirical validation:
+ H1 (Prevalence): In complex task completions, silent intent inferences occur in a substantial proportion of interactions. We provisionally estimate >60%, though this threshold requires
+empirical calibration.
+ H1a: Prevalence increases with task complexity (more decision points = more silent inferences).
+6\n\n--- PAGE 7 ---\n
+Criterion Constitutional
+AI
+ReAct
+Agents
+SelfCorrection
+(CRITIC)
+CP
+Primary goal Value alignmentTask completionOutput qualitySemantic authority
+Timing Training-time Runtime PostgenerationPregeneration
+User involvement None (bakedin)Tool selection None Continuous
+(ICD)
+Handles ambiguity byDefault values Proceeding
+anyway
+Verifying outputSurfacing to
+user
+Prevents silent inference?No No No (post-hoc) Yes (by design)
+Table 2: CP compared to recent LLM enhancement approaches. Constitutional AI embeds
+values during training but does not address runtime ambiguity. ReAct agents use tools but proceed
+with inferred intent. Self-correction frameworks like CRITIC verify outputs post-generation but do
+not prevent unauthorized semantic decisions.
+ H1b: Prevalence varies by domain: highest in creative/open-ended tasks, lower in highly
+structured tasks.
+ H2 (Awareness Gap): Users are often unaware of these inferences when they occur. We
+provisionally estimate >70% unawareness, pending validation.
+ H2a: Awareness correlates negatively with AI experience (experts become more complacent).
+ H2b: Awareness increases when users are primed to look for inferences (trainability).
+ H3 (Downstream Impact): Higher rates of undetected silent inference correlate with negative
+outcomes:
+ H3a: Increased task error rates in high-stakes simulations.
+ H3b: Decreased user satisfaction with nal outputs.
+ H3c: Trust miscalibration (users either over-trust or under-trust relative to actual AI reliability).
+ H3d: In longitudinal tasks, trust miscalibration compounds over time.
+ H4 (ICD Eectiveness): Higher ICD settings reduce silent inference impact:
+ H4a: ICD ≥ 0.7 reduces undetected silent inferences by >50% compared to ICD ≤ 0.3.
+ H4b: The relationship between ICD and task completion time is non-linear (diminishing
+returns at high ICD).
+ H4c: User satisfaction with ICD control varies by task type (high ICD preferred for creative
+tasks, low ICD for routine tasks).
+7\n\n--- PAGE 8 ---\n
+These hypotheses are testable through the protocols described in Section 5. We emphasize that
+the specic numerical thresholds are initial estimates intended to be falsiable; the core contribution
+is the framework for measuring these phenomena, not the precise predictions.1
+4 The Collaboration Protocol Framework
+4.1 Core Constructs
+The Collaboration Protocol denes four primary constructs with operational denitions enabling
+empirical measurement.
+4.1.1 Intent
+Intent is the human-authored constraint determining acceptable outcomes. Intent species not
+what the AI should produce but what boundaries production must respect: meaning boundaries
+(acceptable interpretations), constraint sets (what must/must not be true), and contextual assumptions (what the user takes for granted).
+For measurement, intent is captured through pre-task articulation (user states outcome and
+constraints), post-task validation (user conrms match), and counterfactual probing (user identies
+acceptable alternatives).
+Boundary Conditions. Intent is distinct from: (a) preferenceintent denes acceptable
+boundaries, not optimal choices within those boundaries; (b) instructionintent constrains meaning, while instructions specify actions; (c) goalintent may include unstated assumptions and
+contextual knowledge beyond explicit objectives. A user may have clear intent without being able
+to fully articulate it; the framework aims to surface this gap, not eliminate it.
+4.1.2 Intent Pivot Points (IPP)
+An Intent Pivot Point exists when: (1) two or more interpretations are plausible; (2) resolution
+materially changes the output; and (3) the user has not specied which interpretation to use.
+Boundary Conditions. Not every ambiguity constitutes an IPP. An ambiguity qualies as
+an IPP only if resolution materially aects the outputminor variations in phrasing or formatting
+that preserve meaning are not IPPs. Similarly, ambiguities where all plausible resolutions lead to
+equivalent outcomes are not IPPs. The materiality threshold is context-dependent: in legal or
+medical domains, smaller variations may be material; in casual conversation, larger variations may
+be immaterial.
+IPP Taxonomy: Six types identied (Table 3):
+1Sensitivity analysis for IFI weights: Preliminary calculations suggest that varying weights within ±0.1 (e.g.,
+0.3/0.4/0.3 instead of 0.4/0.3/0.3) changes absolute IFI scores by <0.15 for typical interactions, but preserves rank
+ordering of outputs. Study 4 will include formal sensitivity analysis.
+8\n\n--- PAGE 9 ---\n
+Type Denition Example
+Scope Boundaries ambiguous Summarize thiswhole or key points?
+Temporal Time reference ambiguous Current statusas of when?
+Entity Which entity referenced Population?Egypt or Cairo?
+Authority Whose perspective Best approachaccording to whom?
+Form Format ambiguous Explain Xbrief or comprehensive?
+Abstraction Detail level ambiguous How does it work?high-level or technical?
+Table 3: Intent Pivot Point Taxonomy
+IPPs are identied through expert annotation, counterfactual generation, and materiality testing. Reliability criterion: inter-rater agreement (Cohen's κ) > 0.7.
+4.1.3 Context Roots: Anchoring IPPs in Interaction History
+A critical insight is that ambiguity does not exist in isolationeach IPP is anchored in a Context
+Root that determines where its meaning originates. Context is not merely another IPP type but a
+dimension that aects all six IPP types. This distinction is essential for multi-turn conversations,
+multi-session workows, and agentic systems where meaning accumulates across interactions.
+Denition. A Context Root (CR) identies the source of semantic anchoring for an ambiguous element. Every IPP carries an implicit or explicit Context Root specifying where its meaning
+is grounded:
+ Intra-session: Prior turns in the current conversation (e.g., the change we discussed refers to
+Turn 14)
+ Cross-session: Information from previous sessions (e.g., use the same format refers to last
+week's task)
+ Environmental: User prole, workspace state, or external documents (e.g., my manager resolved via organizational context)
+ Null: No prior context exists; this is the rst mention (baseline ambiguity)
+Context Root Structure. Each Context Root is characterized by:
+ Source location: Ses
