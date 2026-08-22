@@ -1,0 +1,44 @@
+{
+  "status": "MISMATCH",
+  "identity_verified": false,
+  "expected_base64_chars": 41964,
+  "actual_base64_chars": 35408,
+  "expected_bytes": 31471,
+  "actual_bytes": 26554,
+  "expected_sha256": "3a5d4e82c2d65473b1117d70b68428efd89319386a89978871f38edf8ee8ed4a",
+  "actual_sha256": "f75de5b2b427c2a4c3037112085436fefc8916811914c68fb83120dc8ea12eaf",
+  "zip_valid": true,
+  "parse_error": "BadZipFile: Bad magic number for file header",
+  "parts": [
+    {
+      "name": "CP_Incident_Database_v1.xlsx.b64.part-000",
+      "repository_bytes": 11996,
+      "trimmed_chars": 11996,
+      "sha256": "bc82606e56b480ff3e3759a50924eb3651a8f89ea65409f5a9533710b6ee3fdc"
+    },
+    {
+      "name": "CP_Incident_Database_v1.xlsx.b64.part-001",
+      "repository_bytes": 5448,
+      "trimmed_chars": 5448,
+      "sha256": "89f12e5c4514e0cfd04382cba710bb1617ca6095ece39c90b4cf5347e079798c"
+    },
+    {
+      "name": "CP_Incident_Database_v1.xlsx.b64.part-002a",
+      "repository_bytes": 6000,
+      "trimmed_chars": 6000,
+      "sha256": "d547b02894ebd79eb744c6d6a6dc56ddbfe776ab41c30eb1cb9ef6a6b6d4da0f"
+    },
+    {
+      "name": "CP_Incident_Database_v1.xlsx.b64.part-002b",
+      "repository_bytes": 6000,
+      "trimmed_chars": 6000,
+      "sha256": "aa5c2a790c078f86dd7ba4bf79b511344977437b6ba6752c2038849e899b6d0b"
+    },
+    {
+      "name": "CP_Incident_Database_v1.xlsx.b64.part-003",
+      "repository_bytes": 5964,
+      "trimmed_chars": 5964,
+      "sha256": "236c57f7235d4bb0098f1e0a92ec3b7dc2f738da85183766a9a10ac3af85f8d2"
+    }
+  ]
+}
