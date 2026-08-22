@@ -1,0 +1,297 @@
+n
+
+### STEP 0 — Initial State
+
+All stores empty.
+
+---
+
+### STEP 1 — Signal Received
+
+**Input:** "I want to outline a research paper on machine learning fairness."
+
+**Signal:**
+```
+{
+    signal_id: "sig_001"
+    user_id: "user_03"
+    content: "I want to outline a research paper on machine learning fairness."
+    timestamp: "2025-01-26T16:00:00Z"
+}
+```
+
+**State Change:** None
+
+---
+
+### STEP 2 — Signal Classification
+
+**Result:**
+```
+{
+    clarity: clear
+    intent_presence: action_requested
+    context_fit: in_scope
+}
+```
+
+**State Change:** None
+
+---
+
+### STEP 3 — Guardian Checkpoint 1
+
+**Evaluation:** PC-4 matches
+
+**Decision:** Allow
+
+**Log Added:** log_001
+
+**LogStore After:** [log_001]
+
+---
+
+### STEP 4 — Context Creation
+
+**State Before:** ContextStore empty
+
+**Context Created:**
+```
+{
+    context_id: "ctx_003"
+    description: "Research Paper — Machine Learning Fairness"
+    state: "open"
+    created_by: "user_03"
+}
+```
+
+**State After:** ContextStore has ctx_003
+
+**Log Added:** log_002
+
+**LogStore After:** [log_001, log_002]
+
+---
+
+### STEP 5 — Intent Creation
+
+**State Before:** IntentStore empty
+
+**Intent Created:**
+```
+{
+    intent_id: "int_003"
+    context_id: "ctx_003"
+    intent_type: "generate"
+    state: "declared"
+}
+```
+
+**State After:** IntentStore has int_003 (declared)
+
+**Log Added:** log_003
+
+**LogStore After:** [log_001, log_002, log_003]
+
+---
+
+### STEP 6 — Verification Request
+
+**Output:** "Please confirm your intent..."
+
+**State Change:** None
+
+---
+
+### STEP 7 — User Confirms
+
+**Input:** "Confirmed."
+
+**Log Added:** log_004 (Guardian Allow)
+
+**LogStore After:** [log_001, log_002, log_003, log_004]
+
+---
+
+### STEP 8 — Intent Verified
+
+**State Before:** int_003.state = "declared"
+
+**State After:** int_003.state = "verified"
+
+**Log Added:** log_005
+
+**LogStore After:** [log_001, log_002, log_003, log_004, log_005]
+
+---
+
+### STEP 9 — Intent Activated
+
+**State Before:** int_003.state = "verified"
+
+**State After:** int_003.state = "active"
+
+**Log Added:** log_006
+
+**LogStore After:** [log_001, ..., log_006]
+
+---
+
+### STEP 10 — User Requests Action
+
+**Input:** "Create the outline structure with three main sections."
+
+**Log Added:** log_007 (Guardian Allow)
+
+**LogStore After:** [log_001, ..., log_007]
+
+---
+
+### STEP 11 — Action Created
+
+**State Before:** ActionStore empty
+
+**Action Created:**
+```
+{
+    action_id: "act_003"
+    intent_id: "int_003"
+    state: "pending"
+}
+```
+
+**State After:** ActionStore has act_003 (pending)
+
+**Log Added:** log_008
+
+**LogStore After:** [log_001, ..., log_008]
+
+---
+
+### STEP 12 — Guardian Checkpoint 2
+
+**Evaluation:** PE-1 through PE-10 pass, PE-11 matches
+
+**Decision:** Allow
+
+**Log Added:** log_009
+
+**LogStore After:** [log_001, ..., log_009]
+
+---
+
+### STEP 13 — Node Created
+
+**State Before:** NodeStore empty
+
+**Node Created:**
+```
+{
+    node_id: "node_002"
+    content: "Paper Outline: 1. Introduction, 2. Fairness Metrics, 3. Mitigation Strategies"
+    state: "active"
+}
+```
+
+**State After:** NodeStore has node_002
+
+**Log Added:** log_010
+
+**LogStore After:** [log_001, ..., log_010]
+
+---
+
+### STEP 14 — Action Executed
+
+**State Before:** act_003.state = "pending"
+
+**State After:** act_003.state = "executed", outputs = "node_002"
+
+**Log Added:** log_011
+
+**LogStore After:** [log_001, ..., log_011]
+
+---
+
+## 5.3 Final State
+
+| Store | Contents |
+|-------|----------|
+| ContextStore | ctx_003 (open) |
+| IntentStore | int_003 (active) |
+| NodeStore | node_002 (active) |
+| ActionStore | act_003 (executed) |
+| FrictionStore | (empty) |
+| LogStore | 11 entries |
+
+---
+
+## 5.4 Traceability Verification
+
+**Question:** How was node_002 created?
+
+| Step | Log | Finding |
+|------|-----|---------|
+| 1 | log_010 | Node created |
+| 2 | log_011 | By action act_003 |
+| 3 | log_009 | Guardian allowed |
+| 4 | log_008 | Action references int_003 |
+| 5 | log_005 | Intent verified by user_03 |
+| 6 | log_003 | Intent in ctx_003 |
+| 7 | log_002 | Context created by user_03 |
+
+**Chain:**
+```
+user_03 → ctx_003 → int_003 (verified) → act_003 (allowed) → node_002
+```
+
+---
+
+# FINAL SUMMARY
+
+---
+
+## Deliverables Completed
+
+| Phase/Step | Deliverable | Status |
+|------------|-------------|--------|
+| Step 1 | 7 Formal Data Models | ✓ Frozen |
+| Step 2 | CP Interaction Loop | ✓ Frozen |
+| Step 3 | Simulated User Session | ✓ Frozen |
+| Step 4 | Failure Handling | ✓ Frozen |
+| Step 5 | Observability & Logs | ✓ Frozen |
+| Step 6 | System Architecture | ✓ Frozen |
+| Phase 1 | State Skeleton | ✓ Frozen |
+| Phase 2 | Guardian Rules | ✓ Frozen |
+| Phase 3 | Happy-Path Flow | ✓ Frozen |
+| Phase 4 | Failure Path | ✓ Frozen |
+| Phase 5 | Runtime Test | ✓ Frozen |
+
+---
+
+## Success Criteria Met
+
+| Criterion | Evidence |
+|-----------|----------|
+| System cannot act without intent | Guardian PE-1, PE-2; Phase 4 |
+| System cannot lose context | Scope boundary enforcement |
+| Failures are visible | FrictionEvents logged |
+| Explainable in 5 minutes | Phase 5 walkthrough |
+
+---
+
+## CP Invariants Preserved
+
+| Invariant | Mechanism |
+|-----------|-----------|
+| No silent execution | All actions logged |
+| No hidden context | Context creation logged |
+| No intent guessing | Intent verification required |
+| No agent autonomy | Permission checks enforced |
+| Accountability reconstructible | Full log chain |
+
+---
+
+## End of Document
+
+**CP v1.0 Implementation Specification — Complete**
