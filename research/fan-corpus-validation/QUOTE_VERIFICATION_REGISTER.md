@@ -1,13 +1,15 @@
 # Quote and Chronology Verification Register
 
 **WP:** 3 — source discovery and primary-evidence verification  
-**Rule:** C9 `CONFIRMED` requires independently available primary interaction evidence sufficient to check the incident quotation and chronology. A workbook row, derivative extraction report, or original task artifact alone cannot automatically satisfy C9.
+**Rule:** C9 `CONFIRMED` requires independently available primary interaction evidence sufficient to check the incident quotation and chronology. A workbook row, derivative extraction report, original task artifact, or execution-only fragment alone cannot automatically satisfy C9.
 
 ## Evidence/status vocabulary
 
 - `A3 CORROBORATED — PRIMARY TASK ARTIFACT`: exact triggering/source instruction is independently present in an original work order/charter/payload; A8/chronology still requires the interaction record.
+- `A5 PRIMARY EXECUTION BEHAVIOR CORROBORATED`: a primary tool/session fragment independently proves the action/sequence recorded in A5, but does not contain enough A3/A8 prose to confirm the whole incident.
+- `UNVERIFIED — PRIMARY BEHAVIOR FRAGMENT ONLY`: primary execution behavior/order is independently corroborated, but A3 and/or A8/full chronology are missing.
 - `UNVERIFIED — SOURCE EXTRACT ONLY`: full derivative extraction record recovered, but no independently complete primary interaction.
-- `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED`: preservation evidence indicates primary transcript material existed, but exact artifact is not yet mapped.
+- `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED`: preservation evidence indicates primary transcript material existed, but exact complete artifact is not yet mapped.
 - `UNVERIFIED — EXTRACT REFERENCED NOT LOCATED`: corpus names a historical extract that has not been recovered.
 - `UNVERIFIED — NOT FOUND IN CURRENT PRESERVATION SCOPE`: extensive current search did not locate sufficient source interaction/extract.
 - `UNVERIFIED — SOURCE SEARCH PENDING`: discovery is still open.
@@ -28,36 +30,46 @@ Recovered `extract_chatgpt_w1_2026-07-30.md` maps exactly to GPT-001..005 and re
 
 ## AUD — 22 records
 
-Preservation evidence says a raw AUD transcript was recovered from disk, but the exact independently readable artifact is not yet located/mapped. AUD-021 also carries a WP2 structural contradiction that must be resolved from source.
+The exact historical KIVO-AUDITOR Claude Code session path is now known:
 
-| GID | C9 recommendation |
-|---|---|
-| AUD-001 | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
-| AUD-002 | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
-| AUD-003 | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
-| AUD-004 | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
-| AUD-005 | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
-| AUD-006 | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
-| AUD-007 | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
-| AUD-008 | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
-| AUD-009 | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
-| AUD-010 | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
-| AUD-011 | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
-| AUD-012 | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
-| AUD-013 | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
-| AUD-014 | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
-| AUD-015 | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
-| AUD-016 | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
-| AUD-017 | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
-| AUD-018 | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
-| AUD-019 | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
-| AUD-020 | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
-| AUD-021 | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED`; source must resolve SILENT vs self-disclosed contradiction |
-| AUD-022 | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
+`/root/.claude/projects/-home-user-MaitreAI/84dd6879-90b4-5ba3-b9ad-b3ed61f10a6c.jsonl`
+
+The Library also contains a genuine bounded primary execution fragment extracted from that session: `PREFLIGHTKVD06REV14001_transcript.txt`, recorded as 32,645 bytes / 482 lines / SHA-256 `771d0f013492e1c2eb9ce63617082f69f330c3f0d14520e4b1d57a5e323c7de4`, covering source-record line 1110 onward. It contains exact tool calls/results for the Revision-14 preflight but not the complete user/assistant prose of the 22-record source family.
+
+Detailed mapping: `source-evidence/AUD_PRIMARY_FRAGMENT_MAPPING.md`.
+
+| GID | Best current evidence | What is independently established | C9 recommendation |
+|---|---|---|---|
+| AUD-001 | historical full-source existence/path evidence only | complete incident source not mapped | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
+| AUD-002 | historical full-source existence/path evidence only | complete incident source not mapped | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
+| AUD-003 | historical full-source existence/path evidence only | complete incident source not mapped | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
+| AUD-004 | historical full-source existence/path evidence only | complete incident source not mapped | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
+| AUD-005 | historical full-source existence/path evidence only | complete incident source not mapped | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
+| AUD-006 | historical full-source existence/path evidence only | complete incident source not mapped | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
+| AUD-007 | historical full-source existence/path evidence only | complete incident source not mapped | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
+| AUD-008 | historical full-source existence/path evidence only | complete incident source not mapped | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
+| AUD-009 | historical full-source existence/path evidence only | complete incident source not mapped | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
+| AUD-010 | historical full-source existence/path evidence only | complete incident source not mapped | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
+| AUD-011 | historical full-source existence/path evidence only | complete incident source not mapped | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
+| AUD-012 | historical full-source existence/path evidence only | complete incident source not mapped | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
+| AUD-013 | historical full-source existence/path evidence only | complete incident source not mapped | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
+| AUD-014 | historical full-source existence/path evidence only | complete incident source not mapped | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
+| AUD-015 | historical full-source existence/path evidence only | complete incident source not mapped | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
+| AUD-016 | historical full-source existence/path evidence only | complete incident source not mapped | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
+| AUD-017 | historical full-source existence/path evidence only | complete incident source not mapped | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
+| AUD-018 | historical full-source existence/path evidence only | complete incident source not mapped | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
+| AUD-019 | historical full-source existence/path evidence only | complete incident source not mapped | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
+| AUD-020 | primary preflight execution fragment | A5 behavior corroborated: existing functions/views were inspected; bounded call inventory contains no genuine PostgREST HTTP GET | `UNVERIFIED — PRIMARY BEHAVIOR FRAGMENT ONLY` |
+| AUD-021 | primary preflight execution fragment | A5 sequence corroborated exactly: Statement 13 calls `auth.uid()`/`auth.role()` at 01:49:09.694Z; Statement 17 inspects their definitions at 01:50:44.339Z | `UNVERIFIED — PRIMARY BEHAVIOR FRAGMENT ONLY` |
+| AUD-022 | historical full-source existence/path evidence only | complete incident source not mapped | `UNVERIFIED — PRIMARY ARTIFACT NOT YET LOCATED` |
+
+### AUD-021 temporal-model clarification
+
+The condensed v1 row stores `A6=NO` / resolution style `SILENT`, while A8 says the deviation was self-disclosed in the same reply. The primary execution record proves the interpretation was acted on before function-definition inspection. Therefore these facts can coexist temporally: silent resolution at the decision/action moment, followed by post-action disclosure in the same reply. The remaining missing primary prose is needed to verify the A3 prohibition and exact A8 self-disclosure, so C9 is still not confirmed.
 
 ## CDX — 5 records
 
-CDX-005 names historical output `outputs/extract_codex_w1_2026-07-30.md`; that exact file has not yet been recovered.
+CDX-005 names historical output `outputs/extract_codex_w1_2026-07-30.md`; that exact file has not yet been recovered despite targeted Git, Library, and materialized-archive searches.
 
 | GID | C9 recommendation |
 |---|---|
@@ -118,9 +130,10 @@ Broad search across Git, July Library exports/writing blocks, Kivo handover arch
 - Corpus rows tracked: **52/52**
 - Derivative source-extract mapped: **5/52** (GPT)
 - Exact primary task-artifact A3/source-content corroboration: **11/52** (W38 6, W39 4, KPF 1)
+- Primary execution behavior corroborated from bounded AUD transcript fragment: **2/52** (AUD-020, AUD-021)
 - Primary interaction/transcript C9 `CONFIRMED`: **0/52**
 - C9 `CONTRADICTED`: **0/52**
 
-The 5 source-extract-mapped rows and 11 task-artifact-corroborated rows are different evidence categories and are **not** combined into a "verified 16/52" statistic.
+These are separate evidence categories and must not be summed into a "verified N" statistic.
 
-Next source priority: recover the AUD raw transcript explicitly referenced by the preservation record; then recover the named CDX extraction file. If those remain unavailable after targeted recovery, the evidence register will preserve that limitation rather than infer confirmation.
+Next source priority: recover the complete AUD session / `human_turns.txt` / 22-record extraction output; then recover the named CDX extraction file. If those remain unavailable after targeted recovery, preserve the limitation rather than infer confirmation.
