@@ -1,0 +1,64 @@
+l; this.activeIntentId = null; this.activeAgentId = null; this.pendingVerification = null; this.systemState = 'idle'; this.persist(); }, persist() { Persistence.save(STORAGE_KEYS.session, { activeContextId: this.activeContextId, activeIntentId: this.activeIntentId, activeAgentId: this.activeAgentId, systemState: this.systemState }); }, load() { const d = Persistence.load(STORAGE_KEYS.session); if(d) { this.activeContextId = d.activeContextId; this.activeIntentId = d.activeIntentId; this.activeAgentId = d.activeAgentId; this.systemState = d.systemState || 'idle'; return true; } return false; } };
+
+    function createContext(desc) { return { context_id: generateId('ctx'), parent_context_id: null, description: desc, scope_inclusions: [], scope_exclusions: [], constraints: [], active_goals: [], active_intents: [], allowed_agents: [], state: 'open', created_at: timestamp(), created_by: 'user_01' }; }
+    function createIntent(ctxId, text, type = 'explore') { return { intent_id: generateId('int'), context_id: ctxId, intent_type: type, declaration_text: text, declaration_origin: 'user_typed', scope_topic: '', scope_depth: '', scope_sources: [], scope_authority: '', scope_risk: 'low', confidence_level: null, state: 'declared', created_at: timestamp(), verified_at: null, executed_at: null }; }
+    function createNode(ctxId, content, type = 'fact') { return { node_id: generateId('node'), context_id: ctxId, content: content, commitment_type: type, scope: 'current context', mutability_rule: 'user revision only', state: 'active', created_at: timestamp(), created_by: 'user_01' }; }
+    function createPivot(ctxId, anchorId, anchorType, text) { return { pivot_id: generateId('piv'), context_id: ctxId, anchor_id: anchorId, anchor_type: anchorType, pivot_text: text, declared_by_user: true, state: 'active', created_at: timestamp() }; }
+    function createAction(intId, ctxId, type, desc, inputs, agentId = null) { return { action_id: generateId('act'), intent_id: intId, context_id: ctxId, agent_id: agentId, action_type: type, description: desc, inputs: inputs, outputs: null, state: 'pending', requested_at: timestamp(), executed_at: null, executed_by: null }; }
+    function createFrictionEvent(ctxId, trigType, trigDesc, intId = null, actId = null) { return { friction_id: generateId('fric'), context_id: ctxId, intent_id: intId, action_id: actId, trigger_type: trigType, trigger_description: trigDesc, resolution: 'unresolved', resolution_details: null, state: 'active', triggered_at: timestamp(), resolved_at: null }; }
+    function createAgent(ctxId, name, type = 'advisory') { return { agent_id: generateId('agent'), context_id: ctxId, agent_type: type, name: name, permissions: ['suggest', 'explain', 'provide_information'], prohibited_actions: ['execute', 'modify', 'create_node'], state: 'active', created_at: timestamp(), assigned_by: 'user_01' }; }
+
+    const SignalClassifier = {
+        classify(signal, ctx) {
+            const r = { clarity: 'clear', intent_presence: 'no_action', context_fit: 'in_scope', agent_request: false };
+            const l = signal.toLowerCase().trim();
+            if (l.length < 3) { r.clarity = 'ambiguous'; return r; }
+            if (/^(ask agent|get advice|what do you think|help me with|any suggestions)/i.test(l)) { r.agent_request = true; r.intent_presence = 'action_requested'; return r; }
+            if (/^(maybe|perhaps|i guess|not sure|hmm)/i.test(l)) { r.clarity = 'ambiguous'; return r; }
+            if (/^(i want|i need|please|create|make|generate|lock in|commit|mark)/i.test(l)) r.intent_presence = 'action_requested';
+            /* FIX 1 (DPT-17): Added "off topic" and "different subject" to scope boundary patterns */
+            if (ctx && /remind me to|by the way|unrelated|off topic|different subject/i.test(l)) r.context_fit = 'out_of_scope';
+            return r;
+        }
+    };
+
+    const CPGuardian = {
+        evaluatePostClassification(c) {
+            if (c.clarity === 'ambiguous') return { decision: 'Clarify', reason: 'Ambiguous signal', friction_trigger: { trigger_type: 'ambiguous_signal', trigger_description: 'Signal needs clarification' } };
+            if (c.context_fit === 'out_of_scope') return { decision: 'Clarify', reason: 'Out of scope', friction_trigger: { trigger_type: 'scope_boundary', trigger_description: 'Outside context' } };
+            return { decision: 'Allow', reason: c.intent_presence === 'action_requested' ? 'Action requested' : 'No action needed', friction_trigger: null };
+        },
+        evaluatePreExecution(req) {
+            const int = IntentStore.get(req.intent_id);
+            if (!int) return { decision: 'Refuse', reason: 'PE-1: No intent', friction_trigger: { trigger_type: 'unverified_intent', trigger_description: 'No intent' } };
+            if (!['verified', 'active'].includes(int.state)) return { decision: 'Refuse', reason: 'PE-2: Intent not verified', friction_trigger: { trigger_type: 'unverified_intent', trigger_description: 'Intent state: ' + int.state } };
+            const ctx = ContextStore.get(req.context_id);
+            if (!ctx || ctx.state !== 'open') return { decision: 'Refuse', reason: 'PE-4: Context not open', friction_trigger: { trigger_type: 'scope_boundary', trigger_description: 'Context closed' } };
+            if (req.agent_id) {
+                if (!ctx.allowed_agents.includes(req.agent_id)) return { decision: 'Refuse', reason: 'PE-5: Agent not allowed', friction_trigger: { trigger_type: 'permission_violation', trigger_description: 'Agent not in allowed list' } };
+                const agent = AgentStore.get(req.agent_id);
+                if (!agent || agent.state !== 'active') return { decision: 'Refuse', reason: 'PE-6: Agent not active', friction_trigger: { trigger_type: 'permission_violation', trigger_description: 'Agent inactive' } };
+                if (agent.agent_type === 'advisory' && ['modify', 'external'].includes(req.action_type)) return { decision: 'Refuse', reason: 'PE-7: Advisory cannot ' + req.action_type, friction_trigger: { trigger_type: 'permission_violation', trigger_description: 'Advisory agent restricted' } };
+            }
+            if (FrictionStore.getActive().length > 0) return { decision: 'Refuse', reason: 'PE-10: Unresolved friction', friction_trigger: { trigger_type: 'conflict_detected', trigger_description: 'Resolve friction first' } };
+            return { decision: 'Allow', reason: 'PE-11: All checks passed', friction_trigger: null };
+        }
+    };
+
+    const AdvisoryAgent = {
+        async generateResponse(agentId, input, ctx, intent) {
+            await new Promise(r => setTimeout(r, 500 + Math.random() * 500));
+            const nodes = NodeStore.getNodesByContext(ctx.context_id);
+            let resp = `Based on "${ctx.description}" and intent "${intent.declaration_text}", `;
+            if (/next|proceed|continue/i.test(input)) {
+                resp += nodes.length === 0 ? `consider committing your first node—a foundational fact or decision.` : `you have ${nodes.length} node(s). Consider adding supporting elements or reviewing pivots.`;
+            } else if (/structure|organize/i.test(input)) {
+                resp += `try: 1) Core concepts as fact nodes, 2) Key decisions as decision nodes, 3) Boundaries as constraint nodes.`;
+            } else if (/help|advice|suggest/i.test(input)) {
+                resp += `I can suggest structures, identify themes, recommend nodes vs pivots. I cannot create nodes—you must commit them explicitly.`;
+            } else {
+                resp += `noted: "${input}". ` + (intent.intent_type === 'explore' ? 'Gather info before committing. Use pivots for items to revisit.' : 'How can I help?');
+            }
+            return resp + '\n\n(Advisory only—commit nodes explicitly.)';
+        }
+    };
