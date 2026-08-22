@@ -1,0 +1,173 @@
+  │
+│  Excludes:[News articles, opinion pieces]   [Edit]  │
+│                                                     │
+│  [Looks right — Start]    [Let me rephrase]         │
+└─────────────────────────────────────────────────────┘
+```
+
+3. User refines any field or confirms as-is
+4. This raises IFI from session start by ensuring SA begins at maximum
+
+**Step 3 — ICD Selection:**
+After articulation, user sets their control level:
+
+```
+┌─────────────────────────────────────────────────────┐
+│  How much should Klear check with you?              │
+│                                                     │
+│  ○ Fast (0.2)     — Answer quickly, ask rarely     │
+│  ● Balanced (0.5) — Ask when it matters            │
+│  ○ Precise (0.8)  — Ask before any ambiguity       │
+│                                                     │
+│  [Set and Start]                                    │
+└─────────────────────────────────────────────────────┘
+```
+
+**What happens after confirmation:**
+1. Context object created (state: `open`) with articulated scope
+2. Intent object created (state: `declared`)
+3. ICD value stored in session
+4. Domain classifier runs on declared context → Safety Floor profile selected if applicable
+5. Context Roots loaded and confirmed (registered users)
+6. Intent transitions to `verified` → `active`
+7. Chat interface unlocks
+
+**CP log events (Log Store):**
+- `context.created`
+- `intent.created`
+- `intent.verified`
+- `intent.active`
+- `session.started`
+- `signal.received` (opening statement)
+
+**Klear extension events (Klear Events Store):**
+- `icd.set` with value
+- `domain.classified` with profile
+- `context_root.loaded` (registered users only)
+
+**CP Rule enforced:** No chat interaction begins without a verified intent (PE-1, PE-2).
+
+---
+
+### 4.2 IPP Classifier — 6-Type Taxonomy
+
+Runs first on every user message, before the ICD filter and Guardian Checkpoint 1.
+
+**The 6 IPP Types:**
+
+| Type | Definition | Example | Clarification question |
+|------|-----------|---------|----------------------|
+| **Scope** | Boundaries of the request are ambiguous | "Summarize this" | "Do you mean the whole document or just the key points?" |
+| **Temporal** | Time reference is ambiguous | "Current status" | "As of today, or as of when you started this session?" |
+| **Entity** | Which entity is referenced is ambiguous | "How many population?" | "Do you mean Egypt overall or Cairo specifically?" |
+| **Authority** | Whose perspective to adopt is ambiguous | "Best approach" | "Best according to academic consensus, or practical use?" |
+| **Form** | Output format or structure is ambiguous | "Explain X" | "Would you like a brief overview or a detailed breakdown?" |
+| **Abstraction** | Level of detail is ambiguous | "How does it work?" | "High-level concept, or technical implementation detail?" |
+
+**IPP Classification Prompt (sent to Claude):**
+
+```
+You are an IPP (Intent Pivot Point) classifier for Klear.
+
+Your job is to identify semantic ambiguity in the user's message.
+An IPP exists when two or more interpretations are plausible AND
+the choice between them would materially change the response.
+
+User's declared context: {context.description}
+User's declared intent: {intent.declaration_text}
+User's message: {user_message}
+
+Classify against exactly these 6 IPP types:
+- scope: boundaries of the request are ambiguous
+- temporal: time reference is ambiguous
+- entity: which entity is referenced is ambiguous
+- authority: whose perspective to adopt is ambiguous
+- form: output format or structure is ambiguous
+- abstraction: level of detail is ambiguous
+
+Return ONLY valid JSON — no preamble, no explanation:
+{
+  "ipp_types": [
+    {
+      "type": "scope" | "temporal" | "entity" | "authority" | "form" | "abstraction",
+      "confidence": 0.0–1.0,
+      "clarification_question": "specific question to resolve this IPP"
+    }
+  ]
+}
+
+Rules:
+- Only include IPP types with confidence > 0.1
+- If no IPPs detected, return: { "ipp_types": [] }
+- Do NOT invent ambiguity — only report genuine uncertainty
+- Each clarification_question must be specific to the user's actual message
+- confidence 0.8–1.0 = strong ambiguity; 0.4–0.7 = moderate; 0.1–0.3 = weak
+```
+
+**Classification process:**
+1. Send message + session context to Claude with IPP classification prompt
+2. Parse returned JSON → list of `{ type, confidence, clarification_question }`
+3. Pass results to ICD Filter
+4. ICD Filter applies threshold: surface only IPPs where `confidence > (1 - ICD)`
+   - ICD 0.2 → surface only IPPs with confidence > 0.8
+   - ICD 0.5 → surface IPPs with confidence > 0.5
+   - ICD 0.8 → surface IPPs with confidence > 0.2
+5. If filtered IPPs exist → Guardian PC-1 → Clarify
+6. If no filtered IPPs → proceed to PC-2 scope check
+
+**Counterfactual trigger rule (fix #6):**
+The "What if I meant something else?" button appears on a response if and only if:
+- At least one IPP was detected during classification (any confidence level), AND
+- The IPP was NOT surfaced as friction (i.e. it was below the ICD threshold or CP2 allowed the response)
+This makes counterfactual available precisely when Klear made an interpretation decision on the user's behalf without asking.
+
+**CP log events (Log Store):**
+- `signal.received` with user message
+
+**Klear extension events (Klear Events Store):**
+- `ipp.classified` with all detected types and confidence scores
+- `ipp.filtered` with which IPPs survived ICD threshold
+
+---
+
+### 4.3 Guardian — Checkpoint 1 (Programmatic + IPP-aware)
+
+Runs on every user message after IPP classification and ICD filtering.
+
+**Rules:**
+
+| Rule | Condition | Detection | Decision |
+|------|-----------|-----------|----------|
+| PC-1 | IPP(s) survived ICD filter | ICD filter output non-empty | Clarify — `ambiguous_signal` friction |
+| PC-2 | Signal is out of declared scope | Semantic similarity to context description < 0.5 | Clarify — `scope_boundary` friction |
+| PC-3 | Action requested without verified intent | No intent in `verified` or `active` state | Clarify — `unverified_intent` friction |
+| PC-4 | All clear | None of the above triggered | Allow |
+
+**Output:** `{ decision, trigger_type, ipp_type, clarification_question, confidence }`
+
+**CP log events (Log Store):**
+- `guardian.post_classification` with decision, rule triggered, and reason
+
+---
+
+### 4.4 Intent Decay Calculator
+
+Runs on every message in parallel with Guardian Checkpoint 1, before the Claude API call.
+
+**Purpose:** Track cumulative semantic drift between the user's declared intent and the actual direction of the conversation.
+
+**Implementation:**
+1. Compute semantic similarity between current user message and `intent.declaration_text`
+   - Uses a lightweight embedding comparison or Claude similarity call
+   - Similarity score: 0.0 (completely unrelated) → 1.0 (perfectly aligned)
+2. Decay contribution per message: `δ = 1 - similarity_score`
+3. Session decay score: `D = average(δ₁, δ₂, ... δₙ)` across all messages this session
+4. Decay thresholds:
+   - D < 0.2 → Session health: **Good** (green)
+   - D 0.2–0.4 → Session health: **Drifting** (amber)
+   - D > 0.4 → Session health: **High drift** (red)
+
+**When D > 0.4:**
+Proactive friction card triggered before proceeding:
+> "Your conversation has drifted significantly from your original goal. Would you like to refocus or update your intent?"
+> `[Refocus — return to original goa
