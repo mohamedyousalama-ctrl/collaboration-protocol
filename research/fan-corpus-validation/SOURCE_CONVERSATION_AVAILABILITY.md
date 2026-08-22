@@ -6,14 +6,15 @@
 
 ## Evidence rule
 
-A workbook row, research summary, derivative LLM extraction, or original task artifact is not automatically equivalent to a complete source conversation. C9 can be recommended as `CONFIRMED` only when A3/A8 and chronology can be checked against independently available primary interaction evidence.
+A workbook row, research summary, derivative LLM extraction, original task artifact, or historical path reference is not automatically equivalent to a complete source conversation. C9 can be recommended as `CONFIRMED` only when A3/A8 and chronology can be checked against independently available primary interaction evidence.
 
 Availability states used here:
 
-- `PRIMARY_TRANSCRIPT_FOUND` — complete or sufficiently complete original interaction record located.
+- `PRIMARY_TRANSCRIPT_FOUND` — complete or sufficiently complete original interaction record is currently available and readable.
 - `PRIMARY_TASK_ARTIFACT_FOUND` — original work order/instruction/payload located and able to corroborate A3 or context, but not the complete incident chronology.
 - `SOURCE_EXTRACT_ONLY` — extraction report derived from the conversation exists, but no independently complete transcript.
 - `PARTIAL` — some source evidence exists but completeness is not established.
+- `HISTORICAL_PRIMARY_PATH_IDENTIFIED` — a contemporaneous record gives the exact location/identity of a primary interaction file, but that file itself is not currently recovered in this preservation scope.
 - `SOURCE_EXTRACT_REFERENCED_NOT_LOCATED` — corpus names a historical extraction file that has not yet been recovered.
 - `NOT_FOUND_IN_CURRENT_PRESERVATION_SCOPE` — extensive current Git/Library/archive search did not locate the relevant transcript/extract; future recovery remains possible.
 - `SEARCH_PENDING` — source discovery is not yet sufficiently exhausted.
@@ -23,12 +24,21 @@ Availability states used here:
 | Family | Records | Current state | Evidence currently established | Next verification action |
 |---|---:|---|---|---|
 | GPT | 5 | `SOURCE_EXTRACT_ONLY` | Recovered `extract_chatgpt_w1_2026-07-30.md`, 12,815 bytes, SHA-256 `22ae455d95c1776bb2dac17fd73139c6764c7dc96fd69caddd3215da31396c83`. It maps GPT-001..005 and restores full A4, but explicitly reports source-window truncation/compaction. | Continue search for an independently readable primary GPT transcript. C9 stays UNVERIFIED. |
-| AUD | 22 | `PARTIAL` | Master Knowledge File and AUD-018 state that a raw transcript was recovered from disk for verbatim checking. Multiple auditor/source-adjacent files were searched, but the exact independently readable raw transcript has not yet been located and mapped. | Continue targeted recovery of the raw AUD transcript/extract. |
+| AUD | 22 | `PARTIAL` + `HISTORICAL_PRIMARY_PATH_IDENTIFIED` | Preserved records state that a 26-human-turn raw transcript was recovered from disk for verbatim checking. A provenance record explicitly says raw chat transcripts were not included in that Claude project and instead lived on the researcher's machines. A contemporaneous KIVO-AUDITOR evidence-recovery record identifies the original Claude Code session path as `/root/.claude/projects/-home-user-MaitreAI/84dd6879-90b4-5ba3-b9ad-b3ed61f10a6c.jsonl`, measured there as 1,252 lines / 5,692,731 bytes, and shows that source material from that session was used to create `PREFLIGHT-KVD06-REV14-001_transcript.txt` (32,645 bytes / 482 lines / SHA-256 `771d0f013492e1c2eb9ce63617082f69f330c3f0d14520e4b1d57a5e323c7de4`). The raw JSONL itself is not currently recovered here, so this is provenance/path evidence rather than C9 verification. | Search current Library/archives specifically for the exact JSONL basename, the 32,645-byte transcript filename/hash, or an export containing that session. Map incident chronology only if the primary interaction is recovered. |
 | CDX | 5 | `SOURCE_EXTRACT_REFERENCED_NOT_LOCATED` | CDX-005 states that the protocol output was saved to `outputs/extract_codex_w1_2026-07-30.md`. Current Git/Library/archive search has not recovered that exact file. | Recover the named extract and separately search for the primary Codex thread. |
 | W38 | 8 | `PRIMARY_TASK_ARTIFACT_FOUND` | Original `WO_PROOF_3_SAFETY_REPRO.md` and `WO_PROOF_4_C04_DISPUTE.md` were recovered. Exact A3 instructions are corroborated for W38-001..006. W38-007 exact A3 and W38-008 source interaction are not located. | Search for W38 conversation/extract so A8 and chronology can be verified. |
 | W39 | 7 | `PRIMARY_TASK_ARTIFACT_FOUND / PARTIAL` | Original `FOUR_WINDOW_CHARTER.md`, `WO_VERIFY_FIX_RPC_SHAPES.md`, `schema_contract_extract.sql`, and `RAW_CATALOG_APPENDIX.md` corroborate A3/source content for W39-001, W39-003, W39-004 and W39-007. W39-002 remains unmapped/structurally defective; exact sources for W39-005/006 are not located. | Search for W39 interaction/extract; prioritize W39-002 and authority chronology for W39-007. |
 | KBD | 4 | `NOT_FOUND_IN_CURRENT_PRESERVATION_SCOPE` | Broad search across Git, July Library writing blocks/text exports, Kivo handover archives and the recovered `all.zip` source archive did not locate an exact four-record KIVO-BUILDER extract or sufficiently complete interaction containing the gh-auth/device-code/draft-PR sequence. | Carry KBD as unverified unless a new source is recovered; do not infer confirmation from the workbook. |
 | KPF | 1 | `PRIMARY_TASK_ARTIFACT_FOUND` | `FOUR_WINDOW_CHARTER.md` contains the exact rebase-before-every-push A3 rule and exact no-PR/no-merge A12 governance text used by KPF-001. | Search for the KIVO-PROOF interaction/extract to verify A8 and chronology. |
+
+## AUD provenance clarification
+
+Two facts must remain separate:
+
+1. **Historical existence/path is now well evidenced.** The preservation record says the raw 52-incident chat transcripts were not included in the Claude project and gives the AUD JSONL path as an example of where they lived. A later KIVO-AUDITOR recovery record independently names that same JSONL path and describes extracting contemporaneous tool-use/tool-result evidence from it.
+2. **Current availability is still incomplete.** We do not presently possess that full 5.69 MB JSONL in the validated branch/library working set. Therefore AUD remains `PARTIAL`; the path reference cannot be converted into `PRIMARY_TRANSCRIPT_FOUND` or C9 `CONFIRMED` by inference.
+
+The 32,645-byte `PREFLIGHT-KVD06-REV14-001_transcript.txt` is source-adjacent evidence produced from the identified primary session. It may help map a subset of AUD chronology if recovered, but it must not be assumed to equal the full 26-human-turn corpus-extraction transcript without content verification.
 
 ## Primary task-artifact recovery
 
@@ -62,7 +72,8 @@ Current source-evidence progress:
 - corpus rows tracked: **52/52**;
 - derivative source-extract mapped: **5/52** (GPT);
 - exact primary task-artifact A3/source-content corroboration: **11/52** (W38/W39/KPF);
+- AUD exact historical primary-session path identified: **yes**, but raw artifact not currently recovered;
 - primary transcript/source-interaction C9 `CONFIRMED`: **0/52**;
 - C9 `CONTRADICTED`: **0/52**.
 
-AUD remains the highest-value unresolved recovery target because the preserved research record explicitly says a raw transcript existed. CDX is second because the corpus records an exact historical extraction filename. KBD has now been searched broadly enough to carry as `NOT_FOUND_IN_CURRENT_PRESERVATION_SCOPE` rather than pretending the transcript is available.
+AUD remains the highest-value unresolved recovery target because the exact historical primary-session path is now identified. CDX is second because the corpus records an exact historical extraction filename. KBD has been searched broadly enough to carry as `NOT_FOUND_IN_CURRENT_PRESERVATION_SCOPE` rather than pretending the transcript is available.
