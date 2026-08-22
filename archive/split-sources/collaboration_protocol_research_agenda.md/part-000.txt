@@ -1,0 +1,209 @@
+# The Collaboration Protocol: Research Agenda & Validation Strategy
+
+## A Roadmap to Publication-Ready Research
+
+---
+
+## Part 1: Comprehensive Research Agenda
+
+### Phase 1: Foundational Empirical Work (6-12 months)
+
+#### 1.1 Operationalizing Core Constructs
+
+Before any study, you need measurable definitions:
+
+**Intent Fidelity Index (IFI)**
+- Develop a validated scale measuring the gap between expressed intent and perceived output alignment
+- Components: semantic accuracy, constraint preservation, meaning ownership perception
+- Validation: expert coding, user self-report correlation, behavioral measures
+
+**Intent Pivot Point Detection Protocol**
+- Create annotation guidelines for identifying IPPs in transcripts
+- Train multiple coders, measure inter-rater reliability (target: Cohen's κ > 0.7)
+- Build a labeled corpus of human-AI interactions with tagged pivot points
+
+**Intent Control Degree Operationalization**
+- Design interface variations that instantiate different ICD levels
+- Validate that users perceive the intended level of control
+- Map ICD to measurable system behaviors (clarification frequency, generation pauses, etc.)
+
+#### 1.2 Baseline Studies
+
+**Study 1: The Silent Inference Problem**
+- Research question: How often do current AI systems resolve ambiguity without user awareness?
+- Method: Analysis of 500+ ChatGPT/Claude conversations, coding for unstated assumptions
+- Output: Quantified baseline of "silent inference rate" across task types
+
+**Study 2: Intent Degradation Mapping**
+- Research question: Where does intent get lost in typical collaboration cycles?
+- Method: Think-aloud protocols + retrospective interviews with users completing complex tasks
+- Output: Taxonomy of intent loss points (validates/refines IPP concept)
+
+---
+
+### Phase 2: Experimental Validation (12-24 months)
+
+#### 2.1 Core Hypothesis Testing
+
+**Experiment 1: ICD Impact on Collaboration Quality**
+
+*Hypothesis:* Higher Intent Control Degree leads to higher intent fidelity but longer task completion time, with an optimal point depending on task complexity.
+
+| Condition | ICD Level | Behavior |
+|-----------|-----------|----------|
+| Control | 0.2 | AI resolves freely |
+| Low Control | 0.5 | AI confirms major pivots only |
+| High Control | 0.8 | AI confirms most pivots |
+| Full Control | 1.0 | All ambiguity surfaced |
+
+*Design:* 4x3 mixed design (ICD level × task complexity)
+*Participants:* 200+ knowledge workers
+*Tasks:* Document drafting, analysis, creative work
+*Measures:* Intent fidelity (validated scale), task time, cognitive load (NASA-TLX), user satisfaction
+
+*Expected output:* Empirical ICD optimization curves by task type
+
+---
+
+**Experiment 2: Intent Pivot Point Surfacing**
+
+*Hypothesis:* Exposing Intent Pivot Points during generation improves output alignment and user sense of control.
+
+| Condition | Pivot Handling |
+|-----------|----------------|
+| Control | No pivot exposure (standard generation) |
+| Post-hoc | Pivots shown after generation |
+| Real-time | Pivots surfaced during generation |
+| Interactive | User can edit pivots mid-generation |
+
+*Design:* Between-subjects, 4 conditions
+*Participants:* 160 participants (40 per condition)
+*Task:* Complex document creation with multiple valid interpretations
+*Measures:* Output alignment, revision cycles, perceived control, trust
+
+---
+
+**Experiment 3: Intent Signature Portability**
+
+*Hypothesis:* Users with established Intent Signatures achieve alignment faster on new tasks than users without.
+
+*Design:* 
+- Phase 1: Participants complete 5 tasks, building implicit "intent signature"
+- Phase 2: New task with either (a) signature-informed AI or (b) fresh start
+*Measures:* Time to satisfactory output, clarification exchanges, alignment scores
+
+---
+
+#### 2.2 Comparative Framework Studies
+
+**Study: CP vs. Existing Frameworks**
+
+Compare CP-compliant system against:
+- Standard chatbot (baseline)
+- Levels of Automation framework implementation
+- Explainable AI system
+- Human-in-the-loop system
+
+*Measures:* Intent fidelity, user agency, error recovery, trust calibration
+
+---
+
+### Phase 3: System Implementation & Field Studies (18-36 months)
+
+#### 3.1 Build CP-Compliant Prototype
+
+Develop a working system implementing:
+- Adjustable ICD slider
+- Real-time IPP detection and surfacing
+- Intent Signature capture and application
+- Full audit trail of intent transformations
+
+#### 3.2 Field Deployment Studies
+
+**Field Study 1: Professional Knowledge Workers**
+- Deploy with 50 professionals across domains (legal, consulting, engineering)
+- 3-month usage period
+- Mixed methods: usage logs, interviews, output quality assessment
+- Research questions: Does CP improve real-world collaboration? Which components matter most?
+
+**Field Study 2: High-Stakes Decision Support**
+- Partner with organization making consequential decisions (medical, financial, legal)
+- Evaluate whether CP reduces errors attributable to intent misalignment
+- Longer-term outcome tracking
+
+---
+
+### Phase 4: Theoretical Refinement & Generalization (24-48 months)
+
+#### 4.1 Cross-Cultural Validation
+- Test CP assumptions across cultural contexts
+- Intent articulation norms vary globally
+- Partner with researchers in 3+ countries
+
+#### 4.2 Multi-Agent Extension
+- Extend CP to human-AI-AI and human-human-AI configurations
+- Develop protocols for intent preservation across agent handoffs
+
+#### 4.3 Longitudinal Studies
+- How do Intent Signatures evolve over months/years?
+- Does CP usage improve human articulation capacity over time?
+- Trust dynamics in long-term CP-mediated relationships
+
+---
+
+## Part 2: Prioritized Testable Claims
+
+### Tier 1: Test These First (Highest Impact, Most Feasible)
+
+These claims are specific, falsifiable, and testable with modest resources:
+
+---
+
+#### Claim 1: Silent Inference Prevalence
+
+**Original assertion:** "AI systems resolve ambiguity without explicit human approval."
+
+**Testable version:** In complex task completions, current AI systems make unstated assumptions about user intent in >60% of interactions, and users are unaware of these assumptions in >70% of cases.
+
+**Why test first:**
+- No system building required
+- Uses existing AI systems
+- Creates compelling baseline data
+- High novelty (no one has quantified this systematically)
+
+**Method:**
+1. Collect 200 human-AI task completion transcripts
+2. Expert coders identify all points where AI made assumptions
+3. Follow-up survey asks users if they were aware of each assumption
+4. Calculate silent inference rate and awareness rate
+
+**Success criteria:** If rates match predictions, you've validated the core problem CP addresses.
+
+---
+
+#### Claim 2: Intent Control Degree Affects Outcomes
+
+**Original assertion:** "ICD defines how ambiguity is handled" with implications for collaboration quality.
+
+**Testable version:** Users given explicit control over ambiguity resolution (high ICD) report higher satisfaction with outputs than users without such control, even when controlling for output quality.
+
+**Why test first:**
+- Direct test of core mechanism
+- Relatively simple 2-condition study
+- Clear dependent variables
+
+**Method:**
+1. Build minimal interface variation: one with clarification prompts (high ICD), one without (low ICD)
+2. Users complete identical tasks
+3. Measure: satisfaction, perceived alignment, trust, willingness to use again
+4. Have blind raters assess actual output quality
+
+**Success criteria:** Satisfaction difference with no quality difference = pure control effect.
+
+---
+
+#### Claim 3: Intent Pivot Points Are Identifiable and Meaningful
+
+**Original assertion:** IPPs are "semantic locations where meaning may branch."
+
+**Testable version:** Trained annotators can reliably identify Intent Pivot Points in human-AI transcripts (κ > 0.7), and user intervention at IPPs correlates with
