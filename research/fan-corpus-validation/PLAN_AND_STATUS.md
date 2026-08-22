@@ -20,16 +20,13 @@
 **Status:** COMPLETE — AUTHORITATIVE V1 RECOVERED AND VERIFIED
 
 - [x] Historical workbook identity established: SHA-256 `3a5d4e82c2d65473b1117d70b68428efd89319386a89978871f38edf8ee8ed4a`, 31,471 bytes.
-- [x] Discovered that the pre-existing Base64 representation on `main` is incomplete/corrupt: 35,408 Base64 chars → 26,554 bytes → SHA-256 `f75db1ce4037adfba3d749302e7a031bc9ec1e54a84a7b25153bb7668676113a`; not a complete XLSX.
-- [x] Preserved that defect; no historical `main` evidence was rewritten.
-- [x] Located original `files(3).zip` research bundle in the user's file library.
-- [x] Verified bundle SHA-256 `4998d3a509114a46d54232d6e6d7f6bc0353b271bfde75fd3ba7af66956cffa8`, exactly matching the repository source-bundle manifest.
-- [x] Recovered `CP_Incident_Database_v1.xlsx` from that bundle.
-- [x] Verified exact workbook size 31,471 bytes and exact historical SHA-256 `3a5d4e82c2d65473b1117d70b68428efd89319386a89978871f38edf8ee8ed4a`.
-- [x] Stored an exact branch-only Base64 recovery representation under `research/fan-corpus-validation/recovered-source/`.
-- [x] GitHub Actions reconstructed the exact binary and independently returned identity **PASS**: 41,964 Base64 chars, 31,471 bytes, declared SHA-256 match.
-- [x] Workbook structural inventory generated.
-- [x] Machine-readable 52-row audit export generated.
+- [x] Pre-existing Base64 representation on `main` found incomplete/corrupt and preserved unchanged as evidence.
+- [x] Original `files(3).zip` research bundle recovered from the user's file library.
+- [x] Bundle SHA-256 `4998d3a509114a46d54232d6e6d7f6bc0353b271bfde75fd3ba7af66956cffa8` verified against the repository source-bundle manifest.
+- [x] Exact `CP_Incident_Database_v1.xlsx` recovered and verified at 31,471 bytes with historical SHA-256 `3a5d4e82c2d65473b1117d70b68428efd89319386a89978871f38edf8ee8ed4a`.
+- [x] Exact branch-only Base64 recovery representation stored under `research/fan-corpus-validation/recovered-source/`.
+- [x] GitHub Actions independently reconstructed the binary and returned identity **PASS**: 41,964 Base64 characters, 31,471 bytes, exact expected SHA-256.
+- [x] Workbook structural inventory and machine-readable 52-row audit input generated.
 
 Verified workbook:
 
@@ -37,7 +34,7 @@ Verified workbook:
 - `Codebook` — A1:C15
 - `Incidents` — A1:AD53
 - `Aggregates` — A1:C13
-- 52 incident records + header
+- 52 incident records + one header row
 - 30 incident columns
 - all researcher-final fields `C0 FINAL` through `C10` blank across all 52 rows
 
@@ -50,47 +47,51 @@ Durable evidence:
 - `research/fan-corpus-validation/work/incident_rows.tsv`
 - `research/fan-corpus-validation/recovered-source/AUTHORITATIVE_V1_SHA256.txt`
 
-### WP1 findings carried into audit
-
-- The protocol defines A1–A13 but v1 has no dedicated `A4 Possible interpretations` column. The workbook README says extraction content was condensed and full text lives in source extract files.
-- The aggregate formula `Silent (A6=NO) among INTENT` can count `DISCLOSED-PROCEED` rows as silent because two disclosed rows have `A6=NO`. Historical v1 remains unchanged; this requires a corrected analytical rule in v1.1/methods.
-
 ## WP2 — Audit all 52 records
 
 **Owner:** ChatGPT  
-**Status:** IN PROGRESS — WORKING COPY VERIFIED
+**Status:** COMPLETE — ALL 52 ROWS AUDITED
 
-For every record:
+- [x] Confirm row count and seven-window allocation.
+- [x] Check completeness of every extraction field actually stored in v1.
+- [x] Complete row-by-row internal-consistency audit.
+- [x] Flag competence/premise/meta records that must not automatically feed SII analysis.
+- [x] Review recurrence/cross-window links.
+- [x] Flag unsupported, contradictory, non-observable, or temporally ambiguous evidence.
+- [x] Assign one WP2 disposition to every row.
+- [x] Preserve C9 as unverified for every row pending WP3.
 
-- [x] Confirm row exists and source-window allocation reconciles to 52.
-- [x] Check completeness of every field actually stored in the v1 extraction section.
-- [ ] Complete row-by-row internal-consistency audit.
-- [ ] Flag competence/premise/meta records that must not automatically feed SII analysis.
-- [ ] Flag duplicate/cross-window recurrence.
-- [ ] Flag unsupported, contradictory, non-observable, or temporally ambiguous evidence.
-- [ ] Assign one WP2 disposition per row: `PASS_TO_SOURCE_VERIFICATION`, `NEEDS_SOURCE`, `STRUCTURAL_DEFECT`, or `EXCLUDE_CANDIDATE`.
+WP2 disposition counts:
 
-Already established structurally:
+- `PASS_TO_SOURCE_VERIFICATION` — **21**
+- `NEEDS_SOURCE` — **11**
+- `STRUCTURAL_DEFECT` — **2**
+- `EXCLUDE_CANDIDATE` — **18**
 
-- window counts reconcile exactly: GPT 5, AUD 22, CDX 5, W38 8, W39 7, KBD 4, KPF 1;
-- all 52 rows populate every extraction field that v1 actually stores (`A1,A2,A3,A5,A6,A7,A8,A9,A10,A11,A12,A13`);
-- A4 is absent at workbook-schema level rather than blank per row;
-- all 52 researcher-final classifications are still blank;
-- suggested triage only: 33 INTENT, 8 COMPETENCE, 6 PREMISE, 4 META, 1 `DEFINITION→INTENT`;
-- suggested outcome only: 31 HARMFUL, 20 BENIGN, 1 UNRESOLVED;
-- A6: 51 NO, 1 N/A;
-- resolution style: 49 SILENT, 2 DISCLOSED-PROCEED, 1 `ASKED/DISCLOSED`;
-- confidence: 24 HIGH, 15 MEDIUM, 13 LOW.
+`EXCLUDE_CANDIDATE` means exclude from the SII-analysis candidate set on present evidence, not delete from the corpus. Comparison and meta records remain preserved.
 
-Planned deliverables:
+Major WP2 findings:
 
-- `CORPUS_AUDIT_52.md`
-- `corpus-audit/ROW_AUDIT_52.tsv`
+1. The protocol defines A1–A13, but v1 has no dedicated `A4 Possible interpretations` column.
+2. The v1 aggregate `C0 FINAL=INTENT` + `A6=NO` is not a scientifically safe definition of silent inference because two `DISCLOSED-PROCEED` rows also have `A6=NO`.
+3. `AUD-021` has an internal contradiction: `Resolution style=SILENT`, while A8/A11 say the deviation was self-detected and disclosed in the same reply.
+4. `W39-002` lacks the required triggering quote: A3 explicitly records the original WO text as `NOT OBSERVABLE`.
+5. `AUD-022` uses `ASKED/DISCLOSED`, outside the v1 Codebook's listed resolution-style vocabulary.
+6. A9 is not metric-ready: integer turns are mixed with `N/O`, `N/A`, `NOT OBSERVABLE`, approximate cycles, and approximate exchanges.
+7. Seven records show substantial A3/A8 textual overlap, creating a chronology risk that WP3 must resolve from primary evidence.
+8. Suggested outcome has no separate researcher-final field in v1; publication outcome rates cannot rely on the suggested values without researcher validation.
+9. One C0 suggestion uses non-final-codebook label `DEFINITION→INTENT` and must be normalized only as an assistant recommendation.
+
+Durable WP2 outputs:
+
+- `research/fan-corpus-validation/CORPUS_AUDIT_52.md`
+- `research/fan-corpus-validation/corpus-audit/ROW_AUDIT_52.tsv`
+- reproducible generator: `research/fan-corpus-validation/tools/wp2_audit.py`
 
 ## WP3 — Locate and verify seven source conversations
 
 **Owner:** ChatGPT for discovery/quote checking  
-**Status:** DISCOVERY STARTED
+**Status:** ACTIVE — NEXT WORK PACKAGE
 
 Known source-window families:
 
@@ -112,10 +113,12 @@ Current evidence:
 Tasks:
 
 - [x] Create source-availability matrix.
-- [ ] Locate exact primary transcript/source-extract artifact(s) for each family.
-- [ ] Map every incident to source location.
-- [ ] Verify A3 and A8 against primary source.
+- [ ] Search Git and preserved source bundles for exact source-extract/transcript artifacts for each family.
+- [ ] Classify each family as `PRIMARY_TRANSCRIPT_FOUND`, `SOURCE_EXTRACT_ONLY`, `PARTIAL`, or `NOT_FOUND`.
+- [ ] Map every incident to its best available source location.
+- [ ] Verify A3 and A8 chronology/quotation where primary evidence exists.
 - [ ] Recommend C9 evidence status only after verification.
+- [ ] Produce explicit unresolved-source list; never infer a missing transcript from the workbook alone.
 
 Deliverables:
 
@@ -125,7 +128,7 @@ Deliverables:
 ## WP4 — Classification recommendations
 
 **Owner:** ChatGPT  
-**Status:** WAITING FOR WP2 ROW AUDIT; MAY PROCEED BEFORE FULL WP3 WHERE CLEARLY LABELLED UNVERIFIED
+**Status:** WAITING FOR WP3 EVIDENCE
 
 Recommendation fields only:
 
@@ -179,10 +182,10 @@ The raw 52-row corpus will not be represented to Fan as fully human-validated un
 
 | WP | Work | Status |
 |---|---|---|
-| 1 | Freeze/reconstruct v1 | **COMPLETE — exact identity verified** |
-| 2 | Audit all 52 | **IN PROGRESS** |
-| 3 | Source conversations | DISCOVERY STARTED |
-| 4 | Classification recommendations | WAITING FOR WP2 |
+| 1 | Freeze/reconstruct v1 | **COMPLETE** |
+| 2 | Audit all 52 | **COMPLETE — 52/52 audited** |
+| 3 | Source conversations | **ACTIVE — NEXT** |
+| 4 | Classification recommendations | WAITING FOR WP3 |
 | 5 | Researcher decisions | WAITING |
 | 6 | Independent QC | DEFERRED |
 | 7 | Freeze v1.1 | BLOCKED |
