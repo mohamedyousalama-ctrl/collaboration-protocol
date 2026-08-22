@@ -1,0 +1,10 @@
+        klear_events_log: klearEvents,
+      },
+    });
+  } catch (error) {
+    console.error('Report error:', error);
+    res.status(500).json({ error: 'Failed to generate compliance report' });
+  }
+});
+
+module.exports = router;
