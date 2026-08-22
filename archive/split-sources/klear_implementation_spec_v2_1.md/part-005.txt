@@ -1,0 +1,187 @@
+ection |
+| `decay_warning` | "Drifting from your goal" | "Your conversation has drifted from your original goal." | Refocus / Update intent / Continue anyway |
+
+### 6.4 IFI Badge
+- Appears below every response
+- Shows "IFI –.–" (pending) until SS submitted
+- Updates to "IFI 0.84" after star rating
+- Color: green ≥ 0.80 / amber 0.60–0.79 / red < 0.60
+- Star rating (1–5) alongside badge — optional, encouraged
+
+### 6.5 Pivot Trace Panel
+- "Trace" button on every response
+- Opens inline panel:
+  - Intent and context governing this response
+  - ICD level applied
+  - IPPs detected (including those below threshold — not surfaced)
+  - Guardian Checkpoint 1 and 2 decisions and reasons
+  - Safety Floor applied (if any)
+  - Decay score at time of response
+  - IFI breakdown (SA, CP, SS, composite)
+- All plain language — no UUIDs or technical codes visible
+
+### 6.6 Counterfactual Panel
+- "What if I meant something else?" button appears on a response when:
+  - At least one IPP was detected during classification, AND
+  - That IPP was not surfaced as friction (was below ICD threshold)
+- Shows 2–3 alternative interpretations with their IPP type
+- User selects one → Klear regenerates the response with that interpretation
+- Both original and alternative response visible in thread for comparison
+
+### 6.7 Safety Floor Card
+- Appended below responses when domain is health / legal / financial
+- Distinct teal/blue border treatment
+- Domain-appropriate text (health vs legal vs financial)
+- Version stamp visible
+- Non-dismissible
+
+### 6.8 Session Health Indicator
+- In CP Status bar
+- Three states: Good (green) / Drifting (amber) / High drift (red)
+- Tooltip: "This shows how closely your conversation matches your declared goal"
+- Automatically triggers decay friction card when state turns red
+
+### 6.9 Audit Trail Panel
+- Collapsible side panel
+- Shows CP log events and Klear extension events in chronological order
+- Human-readable labels — no raw event codes visible to user
+- "Export Compliance Report" button (registered users only)
+
+### 6.10 Auth Flow
+- Anonymous session starts immediately — no gate
+- "Save your session" prompt after 3rd message
+- Email magic link via Supabase Auth
+- Anonymous session migrates to authenticated account
+- Registered users see: session history, IFI trends, Context Roots, Klear Profiles
+
+### 6.11 Klear Profile Manager (Registered Users)
+- Create / edit / delete named profiles
+- Each profile: ICD default, context template, constraint list, domain preference
+- Load profile at session start — pre-fills articulation card
+- "Save to profile" button on active nodes → triggers Context Root save
+
+---
+
+## 7. CP Compliance Checklist
+
+Every build milestone must pass before shipping:
+
+| Check | Requirement | Source |
+|-------|-------------|--------|
+| No action without verified intent | Intent must be `verified` or `active` before any Claude call | PE-1, PE-2 |
+| Context declared before interaction | Chat locked until articulation confirmed | §2.1 |
+| IPP classifier runs before ICD filter | IPP results required before filtering can apply | §4.2 |
+| ICD filter applied before Checkpoint 1 | Only filtered IPPs reach Guardian | §4.3 |
+| All Guardian decisions logged to CP Log Store | `guardian.post_classification` and `guardian.pre_execution` | §6.2 |
+| All friction events logged to CP Log Store | Every trigger and resolution in `friction_events` + `logs` | §5.1 |
+| Friction not silently dismissed | Input locked until user takes explicit action | §5.3 |
+| CP Log Store append-only | No UPDATE or DELETE on `logs` table | §6.2 |
+| Klear extension events in separate table | `icd`, `ifi`, `decay`, `domain`, `sf`, `ipp`, `root` events in `klear_events` | §4.11 |
+| Responsibility chain complete | All 5 links logged per interaction | §3 |
+| No silent intent inference | CP system prompt prohibits inference | §2.2 |
+| IFI two-phase: SA+CP immediate, SS async | Composite only finalized after SS submitted | §4.6 |
+| SS scale is 1–5 stars throughout | No 1–7 scale anywhere in implementation | §4.6 |
+| Domain classifier runs at start AND per message | Domain shifts detected mid-session | §4.7 |
+| Counterfactual available only when IPP detected but not surfaced | Trigger condition enforced | §4.2 |
+| Context Root save has explicit API endpoint | Not implicit from node creation | §4.8 |
+| Safety Floor non-suppressible | SF appended regardless of ICD / IPP / Guardian | SF Law 8 |
+| Trace available per response | Every response has reconstructible decision chain | Law 6 |
+
+---
+
+## 8. Database Schema — Complete
+
+### 8.1 Core CP Stores (from v1.0 schema)
+`users`, `contexts`, `intents`, `nodes`, `actions`, `friction_events`, `sessions`, `logs`
+— unchanged from `klear_supabase_schema.sql`
+
+### 8.2 Klear Extension Tables (v2.1)
+
+```sql
+-- Klear Events Store (separate from CP Log Store)
+create table klear_events (
+  id uuid primary key default gen_random_uuid(),
+  session_id uuid references sessions(id),
+  user_id uuid references users(id),
+  action_id uuid,
+  event_type text not null,
+  event_subtype text,
+  payload jsonb,
+  created_at timestamptz default now()
+);
+
+-- IFI scores (two-phase)
+create table ifi_scores (
+  id uuid primary key default gen_random_uuid(),
+  action_id uuid references actions(id),
+  session_id uuid references sessions(id),
+  user_id uuid references users(id),
+  sa_score numeric(4,3),
+  cp_score numeric(4,3),
+  ss_score numeric(4,3),
+  ss_rating integer check (ss_rating between 1 and 5),
+  composite numeric(4,3),
+  pending_ss boolean default true,
+  cp2_skipped boolean default false,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+-- Intent decay per message
+create table decay_log (
+  id uuid primary key default gen_random_uuid(),
+  session_id uuid references sessions(id),
+  action_id uuid references actions(id),
+  delta numeric(4,3),
+  session_score numeric(4,3),
+  health_status text check (health_status in ('good', 'drifting', 'high_drift')),
+  created_at timestamptz default now()
+);
+
+-- IPP events per message
+create table ipp_events (
+  id uuid primary key default gen_random_uuid(),
+  session_id uuid references sessions(id),
+  action_id uuid references actions(id),
+  ipp_type text check (ipp_type in ('scope','temporal','entity','authority','form','abstraction')),
+  confidence numeric(4,3),
+  surfaced boolean default false,
+  icd_threshold_applied numeric(3,2),
+  clarification_question text,
+  user_response text,
+  created_at timestamptz default now()
+);
+
+-- Context roots
+create table context_roots (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references users(id),
+  content text not null,
+  source_session_id uuid references sessions(id),
+  source_node_id uuid references nodes(id),
+  is_active boolean default true,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+-- Klear profiles
+create table klear_profiles (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references users(id),
+  profile_name text not null,
+  default_icd numeric(3,2) check (default_icd between 0.0 and 1.0),
+  default_context text,
+  default_constraints text[],
+  domain_preference text check (domain_preference in ('general','health','legal','financial')),
+  is_active boolean default true,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+-- Indexes
+create index idx_klear_events_session on klear_events(session_id);
+create index idx_klear_events_type on klear_events(event_type);
+create index idx_ifi_scores_action on ifi_scores(action_id);
+create index idx_ifi_scores_session on ifi_scores(session_id);
+create index idx_decay_log_session on decay_log(session_id);
+create index idx_ipp_events_action on ipp_events(act
