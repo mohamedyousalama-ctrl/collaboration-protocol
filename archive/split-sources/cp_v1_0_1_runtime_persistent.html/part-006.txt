@@ -1,0 +1,72 @@
+       }
+                document.getElementById('status-storage').textContent = 'enabled';
+            } else {
+                this.addMessage('system', '⚠️ localStorage not available. Session will not be persisted.');
+                document.getElementById('status-storage').textContent = 'disabled';
+                document.getElementById('status-storage').classList.remove('storage');
+            }
+            this.updateStatus(); this.updateNodes(); this.updatePivots(); this.updateAgents(); this.updateStateInspector(); this.showStorageStats();
+        },
+        addMessage(type, content) {
+            const o = document.getElementById('output-content');
+            if (o.querySelector('.output-empty')) o.innerHTML = '';
+            const d = document.createElement('div');
+            d.className = 'message message-' + type;
+            const labels = { user: 'YOU', system: 'SYSTEM', guardian: 'GUARDIAN: ALLOW', 'guardian-refuse': 'GUARDIAN: REFUSE', friction: '', verification: 'VERIFICATION REQUIRED', agent: 'ADVISORY AGENT', storage: 'STORAGE' };
+            if (labels[type]) { const l = document.createElement('div'); l.className = 'message-label'; l.textContent = labels[type]; d.appendChild(l); }
+            const c = document.createElement('div'); c.textContent = content; d.appendChild(c);
+            o.appendChild(d); o.scrollTop = o.scrollHeight;
+        },
+        addLogEntry(entry, skipCount = false) {
+            const l = document.getElementById('logs-content');
+            const d = document.createElement('div'); d.className = 'log-entry';
+            const typeClass = ['guardian'].includes(entry.event_type) ? 'guardian' : ['friction'].includes(entry.event_type) ? 'friction' : ['agent'].includes(entry.event_type) ? 'agent' : ['storage'].includes(entry.event_type) ? 'storage' : ['signal'].includes(entry.event_type) ? 'signal' : '';
+            d.innerHTML = `<span class="log-timestamp">${entry.timestamp?.substring(11,19) || ''}</span> <span class="log-type ${typeClass}">${entry.event_type}.${entry.event_subtype}</span> - ${entry.details || ''}`;
+            l.appendChild(d); l.scrollTop = l.scrollHeight;
+            if (!skipCount) document.getElementById('log-count').textContent = '(' + LogStore.entries.length + ')';
+        },
+        updateStatus() {
+            const sc = document.getElementById('status-context'); const si = document.getElementById('status-intent'); const ss = document.getElementById('status-state'); const sa = document.getElementById('status-agent'); const ab = document.getElementById('btn-ask-agent');
+            if (Session.activeContextId) { sc.textContent = Session.activeContextId.substring(0, 12) + '...'; sc.className = 'status-value active'; } else { sc.textContent = 'none'; sc.className = 'status-value none'; }
+            const int = Session.activeIntentId ? IntentStore.get(Session.activeIntentId) : null;
+            if (int) { si.textContent = int.intent_id.substring(0, 12) + '... (' + int.state + ')'; si.className = 'status-value ' + (int.state === 'active' ? 'active' : 'pending'); } else { si.textContent = 'none'; si.className = 'status-value none'; }
+            ss.textContent = Session.systemState; ss.className = 'status-value ' + (Session.systemState === 'idle' ? '' : 'pending');
+            if (Session.activeAgentId) { const agent = AgentStore.get(Session.activeAgentId); sa.textContent = agent ? agent.name + ' (' + agent.state + ')' : 'unknown'; sa.className = 'status-value agent-active'; } else { sa.textContent = 'none'; sa.className = 'status-value none'; }
+            ab.disabled = !(Session.activeAgentId && int && ['verified', 'active'].includes(int.state) && Session.systemState === 'idle');
+            this.updateStateInspector();
+        },
+        updateNodes() {
+            const p = document.getElementById('nodes-content');
+            if (!Session.activeContextId) { p.innerHTML = '<div class="empty-state">No context</div>'; return; }
+            const nodes = NodeStore.getNodesByContext(Session.activeContextId);
+            if (nodes.length === 0) { p.innerHTML = '<div class="empty-state">No nodes committed</div>'; return; }
+            p.innerHTML = nodes.map(n => `<div class="node-item"><div class="node-id">${n.node_id}</div><div class="node-content">${n.content}</div><div class="node-meta">Type: ${n.commitment_type}</div></div>`).join('');
+        },
+        updatePivots() {
+            const p = document.getElementById('pivots-content');
+            if (!Session.activeContextId) { p.innerHTML = '<div class="empty-state">No context</div>'; return; }
+            const pivots = NodeStore.getPivotsByContext(Session.activeContextId);
+            if (pivots.length === 0) { p.innerHTML = '<div class="empty-state">No pivots</div>'; return; }
+            p.innerHTML = pivots.map(pv => `<div class="pivot-item"><strong>${pv.pivot_id.substring(0,12)}...</strong> ${pv.pivot_text}</div>`).join('');
+        },
+        updateAgents() {
+            const p = document.getElementById('agents-content');
+            if (!Session.activeContextId) { p.innerHTML = '<div class="empty-state">No context</div>'; return; }
+            const agents = AgentStore.getByContext(Session.activeContextId);
+            if (agents.length === 0) { p.innerHTML = '<div class="empty-state">No agents</div>'; return; }
+            p.innerHTML = agents.map(a => `<div class="agent-item"><strong>${a.name}</strong> <span class="agent-status ${a.state}">${a.state}</span><div style="font-size:0.8rem;color:#666;margin-top:4px">Type: ${a.agent_type} | Permissions: ${a.permissions.join(', ')}</div></div>`).join('');
+        },
+        updateStateInspector() {
+            const s = document.getElementById('state-content');
+            const ctx = Session.activeContextId ? ContextStore.get(Session.activeContextId) : null;
+            const int = Session.activeIntentId ? IntentStore.get(Session.activeIntentId) : null;
+            const agent = Session.activeAgentId ? AgentStore.get(Session.activeAgentId) : null;
+            s.innerHTML = `<div class="state-section"><div class="state-section-title">Session</div><div class="state-json">${JSON.stringify({ activeContextId: Session.activeContextId, activeIntentId: Session.activeIntentId, activeAgentId: Session.activeAgentId, systemState: Session.systemState }, null, 2)}</div></div><div class="state-section"><div class="state-section-title">Context</div><div class="state-json">${ctx ? JSON.stringify(ctx, null, 2) : '<span class="state-null">null</span>'}</div></div><div class="state-section"><div class="state-section-title">Intent</div><div class="state-json">${int ? JSON.stringify(int, null, 2) : '<span class="state-null">null</span>'}</div></div><div class="state-section"><div class="state-section-title">Agent</div><div class="state-json">${agent ? JSON.stringify(agent, null, 2) : '<span class="state-null">null</span>'}</div></div>`;
+        },
+        showStorageStats() {
+            const p = document.getElementById('storage-content');
+            const size = Persistence.getSize();
+            const usedKB = (size.used / 1024).toFixed(2);
+            const totalKB = (size.total / 1024).toFixed(0);
+            const percent = ((size.used / size.total) * 100).toFixed(1);
+            p.innerHTML = `<div class="storage-info"><strong>Storage Usage:</strong> ${usedKB} KB / ${totalKB} KB (${percent}%)<br><br><strong>Stores:</strong><br>Contexts: ${ContextStore.contexts.size} | Intents: ${IntentStore.intents.size} | Nodes: ${NodeStore.nodes.size}<br>Pivots: ${NodeStore.pivots.size} | Actions: ${ActionStore.actions.size} | Agents: ${AgentStore.agents.size}<br>Logs: ${LogStore.entries.length}</div><div class="storage-actions"><button class="btn-secondary" onclick="Persistence.forceSaveAll()">Force Sav
