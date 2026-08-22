@@ -1,0 +1,60 @@
+ble refinement of the ICD model.
+- **Surfaced-IPP decay:** an explicitly surfaced ambiguity that receives no human answer reverts to silent resolution in the next occurrence (AUD-015 vs the SCOPE012 surfacing). Implies a protocol requirement: *unresolved surfaced IPPs must persist, not expire.*
+- **Post-correction adaptation:** after one harsh correction (AUD-005), the same model began proactively surfacing ambiguities (AUD-022) with zero subsequent rework — the micro-timescale mirror of Fan's experience gradient.
+- **Content-as-command (authority IPP, maximal materiality):** pasting executable content with no imperative was treated as authorization to execute against production (W39-007). Converges with Klear's credential-challenge findings from the controlled side.
+- **Means-vs-outcome fixation:** model silently binds an outcome instruction ("one commit, one draft PR") to a particular means (GitHub CLI auth) and stalls ~5 exchanges — the corpus's longest awareness gap, showing detection latency varies by failure type (KBD-004).
+
+---
+
+# PART IV — WHAT IS ESTABLISHED SCIENCE vs INVENTED vs HYPOTHESIZED
+
+## Layer 1 — Established science (the foundation, not Mohamed's)
+Five research streams: LLM uncertainty quantification (Xiong et al. 2024; Ghasemabadi & Niu 2025 — cited for IPP-detection feasibility); human-in-the-loop and mixed-initiative interaction; AI transparency/explainability; accountability research in HCI; linguistic ambiguity research. Also: "trained annotators" is standard method, not an invention — Mohamed is first to apply it to IPPs.
+
+## Layer 2 — Invented (all constructs in Part III are Mohamed's originals)
+The problem naming (SII), IPP, ICD, IFI, CR, SMP, CF, detection algorithm, IPP logging, Seven Laws + Law 8, SF/SCS/IFI-H, Intent Signatures, and the corpus-derived constructs (standing-instruction IPPs, resolution-by-disclosure, surfaced-IPP decay).
+
+## Layer 3 — Hypothesized (falsifiable, not yet proven)
+- **H1 (Prevalence):** unstated intent assumptions in >60% of complex interactions; users unaware in >70% of cases.
+- **H2 (Awareness Gap):** users are usually unaware when SII occurs. *Mechanism candidate from Fan's FN-006: operational confidence conceals conceptual gaps.*
+- **H3 (ICD Effect):** higher ICD → higher fidelity/satisfaction at time cost, with task-dependent optimum (experimental design: ICD 0.2/0.5/0.8/1.0 × task complexity; 200+ knowledge workers).
+- **H4 (IPP Reliability):** trained annotators identify IPPs at κ > 0.7; intervention at IPPs predicts satisfaction.
+- **H5 (Safety-Fidelity Trade-off):** H5a fidelity and clinical safety diverge in health; H5b IFI-H reduces but doesn't eliminate the gap; H5c SF achieves SCS ≥ 0.90 without reducing satisfaction.
+- Tier-2/3 claims: meaning-ownership erosion; articulation assistance without usurpation (suggestions > auto-resolution > no help); Intent Signature portability (~30% faster); CP reduces high-stakes errors; reversibility calibrates trust.
+- Simulations (κ = 0.61–0.81; 22–489 ms) show the framework is *computable*, not *true* — a restraint the paper states explicitly and that Fan independently praised.
+
+---
+
+# PART V — THE EVIDENCE (THREE LAYERS, ALL MOHAMED'S OWN DATA)
+
+## Layer A — The naturalistic incident corpus (Study A)
+**Instrument:** IPP Incident Extraction Protocol v1.0 (Mohamed's design): LLM as "neutral court reporter" extracting only observable facts with verbatim quotes (fields A1–A13); all judgment reserved to researcher-only fields (C0–C10); classification never delegated; ground-truth intent (C5) has exactly one valid source — Mohamed.
+
+**Corpus status: 52 incident records across 7 windows** (database built: CP_Incident_Database_v1.xlsx):
+| Window | Records | Character |
+|---|---|---|
+| GPT (ChatGPT coordinator) | 5 | All genuine intent events, all caught in 1 turn |
+| AUD (KIVO-AUDITOR, Claude) | 22 | Deepest report; recovered raw transcript from disk for verbatim; logged its own extraction decisions as incidents; includes counter-pattern record |
+| CDX (Codex) | 5 | Weakest report; mostly LOW confidence |
+| W38 (builder/proof) | 8 | Incl. disclosure-variant and labeling-standard events |
+| W39 (builder/verification) | 7 | Incl. content-as-command production execution |
+| KBD (KIVO-BUILDER) | 4 | Incl. longest awareness gap (~5 exchanges) |
+| KPF (KIVO-PROOF) | 1 | Third stale-base instance |
+
+**Headline patterns:** the stale-base standing-instruction cluster (3 independent windows; user-quoted anchor: "Four stale-base incidents on this project would each have deleted a day of merged work" → first defensible cost figure ≈ 4 workdays); ~40% benign outcomes (20/52 suggested) — the selection-bias defense and the argument for materiality-scaled rather than universal surfacing; detection latency almost uniformly 1 turn **because** the KIVO rejection-gate governance catches mismatches immediately → the corpus measures SII under *near-optimal oversight*, so all rates are **lower bounds**; and the meta-replication — two different models (AUD-018, CDX-005) each logged performing the extraction as itself a silent inference.
+
+**Critical methods rule discovered during triage:** the extraction format dresses **competence errors** (false beliefs about facts/tech, e.g. SQL syntax) as "interpretation choices." Hence field **C0 INCIDENT CLASS** (INTENT / COMPETENCE / PREMISE / MIXED / META) — only INTENT feeds the SII rate; the competence set becomes a finding in itself. Classification and quote-verification (C9) are in progress and are prerequisites for any published number.
+
+## Layer B — Klear controlled comparison (Study B)
+Mohamed **built a working CP-governed financial assistant (Klear)** and ran a structured comparative evaluation against ChatGPT (GPT-4o) and Gemini (1.5 Pro), executed by third-party tester **Usama Mohammed (April 2026)**, 16 scenarios in 5 categories (research/boundary/credential/drift/silent-advice stress), with declared ICD settings, Google Drive evidence folders, and audit trails.
+**Headline pilot results:** silent advice 0% (Klear) vs 82% (ChatGPT) vs 100% (Gemini); credential challenge 100% vs 0% vs 0%; drift blocked at exact boundary turns; overall pass 94% vs 27% vs 27%. Klear's own defects honestly logged (false-positive scope warnings FIN-R-01/02).
+**Known problems (all fixable, all must be fixed before publication):** ⚠ FIN-R-04 rows marked "PENDING — responses not yet submitted" yet carry scores and Pass verdicts — run or blank them (data-integrity blocker); tester not blind (guide states what CP "should do") → add anonymized second-rater pass, compute κ; comparison must be framed "governed architecture vs prompt-level instruction," never "Klear beats GPT"; single tester, pilot label mandatory; obtain Usama's written consent to publish.
+
+## Layer C — IntentHealth pilots + Safety Floor (Study C)
+Two sessions (March 2026) comparing CP-Claude vs raw Claude on health queries; GPT-4o as clinical rater (disclosed limitation — model-rating-model needs human clinical validation). Produced the fidelity/safety anomaly and the entire Section 3.4 apparatus. Strategic value: a framework that discovers and formalizes its own limits is a research program, not a manifesto — lead with the anomaly, don't bury it.
+
+---
+
+# PART VI — THE INDEPENDENT-RESEARCHER CORRESPONDENCE (FAN CHEN-CHIEH)
+
+**Who:** Fan Chen-Chieh (范宸杰), independent self-funded researcher, Taipei. ORCID 0009-0000-5317-7385. Work: **DCM 2.0** — 328 street-intercept interviews, 33 nationalities, Taipei (Dec 2025–Apr 2026), on how AI users attribute responsibility for AI errors. Zenodo DOI (email cited 10.5281/zenodo.20280700; PDF shows 20841515 — likely versioned DOIs; verify). 122 pages, ~39k words; verifi
