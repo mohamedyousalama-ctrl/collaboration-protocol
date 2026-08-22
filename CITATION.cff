@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use the Collaboration Protocol research archive, cite the relevant versioned artifact and the associated public paper where applicable."
+title: "The Collaboration Protocol Research Archive"
+type: dataset
+authors:
+  - family-names: Salama
+    given-names: Mohamed
+repository-code: "https://github.com/mohamedyousalama-ctrl/collaboration-protocol"
+version: "preservation-2026-08-22"
+date-released: 2026-08-22
+abstract: "Evidence-stratified preservation archive for the Collaboration Protocol research program, including frozen CP v1.0.1 specifications, earlier theory, empirical materials, implementation evidence, applied extensions, provenance records, and current research hypotheses."
