@@ -1,0 +1,238 @@
+    res.status(500).json({ error: 'Failed to submit satisfaction rating' });
+  }
+});
+
+// ============================================================
+// POST /api/session/counterfactual
+// ============================================================
+router.post('/counterfactual', async (req, res) => {
+  try {
+    const { session_id, action_id } = req.body;
+
+    if (!session_id || !action_id) {
+      return res.status(400).json({ error: 'session_id and action_id are required' });
+    }
+
+    // Load all data in parallel
+    const [session, context, intent, action, ippEvents] = await Promise.all([
+      db.getSession(session_id),
+      db.getContextBySession(session_id),
+      db.getActiveIntent(session_id),
+      db.getAction(action_id).catch(err => {
+        console.error('Counterfactual: getAction failed for', action_id, err.message);
+        return null;
+      }),
+      db.getIPPEventsByAction(action_id).catch(err => {
+        console.error('Counterfactual: getIPPEventsByAction failed for', action_id, err.message);
+        return [];
+      }),
+    ]);
+
+    if (!action) {
+      return res.status(404).json({ error: `Action ${action_id} not found` });
+    }
+
+    console.log(`Counterfactual: action_id=${action_id}, ipp_events_count=${ippEvents.length}, action_found=${!!action}`);
+    if (ippEvents.length > 0) {
+      console.log('Counterfactual: IPP events:', ippEvents.map(e => `${e.ipp_type}(${e.confidence},surfaced=${e.surfaced})`).join(', '));
+    }
+
+    // Find unsurfaced IPPs
+    const unsurfacedIPPs = ippEvents
+      .filter(e => !e.surfaced)
+      .map(e => ({
+        type: e.ipp_type,
+        confidence: parseFloat(e.confidence),
+        clarification_question: e.clarification_question,
+      }));
+
+    console.log(`Counterfactual: unsurfaced_count=${unsurfacedIPPs.length}`);
+
+    if (unsurfacedIPPs.length === 0) {
+      return res.json({
+        original_interpretation: action.ai_response?.substring(0, 200) || '',
+        alternatives: [],
+      });
+    }
+
+    console.log('Counterfactual: calling generateAlternatives with', unsurfacedIPPs.length, 'unsurfaced IPPs');
+
+    const result = await generateAlternatives({
+      action_id,
+      user_message: action.user_message,
+      ai_response: action.ai_response,
+      context_description: context?.description,
+      declaration_text: intent?.declaration_text,
+      unsurfacedIPPs,
+    });
+
+    console.log('Counterfactual: result alternatives count:', result.alternatives?.length || 0);
+
+    res.json(result);
+  } catch (error) {
+    console.error('Counterfactual error:', error.message, error.stack?.substring(0, 300));
+    res.status(500).json({ error: 'Failed to generate alternatives: ' + error.message });
+  }
+});
+
+// ============================================================
+// GET /api/session/trace/:action_id
+// ============================================================
+router.get('/trace/:action_id', async (req, res) => {
+  try {
+    const { action_id } = req.params;
+    const action = await db.getAction(action_id);
+    const session = await db.getSession(action.session_id);
+    const context = await db.getContextBySession(action.session_id);
+    const intent = await db.getActiveIntent(action.session_id);
+
+    // Load IPP events for this action
+    const ippEvents = await db.getIPPEventsByAction(action_id);
+    const ippDetected = ippEvents.map(e => ({
+      type: e.ipp_type,
+      confidence: parseFloat(e.confidence),
+      surfaced: e.surfaced,
+      reason: e.surfaced ? 'above ICD threshold' : 'below ICD threshold',
+    }));
+
+    // Load IFI for this action
+    const ifi = await db.getIFIByAction(action_id);
+
+    // Load guardian log events for this action from CP logs
+    const allLogs = await db.getLogsBySession(action.session_id);
+    const guardianLogs = allLogs.filter(l =>
+      l.event_type === 'guardian' && l.payload?.action_id === action_id
+    );
+
+    // Load decay at time of this action
+    const decayEntries = await db.getDecayBySession(action.session_id);
+    const decayAtTime = decayEntries.find(d => d.action_id === action_id);
+
+    // Load safety floor events
+    const klearEvents = await db.getKlearEventsByAction(action_id);
+    const sfEvent = klearEvents.find(e => e.event_type === 'safety_floor');
+
+    // Build trace response per §5 GET /api/session/trace/:action_id
+    const cp1Log = guardianLogs.find(l => l.event_subtype === 'post_classification' || l.payload?.rule);
+    const cp2Log = guardianLogs.find(l => l.event_subtype === 'pre_execution');
+
+    res.json({
+      trace: {
+        user_message: action.user_message,
+        intent_governing: intent?.declaration_text || 'Not declared',
+        context_governing: context?.description || 'Not declared',
+        icd_applied: parseFloat(session.icd_value),
+        ipp_detected: ippDetected,
+        checkpoint1: cp1Log ? {
+          decision: cp1Log.payload?.decision,
+          rule: cp1Log.payload?.rule,
+          reason: cp1Log.payload?.trigger_type || 'All clear',
+        } : { decision: 'allow', rule: 'PC-4', reason: 'All clear' },
+        checkpoint2: cp2Log ? {
+          decision: cp2Log.payload?.decision,
+          reason: cp2Log.payload?.reason || '',
+          cp2_skipped: cp2Log.payload?.cp2_skipped || false,
+        } : { decision: 'allow', reason: 'CP2 not triggered', cp2_skipped: true },
+        safety_floor: sfEvent ? sfEvent.payload : null,
+        decay_at_time: decayAtTime ? {
+          delta: parseFloat(decayAtTime.delta),
+          session_score: parseFloat(decayAtTime.session_score),
+          health: decayAtTime.health_status,
+        } : { delta: 0, session_score: 0, health: 'good' },
+        ifi: ifi ? {
+          sa: parseFloat(ifi.sa_score),
+          cp: parseFloat(ifi.cp_score),
+          ss: ifi.ss_score ? parseFloat(ifi.ss_score) : null,
+          composite: ifi.composite ? parseFloat(ifi.composite) : null,
+          pending_ss: ifi.pending_ss,
+        } : null,
+      },
+    });
+  } catch (error) {
+    console.error('Trace error:', error);
+    res.status(500).json({ error: 'Failed to generate trace' });
+  }
+});
+
+// ============================================================
+// GET /api/session/report/:session_id
+// ============================================================
+router.get('/report/:session_id', async (req, res) => {
+  try {
+    const { session_id } = req.params;
+    const session = await db.getSession(session_id);
+    const user = await db.getUserById(session.user_id);
+
+    // Registered users only
+    if (user.is_anonymous) {
+      return res.status(403).json({ error: 'Compliance reports are available for registered users only' });
+    }
+
+    const context = await db.getContextBySession(session_id);
+    const intent = await db.getActiveIntent(session_id);
+    const actions = await db.getActionsBySession(session_id);
+    const logs = await db.getLogsBySession(session_id);
+    const klearEvents = await db.getKlearEventsBySession(session_id);
+    const ifiScores = await db.getIFIBySession(session_id);
+    const decayEntries = await db.getDecayBySession(session_id);
+
+    // Compute aggregates
+    const frictionLogs = logs.filter(l => l.event_type === 'friction');
+    const frictionTriggered = frictionLogs.filter(l => l.event_subtype === 'triggered').length;
+    const frictionResolved = frictionLogs.filter(l => l.event_subtype === 'resolved').length;
+
+    const guardianLogs = logs.filter(l => l.event_type === 'guardian');
+    const guardianDecisions = { allow: 0, clarify: 0, refuse: 0 };
+    guardianLogs.forEach(l => {
+      const d = l.payload?.decision;
+      if (d && guardianDecisions[d] !== undefined) guardianDecisions[d]++;
+    });
+
+    // IPP summary from Klear events
+    const ippSummary = {};
+    const ippClassifiedEvents = klearEvents.filter(e => e.event_type === 'ipp' && e.event_subtype === 'classified');
+    ippClassifiedEvents.forEach(e => {
+      const ipps = e.payload?.all_ipps || [];
+      ipps.forEach(ipp => {
+        ippSummary[ipp.type] = (ippSummary[ipp.type] || 0) + 1;
+      });
+    });
+
+    // IFI trend
+    const ifiTrend = ifiScores
+      .filter(s => s.composite !== null)
+      .map(s => parseFloat(s.composite));
+    const avgIFI = ifiTrend.length > 0
+      ? Math.round((ifiTrend.reduce((s, v) => s + v, 0) / ifiTrend.length) * 100) / 100
+      : null;
+
+    // Final decay
+    const finalDecay = decayEntries.length > 0
+      ? parseFloat(decayEntries[decayEntries.length - 1].session_score)
+      : 0;
+    const finalHealth = decayEntries.length > 0
+      ? decayEntries[decayEntries.length - 1].health_status
+      : 'good';
+
+    res.json({
+      report: {
+        session_id,
+        generated_at: new Date().toISOString(),
+        declared_intent: intent?.declaration_text || 'Not declared',
+        declared_context: context?.description || 'Not declared',
+        icd_setting: parseFloat(session.icd_value),
+        domain: session.domain,
+        safety_floor_active: session.safety_floor_active,
+        total_messages: actions.length,
+        total_friction_events: frictionTriggered,
+        friction_resolution_rate: frictionTriggered > 0
+          ? Math.round((frictionResolved / frictionTriggered) * 100) / 100
+          : 1.0,
+        guardian_decisions: guardianDecisions,
+        ipp_summary: ippSummary,
+        average_ifi: avgIFI,
+        ifi_trend: ifiTrend,
+        session_decay_final: finalDecay,
+        session_health: finalHealth,
+        responsibility_chain_intact: true,
+        cp_log: logs,

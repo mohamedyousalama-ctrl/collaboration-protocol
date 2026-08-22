@@ -1,0 +1,248 @@
+/**
+ * Session API Routes
+ *
+ * POST /api/session/start         — Create session, run articulation assistance
+ * POST /api/session/confirm       — Confirm articulation + ICD, start session
+ * POST /api/session/message       — Core endpoint — full CP pipeline per message
+ * POST /api/session/resolve       — Resolve an open friction event
+ * POST /api/session/satisfaction  — Submit SS star rating, complete IFI Phase 2
+ * POST /api/session/counterfactual — Get alternative interpretations
+ * GET  /api/session/trace/:action_id — Decision trace for a response
+ * GET  /api/session/report/:session_id — CP Compliance Report
+ *
+ * Spec reference: §5
+ */
+
+const express = require('express');
+const router = express.Router();
+const Anthropic = require('@anthropic-ai/sdk');
+
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+const db = require('../db/supabase');
+const { logEvent, logEvents } = require('../cp/logger');
+const { classifyIPP } = require('../cp/ipp_classifier');
+const { applyICDFilter } = require('../cp/icd_filter');
+const { checkpoint1, checkpoint2, shouldRunCheckpoint2, getHeuristicScores } = require('../cp/guardian');
+const { calculateDecay } = require('../cp/decay');
+const { calculatePhase1, calculatePhase2, getIFIDisplay } = require('../cp/ifi');
+const { classifySessionDomain, evaluateMessageDomain } = require('../cp/domain_classifier');
+const { injectSafetyFloor } = require('../cp/safety_floor');
+const { isCounterfactualAvailable, generateAlternatives } = require('../cp/counterfactual');
+const { getSystemPrompt, buildContextInjection, buildArticulationPrompt } = require('../cp/prompts');
+const { triggerFriction, resolveFriction } = require('../cp/friction');
+const { handleStreamingMessage } = require('../cp/stream_handler');
+
+// ============================================================
+// POST /api/session/start
+// ============================================================
+router.post('/start', async (req, res) => {
+  try {
+    const { opening_statement, user_id } = req.body;
+
+    if (!opening_statement || opening_statement.trim().length === 0) {
+      return res.status(400).json({ error: 'opening_statement is required' });
+    }
+
+    // 1. Create or fetch user
+    let user;
+    if (user_id) {
+      user = await db.getUserById(user_id);
+    } else {
+      user = await db.createUser({ is_anonymous: true });
+    }
+
+    // 2. Create session
+    const session = await db.createSession({ user_id: user.id });
+
+    // 3. Load Context Roots if registered user
+    let contextRoots = [];
+    if (!user.is_anonymous) {
+      contextRoots = await db.getActiveContextRoots(user.id);
+    }
+
+    // 4. Call Claude for articulation extraction
+    const articulationPrompt = buildArticulationPrompt(opening_statement);
+    let articulation;
+    try {
+      const response = await anthropic.messages.create({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 512,
+        messages: [{ role: 'user', content: articulationPrompt }],
+      });
+      const text = response.content[0]?.text || '';
+      let jsonStr = text.trim();
+      if (jsonStr.startsWith('```')) {
+        jsonStr = jsonStr.replace(/^```(?:json)?\s*/, '').replace(/\s*```$/, '');
+      }
+      // Extract JSON even if Claude added text before/after it
+      const jsonMatch = jsonStr.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        jsonStr = jsonMatch[0];
+      }
+      const parsed = JSON.parse(jsonStr);
+      // Validate each field — fall back per-field, not all-or-nothing
+      articulation = {
+        topic: (parsed.topic && !parsed.topic.includes('main topic')) ? parsed.topic : opening_statement,
+        goal: (parsed.goal && !parsed.goal.includes('what the user')) ? parsed.goal : '(Please specify your goal)',
+        scope: (parsed.scope && !parsed.scope.includes('boundaries of')) ? parsed.scope : '(Please specify scope)',
+        excludes: parsed.excludes || '',
+      };
+    } catch (err) {
+      console.error('Articulation extraction error:', err.message);
+      articulation = {
+        topic: opening_statement,
+        goal: '(Could not extract — please specify)',
+        scope: '(Could not extract — please specify)',
+        excludes: '',
+      };
+    }
+
+    // 5. Run domain classifier on articulated context
+    const domainResult = await classifySessionDomain(
+      `${articulation.topic}. ${articulation.goal}. ${articulation.scope}`
+    );
+
+    // 6. Log session start events
+    await logEvents([
+      { session_id: session.id, user_id: user.id, event_type: 'session', event_subtype: 'started', payload: { opening_statement } },
+      { session_id: session.id, user_id: user.id, event_type: 'signal', event_subtype: 'received', payload: { content: opening_statement, source: 'opening_statement' } },
+    ]);
+
+    // 7. Log domain classification to Klear Events Store
+    await logEvent({
+      session_id: session.id,
+      user_id: user.id,
+      event_type: 'domain',
+      event_subtype: 'classified',
+      payload: { domain: domainResult.domain, safety_floor_active: domainResult.safety_floor_active },
+    });
+
+    res.json({
+      session_id: session.id,
+      user_id: user.id,
+      articulation,
+      domain: domainResult.domain,
+      safety_floor_active: domainResult.safety_floor_active,
+      context_roots: contextRoots.map(r => ({ id: r.id, content: r.content })),
+      icd_options: [
+        { value: 0.2, label: 'Fast', description: 'Answer quickly, ask rarely' },
+        { value: 0.5, label: 'Balanced', description: 'Ask when it matters' },
+        { value: 0.8, label: 'Precise', description: 'Ask before any ambiguity' },
+      ],
+    });
+  } catch (error) {
+    console.error('Session start error:', error);
+    res.status(500).json({ error: 'Failed to start session' });
+  }
+});
+
+// ============================================================
+// POST /api/session/confirm
+// ============================================================
+router.post('/confirm', async (req, res) => {
+  try {
+    const { session_id, articulation, icd, confirmed_root_ids = [], skipped_root_ids = [] } = req.body;
+
+    if (!session_id || !articulation || icd === undefined) {
+      return res.status(400).json({ error: 'session_id, articulation, and icd are required' });
+    }
+
+    const session = await db.getSession(session_id);
+    const user_id = session.user_id;
+
+    // 1. Create Context object (state: open)
+    const context = await db.createContext({
+      session_id,
+      user_id,
+      description: `${articulation.topic}. ${articulation.goal}`,
+      inclusions: articulation.scope,
+      exclusions: articulation.excludes,
+    });
+
+    // 2. Create Intent object (state: declared)
+    const intent = await db.createIntent({
+      session_id,
+      user_id,
+      context_id: context.id,
+      declaration_text: articulation.goal,
+      intent_type: 'task',
+    });
+
+    // 3. Store ICD value and domain in session
+    await db.updateSession(session_id, {
+      icd_value: icd,
+      domain: session.domain || 'general',
+    });
+
+    // 4. Transition intent: declared → verified → active
+    await db.updateIntentState(intent.id, 'verified');
+    await db.updateIntentState(intent.id, 'active');
+
+    // 5. Create nodes from scope declarations
+    if (articulation.scope) {
+      await db.createNode({
+        session_id,
+        intent_id: intent.id,
+        content: `Scope: ${articulation.scope}`,
+        node_type: 'constraint',
+      });
+    }
+    if (articulation.excludes) {
+      await db.createNode({
+        session_id,
+        intent_id: intent.id,
+        content: `Excludes: ${articulation.excludes}`,
+        node_type: 'constraint',
+      });
+    }
+
+    // 6. Log all CP events
+    await logEvents([
+      { session_id, user_id, event_type: 'context', event_subtype: 'created', payload: { context_id: context.id, description: context.description } },
+      { session_id, user_id, event_type: 'intent', event_subtype: 'created', payload: { intent_id: intent.id, declaration_text: intent.declaration_text } },
+      { session_id, user_id, event_type: 'intent', event_subtype: 'verified', payload: { intent_id: intent.id } },
+      { session_id, user_id, event_type: 'intent', event_subtype: 'active', payload: { intent_id: intent.id } },
+    ]);
+
+    // 7. Log ICD to Klear Events Store
+    await logEvent({
+      session_id, user_id,
+      event_type: 'icd',
+      event_subtype: 'set',
+      payload: { value: icd },
+    });
+
+    // 8. Log Context Root confirmations/skips
+    for (const rootId of confirmed_root_ids) {
+      await logEvent({
+        session_id, user_id,
+        event_type: 'context_root',
+        event_subtype: 'confirmed',
+        payload: { root_id: rootId },
+      });
+    }
+    for (const rootId of skipped_root_ids) {
+      await logEvent({
+        session_id, user_id,
+        event_type: 'context_root',
+        event_subtype: 'skipped',
+        payload: { root_id: rootId },
+      });
+    }
+
+    res.json({
+      status: 'ready',
+      context_id: context.id,
+      intent_id: intent.id,
+      message: 'Session started. What would you like to explore?',
+    });
+  } catch (error) {
+    console.error('Session confirm error:', error);
+    res.status(500).json({ error: 'Failed to confirm session' });
+  }
+});
+
+// ============================================================
+// POST /api/session/message
+// Core endpoint — full CP pipeline per message (§5 process steps 1–16)

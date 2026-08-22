@@ -1,0 +1,8 @@
+# SHA-256 of original/reconstructed source bundles represented in this repository
+# Format: SHA256  BYTES  REPOSITORY-REPRESENTATION  ORIGINAL/RECONSTRUCTED-NAME
+4998d3a509114a46d54232d6e6d7f6bc0353b271bfde75fd3ba7af66956cffa8  182607  archive/source-bundles/cp-research-package-recovered-files3.zip  files(3).zip
+ac377d0f8253002aaf8f0c8bf1ddc55b275c39019bfd6aec2bb00aaa57711552  139240  archive/source-bundles/cp-runtime-and-implementation-recovered-files4.zip  files(4).zip
+cf039f23f0d6eaec7232f690792b4d7878306c02e747f9a8b29aa0831f0bbe2d  166212  archive/source-bundles/cp-frozen-v1-recovered-files31.zip  files-31.zip
+4c07ab6a60fed08973c064cf59fa428f2d23d07727fbedd6f9092bf8ce703743  146674  archive/source-bundles/cp-runtime-patent-recovered-files29.zip  files-29.zip
+ba8b2e86d472da66839ad2c34e83448f04713df2137e1f692f380b787e708fe7  4873757  archive/source-bundles/parts/cp-early-papers-intenthealth-recovered-files28.zip.part-*  files-28 2.zip
+abda38e6f8e6c3cc20907550eeb08ecf1ea5f83897dc16f796e43bb2b5527b1c  13942209  archive/klear/parts/sanitized-chat-inputs.zip.part-*  sanitized-chat-inputs.zip
