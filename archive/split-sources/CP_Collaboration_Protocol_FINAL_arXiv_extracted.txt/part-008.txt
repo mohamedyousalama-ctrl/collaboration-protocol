@@ -1,0 +1,61 @@
+powerful AI systems, this channeling may prove valuable for ensuring
+AI serves human purposes rather than substituting for them.
+References
+Bansal, G., et al. (2021). Does the whole exceed its parts? The eect of AI explanations on
+complementary team performance. CHI 2021.
+Cannon-Bowers, J. A., & Salas, E. (2001). Reections on shared cognition. Journal of Organizational
+Behavior, 22(2), 195202.
+Cohen, J. (1992). A power primer. Psychological Bulletin, 112(1), 155159.
+Clark, L., et al. (2019). What makes a good conversation? Challenges in designing truly conversational agents. CHI 2019.
+Endsley, M. R. (2017). From here to autonomy: Lessons learned from human-automation research.
+Human Factors, 59(1), 527.
+Gunning, D., et al. (2019). XAIExplainable articial intelligence. Science Robotics, 4(37).
+Lai, V., & Tan, C. (2019). On human predictions with explanations and predictions of machine
+learning models. FAT* 2019.
+Lee, J. D., & See, K. A. (2004). Trust in automation: Designing for appropriate reliance. Human
+Factors, 46(1), 5080.
+Liu, P., et al. (2023). Pre-train, prompt, and predict: A systematic survey of prompting methods
+in NLP. ACM Computing Surveys.
+Mathieu, J. E., Hener, T. S., Goodwin, G. F., Salas, E., & Cannon-Bowers, J. A. (2000). The inuence of shared mental models on team process and performance. Journal of Applied Psychology,
+85(2), 273283.
+24\n\n--- PAGE 25 ---\n
+Miller, T. (2019). Explanation in articial intelligence: Insights from the social sciences. Articial
+Intelligence, 267, 138.
+Parasuraman, R., & Riley, V. (1997). Humans and automation: Use, misuse, disuse, abuse. Human
+Factors, 39(2), 230253.
+Schwartz, B. (2004). The Paradox of Choice: Why More Is Less. Harper Collins.
+Parasuraman, R., Sheridan, T. B., & Wickens, C. D. (2000). A model for types and levels of human
+interaction with automation. IEEE Transactions on Systems, Man, and Cybernetics, 30(3), 286
+297.
+Sheridan, T. B., & Verplank, W. L. (1978). Human and computer control of undersea teleoperators.
+MIT Technical Report.
+White, J., et al. (2023). A prompt pattern catalog to enhance prompt engineering with ChatGPT.
+arXiv preprint.
+Xiong, M., et al. (2024). Can LLMs express their uncertainty? An empirical evaluation of condence
+elicitation in LLMs. Proceedings of ICLR 2024.
+Ghasemabadi, A., & Niu, D. (2025). Can LLMs predict their own failures? Self-awareness via
+internal circuits. arXiv preprint arXiv:2512.20578.
+Kuhn, L., Gal, Y., & Farquhar, S. (2023). Semantic uncertainty: Linguistic invariances for uncertainty estimation in natural language generation. Proceedings of ICLR 2023.
+Liu, L., Pan, Y., Li, X., & Chen, G. (2024). Uncertainty estimation and quantication for LLMs:
+A simple supervised approach. arXiv preprint arXiv:2404.15993.
+Ashktorab, Z., Jain, M., Liao, Q. V., & Weisz, J. D. (2019). Resilient chatbots: Repair strategy
+preferences for conversational breakdowns. Proceedings of the 2019 CHI Conference on Human
+Factors in Computing Systems.
+Reinkemeier, F., & Gnewuch, U. (2022). Designing eective conversational repair strategies for
+chatbots. Proceedings of the 30th European Conference on Information Systems (ECIS 2022).
+Braggaar, A., Verhagen, J., Martijn, G., & Liebrecht, C. (2024). Conversational repair strategies to
+cope with errors and breakdowns in customer service chatbot conversations. CONVERSATIONS
+2023, Lecture Notes in Computer Science, vol. 14524. Springer.
+Galbraith, N. (2024). An analysis of dialogue repair in virtual assistants. Frontiers in Robotics and
+AI, 11, 1356847.
+Gou, Z., Shao, Z., Gong, Y., Shen, Y., Yang, Y., Duan, N., & Chen, W. (2024). CRITIC: Large
+language models can self-correct with tool-interactive critiquing. Proceedings of ICLR 2024.
+Pan, L., Saxon, M., Xu, W., Nathani, D., Wang, X., & Wang, W. Y. (2024). Automatically correcting large language models: Surveying the landscape of diverse automated correction strategies.
+Transactions of the Association for Computational Linguistics, 12, 484506.
+Yao, S., Zhao, J., Yu, D., Du, N., Shafran, I., Narasimhan, K., & Cao, Y. (2023). ReAct: Synergizing
+reasoning and acting in language models. Proceedings of ICLR 2023.
+25\n\n--- PAGE 26 ---\n
+Shinn, N., Cassano, F., Gopinath, A., Narasimhan, K., & Yao, S. (2023). Reexion: Language
+agents with verbal reinforcement learning. Advances in Neural Information Processing Systems
+36 (NeurIPS 2023).
+26
