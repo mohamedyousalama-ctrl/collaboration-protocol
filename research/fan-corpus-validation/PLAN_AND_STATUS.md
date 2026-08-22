@@ -16,181 +16,115 @@
 
 ## WP1 — Freeze and reconstruct v1
 
-**Owner:** ChatGPT  
 **Status:** COMPLETE — AUTHORITATIVE V1 RECOVERED AND VERIFIED
 
-- [x] Historical workbook identity established: SHA-256 `3a5d4e82c2d65473b1117d70b68428efd89319386a89978871f38edf8ee8ed4a`, 31,471 bytes.
-- [x] Pre-existing Base64 representation on `main` found incomplete/corrupt and preserved unchanged as evidence.
-- [x] Original `files(3).zip` research bundle recovered from the user's file library.
-- [x] Bundle SHA-256 `4998d3a509114a46d54232d6e6d7f6bc0353b271bfde75fd3ba7af66956cffa8` verified against the repository source-bundle manifest.
-- [x] Exact `CP_Incident_Database_v1.xlsx` recovered and verified at 31,471 bytes with historical SHA-256 `3a5d4e82c2d65473b1117d70b68428efd89319386a89978871f38edf8ee8ed4a`.
-- [x] Exact branch-only Base64 recovery representation stored under `research/fan-corpus-validation/recovered-source/`.
-- [x] GitHub Actions independently reconstructed the binary and returned identity **PASS**: 41,964 Base64 characters, 31,471 bytes, exact expected SHA-256.
-- [x] Workbook structural inventory and machine-readable 52-row audit input generated.
+Exact v1 identity: 31,471 bytes; SHA-256 `3a5d4e82c2d65473b1117d70b68428efd89319386a89978871f38edf8ee8ed4a`.
 
-Verified workbook:
-
-- `README` — A1:A16
-- `Codebook` — A1:C15
-- `Incidents` — A1:AD53
-- `Aggregates` — A1:C13
-- 52 incident records + one header row
-- 30 incident columns
-- all researcher-final fields `C0 FINAL` through `C10` blank across all 52 rows
+The incomplete historical Git Base64 representation remains untouched. The exact workbook was recovered from `files(3).zip`, whose SHA-256 `4998d3a509114a46d54232d6e6d7f6bc0353b271bfde75fd3ba7af66956cffa8` exactly matches the repository source-bundle manifest. GitHub Actions independently reconstructed and verified the recovered branch representation.
 
 Durable evidence:
-
-- `research/fan-corpus-validation/RECOVERY_PROVENANCE_AND_FREEZE.md`
-- `research/fan-corpus-validation/work/AUTHORITATIVE_V1_RECONSTRUCTION_AND_INVENTORY.md`
-- `research/fan-corpus-validation/work/CP_Incident_Database_v1.authoritative-v1.xlsx`
-- `research/fan-corpus-validation/work/authoritative_v1_inventory.json`
-- `research/fan-corpus-validation/work/incident_rows.tsv`
-- `research/fan-corpus-validation/recovered-source/AUTHORITATIVE_V1_SHA256.txt`
+- `RECOVERY_PROVENANCE_AND_FREEZE.md`
+- `work/AUTHORITATIVE_V1_RECONSTRUCTION_AND_INVENTORY.md`
+- `work/CP_Incident_Database_v1.authoritative-v1.xlsx`
+- `work/authoritative_v1_inventory.json`
+- `work/incident_rows.tsv`
+- `recovered-source/AUTHORITATIVE_V1_SHA256.txt`
 
 ## WP2 — Audit all 52 records
 
-**Owner:** ChatGPT  
-**Status:** COMPLETE — ALL 52 ROWS AUDITED
+**Status:** COMPLETE — 52/52 AUDITED
 
-- [x] Confirm row count and seven-window allocation.
-- [x] Check completeness of every extraction field actually stored in v1.
-- [x] Complete row-by-row internal-consistency audit.
-- [x] Flag competence/premise/meta records that must not automatically feed SII analysis.
-- [x] Review recurrence/cross-window links.
-- [x] Flag unsupported, contradictory, non-observable, or temporally ambiguous evidence.
-- [x] Assign one WP2 disposition to every row.
-- [x] Preserve C9 as unverified for every row pending WP3.
-
-WP2 disposition counts:
-
+Disposition counts:
 - `PASS_TO_SOURCE_VERIFICATION` — **21**
 - `NEEDS_SOURCE` — **11**
 - `STRUCTURAL_DEFECT` — **2**
 - `EXCLUDE_CANDIDATE` — **18**
 
-`EXCLUDE_CANDIDATE` means exclude from the SII-analysis candidate set on present evidence, not delete from the corpus. Comparison and meta records remain preserved.
+`EXCLUDE_CANDIDATE` means exclude from the SII-analysis candidate set on present evidence, not delete from the corpus.
 
-Major WP2 findings:
+Major findings:
+1. A4 Possible interpretations is absent as a dedicated workbook column.
+2. The v1 A6-only silent-inference aggregate can miscount disclosed events as silent.
+3. AUD-021 has a resolution-style contradiction.
+4. W39-002 lacks the required observable triggering quote in v1.
+5. AUD-022 uses a resolution-style label outside the listed Codebook values.
+6. A9 awareness-gap values require normalization before statistics.
+7. Seven records have substantial A3/A8 overlap and require source chronology review.
+8. Suggested outcome lacks a separate researcher-final field.
+9. One C0 suggestion uses non-final-codebook label `DEFINITION→INTENT`.
 
-1. The protocol defines A1–A13, but v1 has no dedicated `A4 Possible interpretations` column.
-2. The v1 aggregate `C0 FINAL=INTENT` + `A6=NO` is not a scientifically safe definition of silent inference because two `DISCLOSED-PROCEED` rows also have `A6=NO`.
-3. `AUD-021` has an internal contradiction: `Resolution style=SILENT`, while A8/A11 say the deviation was self-detected and disclosed in the same reply.
-4. `W39-002` lacks the required triggering quote: A3 explicitly records the original WO text as `NOT OBSERVABLE`.
-5. `AUD-022` uses `ASKED/DISCLOSED`, outside the v1 Codebook's listed resolution-style vocabulary.
-6. A9 is not metric-ready: integer turns are mixed with `N/O`, `N/A`, `NOT OBSERVABLE`, approximate cycles, and approximate exchanges.
-7. Seven records show substantial A3/A8 textual overlap, creating a chronology risk that WP3 must resolve from primary evidence.
-8. Suggested outcome has no separate researcher-final field in v1; publication outcome rates cannot rely on the suggested values without researcher validation.
-9. One C0 suggestion uses non-final-codebook label `DEFINITION→INTENT` and must be normalized only as an assistant recommendation.
-
-Durable WP2 outputs:
-
-- `research/fan-corpus-validation/CORPUS_AUDIT_52.md`
-- `research/fan-corpus-validation/corpus-audit/ROW_AUDIT_52.tsv`
-- reproducible generator: `research/fan-corpus-validation/tools/wp2_audit.py`
+Durable outputs:
+- `CORPUS_AUDIT_52.md`
+- `corpus-audit/ROW_AUDIT_52.tsv`
+- `tools/wp2_audit.py`
 
 ## WP3 — Locate and verify seven source conversations
 
-**Owner:** ChatGPT for discovery/quote checking  
 **Status:** ACTIVE — NEXT WORK PACKAGE
 
-Known source-window families:
+Families: GPT 5, AUD 22, CDX 5, W38 8, W39 7, KBD 4, KPF 1.
 
-- GPT — 5
-- AUD — 22
-- CDX — 5
-- W38 — 8
-- W39 — 7
-- KBD — 4
-- KPF — 1
-
-Current evidence:
-
-- the Master Knowledge File explicitly says the AUD raw transcript was recovered from disk for verbatim checking;
-- the workbook README says full text lives in source extract files;
-- the authoritative `files(3).zip` research bundle contains the workbook/protocol/research documents but does not by itself prove all seven complete primary transcripts are present;
-- current Git search has not yet established complete independently readable primary transcripts for all seven families.
+Current state:
+- AUD: `PARTIAL` because the preserved research record says its raw transcript was recovered, but the exact primary artifact still must be located and mapped.
+- GPT/CDX/W38/W39/KBD/KPF: primary transcript availability not yet proven.
+- The exact `files(3).zip` research bundle does not by itself prove all seven transcripts are present.
 
 Tasks:
-
 - [x] Create source-availability matrix.
-- [ ] Search Git and preserved source bundles for exact source-extract/transcript artifacts for each family.
+- [ ] Search Git and preserved source bundles for exact transcript/source-extract artifacts.
 - [ ] Classify each family as `PRIMARY_TRANSCRIPT_FOUND`, `SOURCE_EXTRACT_ONLY`, `PARTIAL`, or `NOT_FOUND`.
-- [ ] Map every incident to its best available source location.
-- [ ] Verify A3 and A8 chronology/quotation where primary evidence exists.
-- [ ] Recommend C9 evidence status only after verification.
-- [ ] Produce explicit unresolved-source list; never infer a missing transcript from the workbook alone.
+- [ ] Map every incident to its best source location.
+- [ ] Verify A3/A8 chronology and quotations where primary evidence exists.
+- [ ] Recommend C9 status only after primary-source checks.
 
 Deliverables:
-
 - `SOURCE_CONVERSATION_AVAILABILITY.md`
 - `QUOTE_VERIFICATION_REGISTER.md`
 
 ## WP4 — Classification recommendations
 
-**Owner:** ChatGPT  
 **Status:** WAITING FOR WP3 EVIDENCE
 
-Recommendation fields only:
-
-- C0 incident class
-- C1 IPP type
-- C2 materiality
-- C3 Context Factor
-- C4 effective ICD
-- C6 cost evidence/range
-- C7 hypothesis relevance
-- C8 benchmark candidacy
-- C9 verification recommendation from WP3 evidence
-- C10 notes
-
-`C5 TRUE INTENT` remains a question for Mohamed and will not be filled as fact by the assistant.
+ChatGPT prepares recommendations only for C0, C1, C2, C3, C4, C6, C7, C8, C9, C10. C5 TRUE INTENT remains exclusively Mohamed's researcher decision.
 
 ## WP5 — Researcher decisions
 
 **Owner:** Mohamed Salama  
 **Status:** WAITING FOR WP4
 
-Mohamed confirms/corrects the evidence cards and supplies C5 ground-truth intent. Assistant recommendations do not become researcher ground truth merely by being written.
-
 ## WP6 — Independent quality check
 
-**Status:** DEFERRED BY FOUNDER UNTIL AFTER RESEARCHER DECISIONS
+**Status:** DEFERRED BY FOUNDER
 
 ## WP7 — Freeze v1.1
 
 **Status:** BLOCKED UNTIL WP5 AND LATER QC
 
-Historical v1 will remain immutable. v1.1 will contain only the later researcher-reviewed/quality-checked state plus provenance, inclusion/exclusion ledger, and corrected analytical rules.
-
 ## WP8 — Fan exchange package
 
-**Owner:** ChatGPT  
 **Status:** DRAFT PACKAGE CREATED; FINAL NUMBERS/EXAMPLES WAIT ON VALIDATION
 
-Created under `research/fan-corpus-validation/fan-exchange/`:
-
-- [x] `00_READ_ME_FIRST.md`
-- [x] `01_METHODS_NOTE.md`
-- [x] `02_SCHEMA_AND_CODEBOOK.md`
-- [x] `03_DCM2_CROSSWALK_TEMPLATE.md`
-- [x] `04_SANITIZED_EXAMPLES.md`
-- [x] `05_LIMITATIONS_AND_EVIDENCE_STATUS.md`
-
-The raw 52-row corpus will not be represented to Fan as fully human-validated unless WP3–WP5 establish that status.
+Created under `fan-exchange/`:
+- `00_READ_ME_FIRST.md`
+- `01_METHODS_NOTE.md`
+- `02_SCHEMA_AND_CODEBOOK.md`
+- `03_DCM2_CROSSWALK_TEMPLATE.md`
+- `04_SANITIZED_EXAMPLES.md`
+- `05_LIMITATIONS_AND_EVIDENCE_STATUS.md`
 
 ## Current status summary
 
 | WP | Work | Status |
 |---|---|---|
 | 1 | Freeze/reconstruct v1 | **COMPLETE** |
-| 2 | Audit all 52 | **COMPLETE — 52/52 audited** |
+| 2 | Audit all 52 | **COMPLETE — 52/52** |
 | 3 | Source conversations | **ACTIVE — NEXT** |
 | 4 | Classification recommendations | WAITING FOR WP3 |
 | 5 | Researcher decisions | WAITING |
 | 6 | Independent QC | DEFERRED |
 | 7 | Freeze v1.1 | BLOCKED |
-| 8 | Fan methods exchange | DRAFT PACKAGE CREATED |
+| 8 | Fan methods exchange | DRAFT CREATED |
 
 ## Update rule
 
-Update this file after every material discovery, completed work package, evidence-status change, or blocker. GitHub Issue #3 mirrors high-level task state; this document remains the durable branch-level research handoff.
+Update this file after every material discovery, completed work package, evidence-status change, or blocker. GitHub Issue #3 mirrors high-level state; this file remains the durable branch-level research handoff.
