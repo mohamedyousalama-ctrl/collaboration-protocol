@@ -1,0 +1,57 @@
+teStatus(); return;
+            }
+            UI.addMessage('system', 'Signal noted: "' + text + '"');
+        },
+        handleConfirmation(text) {
+            if (!/^(yes|confirmed|confirm|ok|y)$/i.test(text.trim())) { Session.systemState = 'idle'; Session.pendingVerification = null; Session.persist(); return this.processSignal(text); }
+            const p = Session.pendingVerification;
+            if (p.type === 'context_and_intent') {
+                const ctx = createContext(p.data.description); ContextStore.create(ctx); Session.activeContextId = ctx.context_id;
+                LogStore.append({ event_type: 'context', event_subtype: 'created', object_id: ctx.context_id, context_id: ctx.context_id, intent_id: null, agent_id: null, user_id: 'user_01', details: 'Context: ' + ctx.description, reason: null });
+                const int = createIntent(ctx.context_id, p.data.intentText); int.state = 'active'; int.verified_at = timestamp(); IntentStore.create(int); Session.activeIntentId = int.intent_id; ctx.active_intents.push(int.intent_id); ContextStore.update(ctx.context_id, ctx);
+                LogStore.append({ event_type: 'intent', event_subtype: 'created', object_id: int.intent_id, context_id: ctx.context_id, intent_id: int.intent_id, agent_id: null, user_id: 'user_01', details: 'Intent: ' + int.declaration_text, reason: null });
+                LogStore.append({ event_type: 'intent', event_subtype: 'verified', object_id: int.intent_id, context_id: ctx.context_id, intent_id: int.intent_id, agent_id: null, user_id: 'user_01', details: 'Intent verified → active', reason: null });
+                UI.addMessage('guardian', 'Context and intent confirmed.\n\n- Context: ' + ctx.description + '\n- Intent: ' + int.declaration_text + ' (active)');
+            } else if (p.type === 'intent') {
+                const ctx = ContextStore.get(Session.activeContextId);
+                const int = createIntent(Session.activeContextId, p.data.text, p.data.type); int.state = 'active'; int.verified_at = timestamp(); IntentStore.create(int); Session.activeIntentId = int.intent_id; ctx.active_intents.push(int.intent_id); ContextStore.update(ctx.context_id, ctx);
+                LogStore.append({ event_type: 'intent', event_subtype: 'created', object_id: int.intent_id, context_id: Session.activeContextId, intent_id: int.intent_id, agent_id: null, user_id: 'user_01', details: 'Intent: ' + int.declaration_text, reason: null });
+                LogStore.append({ event_type: 'intent', event_subtype: 'verified', object_id: int.intent_id, context_id: Session.activeContextId, intent_id: int.intent_id, agent_id: null, user_id: 'user_01', details: 'Intent verified → active', reason: null });
+                UI.addMessage('guardian', 'Intent confirmed: ' + int.declaration_text);
+            } else if (p.type === 'node') {
+                const act = createAction(Session.activeIntentId, Session.activeContextId, 'generate', 'Create node', p.data.content); ActionStore.create(act);
+                LogStore.append({ event_type: 'action', event_subtype: 'requested', object_id: act.action_id, context_id: Session.activeContextId, intent_id: Session.activeIntentId, agent_id: null, user_id: 'user_01', details: 'Action: create node', reason: null });
+                const gd = CPGuardian.evaluatePreExecution({ action_id: act.action_id, intent_id: act.intent_id, context_id: act.context_id, agent_id: null, action_type: act.action_type });
+                LogStore.append({ event_type: 'guardian', event_subtype: 'pre_execution', object_id: act.action_id, context_id: Session.activeContextId, intent_id: Session.activeIntentId, agent_id: null, user_id: null, details: 'Guardian: ' + gd.decision, reason: gd.reason });
+                if (gd.decision !== 'Allow') { act.state = 'blocked'; ActionStore.update(act.action_id, { state: 'blocked' }); UI.addMessage('guardian-refuse', 'Blocked: ' + gd.reason); Session.pendingVerification = null; Session.systemState = 'idle'; Session.persist(); UI.updateStatus(); return; }
+                const node = createNode(Session.activeContextId, p.data.content, p.data.type); NodeStore.createNode(node);
+                LogStore.append({ event_type: 'node', event_subtype: 'created', object_id: node.node_id, context_id: Session.activeContextId, intent_id: Session.activeIntentId, agent_id: null, user_id: 'user_01', details: 'Node: ' + node.content, reason: null });
+                act.state = 'executed'; act.outputs = node.node_id; act.executed_at = timestamp(); act.executed_by = 'system'; ActionStore.update(act.action_id, act);
+                LogStore.append({ event_type: 'action', event_subtype: 'executed', object_id: act.action_id, context_id: Session.activeContextId, intent_id: Session.activeIntentId, agent_id: null, user_id: null, details: 'Action executed: ' + node.node_id, reason: null });
+                UI.addMessage('guardian', 'Node committed:\n- ' + node.node_id + '\n- ' + node.content + '\n- Type: ' + node.commitment_type);
+                UI.updateNodes();
+            }
+            FrictionStore.getActive().forEach(f => { f.state = 'resolved'; f.resolution = 'user_confirmed'; f.resolved_at = timestamp(); FrictionStore.update(f.friction_id, f); LogStore.append({ event_type: 'friction', event_subtype: 'resolved', object_id: f.friction_id, context_id: Session.activeContextId, intent_id: Session.activeIntentId, agent_id: null, user_id: 'user_01', details: 'Friction resolved', reason: null }); });
+            Session.pendingVerification = null; Session.systemState = 'idle'; Session.persist(); UI.updateStatus();
+        },
+        handleClarification(text) {
+            FrictionStore.getActive().forEach(f => { f.state = 'resolved'; f.resolution = 'user_clarified'; f.resolution_details = text; f.resolved_at = timestamp(); FrictionStore.update(f.friction_id, f); LogStore.append({ event_type: 'friction', event_subtype: 'resolved', object_id: f.friction_id, context_id: Session.activeContextId, intent_id: Session.activeIntentId, agent_id: null, user_id: 'user_01', details: 'Friction resolved: clarified', reason: text }); });
+            Session.systemState = 'idle'; Session.persist(); return this.processSignal(text);
+        }
+    };
+
+    const UI = {
+        init() {
+            document.getElementById('output-content').innerHTML = '';
+            const storageAvailable = Persistence.init();
+            if (storageAvailable) {
+                ContextStore.load(); IntentStore.load(); NodeStore.load(); ActionStore.load(); FrictionStore.load(); AgentStore.load(); LogStore.load();
+                const sessionRestored = Session.load();
+                if ((ContextStore.contexts.size > 0 || LogStore.entries.length > 0) && sessionRestored) {
+                    LogStore.entries.forEach(entry => this.addLogEntry(entry, true));
+                    LogStore.appendInternal({ event_type: 'storage', event_subtype: 'session_restored', object_id: null, context_id: Session.activeContextId, intent_id: Session.activeIntentId, agent_id: Session.activeAgentId, user_id: 'system', details: 'Session restored (' + LogStore.entries.length + ' logs)', reason: null });
+                    this.addMessage('storage', 'Session restored from localStorage.\n\n- Contexts: ' + ContextStore.contexts.size + '\n- Intents: ' + IntentStore.intents.size + '\n- Nodes: ' + NodeStore.nodes.size + '\n- Logs: ' + LogStore.entries.length);
+                } else {
+                    LogStore.appendInternal({ event_type: 'storage', event_subtype: 'init', object_id: null, context_id: null, intent_id: null, agent_id: null, user_id: 'system', details: 'Fresh session with localStorage', reason: null });
+                    this.addMessage('storage', 'Starting fresh session with localStorage enabled.');
+          
