@@ -1,0 +1,161 @@
+# THE COLLABORATION PROTOCOL
+## Silent Intent Inference as a Safety Risk in Human-LLM Interaction: A Theoretical Framework and Research Agenda
+
+**Author:** Mohamed Salama  
+**Date:** January 2026  
+**Version:** 4.1 (arXiv Submission)  
+**Status:** Position Paper — Theoretical Framework Inviting Empirical Validation
+
+---
+
+> **Paper Type:** This is a theoretical framework paper establishing novel constructs and a falsifiable research agenda. It does not report empirical findings but provides operationalized definitions, measurement protocols, and ready-to-run study designs for validation by the research community.
+
+---
+
+# EXECUTIVE SUMMARY: WHAT THIS PACKAGE DELIVERS
+
+## The Honest Assessment
+
+This document represents a **comprehensive theoretical framework** for human-AI intent alignment. As of this version, it is:
+
+✅ **What you HAVE:**
+- A well-positioned, falsifiable theoretical framework paper
+- Intellectual priority on several novel concepts (first to name and operationalize)
+- Strong foundation for future empirical work
+- Concrete applied extension proposals attractive to regulators and enterprises
+
+❌ **What you DO NOT HAVE (yet):**
+- Empirical validation that Silent Intent Inference is prevalent
+- Proof that ICD improves outcomes
+- Evidence that IPP annotation is reliable
+- Real-world deployment data
+
+**This distinction is critical for honest positioning.**
+
+---
+
+## Realistic Publication & Recognition Expectations
+
+| Outcome | Likelihood | Typical Venues |
+|---------|------------|----------------|
+| arXiv preprint with 100–500 downloads in first year | **Very High** | arXiv |
+| Acceptance as position/framework/vision paper | **High** | AIES, FAccT, CHI alt.chi/LBW, AI & Society, Minds & Machines |
+| Citation as "related framing" in later empirical papers | **Moderate–High** | Various HCI/AI venues |
+| Invited talk/seminar at HCI/AI ethics groups | **Moderate** | Stanford HAI, CMU HCII, Oxford Digital Ethics |
+| Direct influence on regulatory sandbox or enterprise tool | **Low–Moderate** | Requires active networking |
+| High-impact journal (Nature Human Behaviour, Science Robotics) | **Low without data** | Requires empirical validation |
+
+---
+
+## Intellectual Priority: Concepts You Would Own
+
+Assuming publication/preprint in early 2026, you establish priority on:
+
+| Concept | Definition | Prior Art Status |
+|---------|------------|------------------|
+| **Silent Intent Inference** | Named structural safety failure where AI resolves ambiguity without authorization | Term not in wide circulation; related ideas exist but this framing is novel |
+| **Intent Pivot Points (IPP)** | Semantic locations where meaning may branch, with six-type taxonomy | Specific taxonomy appears original |
+| **Intent Control Degree (ICD)** | User-choosable continuous parameter (0.0–1.0) governing ambiguity resolution | Continuous user-controlled framing is distinctive |
+| **Intent Fidelity Index (IFI)** | Composite score measuring intent preservation | Specific formula is novel |
+| **Meaning Ownership** | Semantic authority as a user right in human-AI loops | Consent-like framing for AI intent is distinctive |
+
+You would become "the person who wrote the Silent Intent Inference / Collaboration Protocol paper"—a recognizable reference point for later work.
+
+---
+
+# TABLE OF CONTENTS
+
+## PART I: THE RESEARCH PAPER
+1. Abstract
+2. Introduction
+3. Related Work (Comprehensive)
+4. Problem Definition: Silent Intent Inference
+5. Core Constructs (Operationalized)
+6. The Collaboration Protocol Framework
+7. Proposed Empirical Validation
+8. Pilot Study Protocol
+9. Limitations and Scope
+10. Future Work
+11. Conclusion
+
+## PART II: RESEARCH EXECUTION AGENDA
+12. Four-Phase Research Roadmap
+13. Prioritized Testable Claims
+14. Publication Strategy
+15. Resource Requirements
+16. Potential Collaborators
+
+## PART III: APPENDICES
+- A. Reviewer Objection Matrix
+- B. Quick-Start Study Protocol (30 Days)
+- C. Construct Measurement Instruments
+- D. Complete Literature Reference List
+
+## PART IV: APPLIED EXTENSIONS
+- E. Project A: Regulatory Auditing of Intent Compliance
+- F. Project B: Organizational Intent Signatures
+
+## PART V: FUTURE INVESTIGATION VAULT
+- G. Agent Intent Profiles (AIP) — Deferred
+- H. Multi-Agent Orchestration — Deferred
+- I. Intent Decay Mathematical Model — Deferred
+- J. Legal Framework: Meaning Ownership — Deferred
+
+## PART VI: REALISTIC ASSESSMENT
+- K. What This Framework Achieves (Without Empirical Data)
+- L. Important Boundaries and Limitations
+- M. Path to Full Validation
+
+---
+
+# PART I: THE RESEARCH PAPER
+
+---
+
+# 1. Abstract
+
+Human-AI collaboration failures persist even when AI systems are technically capable. We argue these failures often stem from **Silent Intent Inference**—a structural flaw where AI resolves semantic ambiguity without explicit user authorization. We frame this not as interaction friction but as an **AI safety risk**: it creates accountability gaps, untraceable decisions, and systematic erosion of user agency.
+
+We introduce the **Collaboration Protocol (CP)**, a theoretical framework preserving human semantic authority through three operationalized constructs:
+
+- **Intent Control Degree (ICD):** A user-adjustable parameter (0.0–1.0) governing how ambiguity is resolved
+- **Intent Pivot Points (IPP):** Semantic locations where meaning may branch, with a six-type taxonomy
+- **Intent Fidelity Index (IFI):** A composite metric measuring intent preservation across interactions
+
+Each construct includes specific measurement procedures enabling empirical validation. We propose a phased research agenda: (1) quantifying silent inference prevalence in current LLM systems, (2) validating ICD effects on collaboration quality, and (3) establishing IPP annotation reliability.
+
+**This paper establishes a falsifiable theoretical foundation.** It does not report empirical findings but provides the conceptual infrastructure—operationalized definitions, measurement instruments, and ready-to-run study protocols—for the research community to validate or refute its claims. If the proposed studies fail, the theory is wrong; if they succeed, the path to intent-governed human-AI collaboration becomes clearer.
+
+**Keywords:** Human-LLM Interaction, Silent Intent Inference, Intent Alignment, Meaning Ownership, Collaboration Protocol, Human-in-the-Loop AI, AI Safety, Semantic Authority, Intent Governance, Large Language Models
+
+**ACM CCS:** Human-centered computing → HCI theory, concepts and models; Computing methodologies → Discourse, dialogue and pragmatics; Security and privacy → Human and societal aspects of security and privacy
+
+---
+
+# 2. Introduction
+
+## 2.1 Motivation
+
+Modern AI systems routinely produce outputs that are:
+- Technically correct
+- Linguistically coherent
+- Aligned with training objectives
+
+Yet still **wrong for the user**.
+
+This gap cannot be explained solely by model alignment, prompt quality, or user error. Instead, it reflects a deeper protocol-level failure: AI systems silently resolve ambiguity without verifying human intent. We term this phenomenon **Silent Intent Inference**.
+
+## 2.2 Illustrative Failure Case
+
+Consider the following observed interaction:
+
+> **User:** What is the capital of Egypt?  
+> **AI:** Cairo  
+> **User:** How many population?  
+> **AI:** 112 million
+
+Post-hoc analysis reveals that the AI inferred the second question referred to **Egypt** (population ~112 million) rather than **Cairo** (population ~22 million), based on conversational proximity rather than explicit user intent. While this inference was reasonable, it was **unauthorized**.
+
+This interaction demonstrates four critical phenomena:
+1. **Ambiguity existed** in the user's query
+2. **A semantic pivot point occurred** where meaning could branc
