@@ -1,0 +1,90 @@
+onal scope within which reasoning and actions are permitted.
+
+Context is not all available information; it is the explicit subset the user has designated as relevant. Context is hierarchical, allowing nested sub-contexts with inherited constraints. Context is inspectable at any point during interaction. Context collapse—where boundaries become unclear or merge without user consent—constitutes a system failure.
+
+Each context object contains: a unique identifier; optional parent context reference for hierarchy; human-readable description; scope boundaries defining inclusions and exclusions; constraints governing operations; active goals and intents; permitted agents; and lifecycle state (open, committed, or archived).
+
+**Governing Constraint:** Context must be declared or confirmed by the user before any operations may occur within it. No implicit context merging is permitted.
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                      CANVAS CONTEXT (root)                          │
+│                   The outermost boundary of work                    │
+└───────────────────────────────┬─────────────────────────────────────┘
+                                │
+                                │ contains
+                                ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                    MAIN CONTEXTS (user-defined)                     │
+│   ┌───────────────────┐           ┌───────────────────┐             │
+│   │   Context A       │           │   Context B       │             │
+│   └─────────┬─────────┘           └───────────────────┘             │
+│             │ contains                                              │
+│             ▼                                                       │
+│   ┌─────────────────────────────────────────┐                       │
+│   │  SUB-CONTEXTS (suggested, user-approved)│                       │
+│   │  Inherits parent constraints unless     │                       │
+│   │  explicitly overridden with user        │                       │
+│   │  approval                               │                       │
+│   └─────────────────────────────────────────┘                       │
+└─────────────────────────────────────────────────────────────────────┘
+```
+**Figure 7.** Context hierarchy. Child contexts inherit parent constraints. Out-of-context signals are isolated and trigger friction.
+
+#### 3.1.2 Intent
+
+An **Intent** is an explicit, verified declaration of what the user wants the system to do, under defined constraints, before execution.
+
+Intent is not inferred from text, behavior, or pattern recognition. Intent has a formal lifecycle with explicit state transitions. Intent is revocable by the user at any point before execution. Intent binds to exactly one context.
+
+Each intent object contains: unique identifier; reference to governing context; intent type (explore, decide, generate, act, or verify); declaration text; declaration origin (user-typed, user-confirmed, or user-revised); scope definition; user-declared confidence level; and lifecycle state.
+
+**Governing Constraint:** No action may execute without a verified intent. The words alone do not constitute intent; verification requires explicit user confirmation.
+
+```
+┌───────────┐   signal    ┌───────────┐   confirm   ┌───────────┐
+│ UNSIGNALED│────────────►│  SIGNALED │────────────►│ VERIFIED  │
+└───────────┘             └───────────┘             └─────┬─────┘
+                                                         │
+                                                         ▼
+                                                   ┌───────────┐
+                                                   │  ACTIVE   │
+                                                   └─────┬─────┘
+                              ┌──────────────┬──────────┴──────────┐
+                              ▼              ▼                     ▼
+                        ┌───────────┐  ┌───────────┐        ┌───────────┐
+                        │ COMMITTED │  │  REVISED  │        │  REVOKED  │
+                        └───────────┘  └───────────┘        └───────────┘
+```
+**Figure 4.** Intent lifecycle. No transition occurs without explicit user action. Intent has a formal lifecycle with explicit state transitions. Only user action can advance intent through its states.
+
+#### 3.1.3 Agent
+
+An **Agent** is a scoped executor or advisor that operates within a context under explicit permissions. Agents are not autonomous actors; they are constrained instruments of user intent.
+
+Agents cannot escape their assigned context scope. Agents cannot self-authorize actions. Agents cannot modify their own permissions. Agents inherit all constraints from their governing context.
+
+Agent types include: advisory (suggest only), acting (execute with permission), and explanation-only. Acting agents may only execute after intent is verified. Agent state transitions require explicit user action.
+
+#### 3.1.4 Supporting Objects
+
+**Node:** A user-committed structural constraint that governs future reasoning. Nodes are foundational, constrain outputs, require explicit commitment, and are reversible only via explicit revision. Nodes are not interpretations.
+
+**Pivot:** A user-declared epistemic marker indicating perceived importance without implying intent or commitment. Pivots annotate, do not constrain, never trigger action, and are optional and reversible. Pivot logic is second-order, not foundational.
+
+| Property | Node | Pivot |
+|----------|------|-------|
+| Binding | Yes | No |
+| Structure | Structural | Annotative |
+| Constrains reasoning | Yes | No |
+| Requires commitment | Yes | No |
+| Triggers action | Possible | Never |
+
+**Figure 6.** Node vs Pivot comparison. Nodes are user-committed structural constraints that govern future reasoning. Pivots are user-declared annotations of significance that never trigger action or override intent.
+
+### 3.2 Responsibility Chain
+
+The responsibility chain defines the unbroken path from user signal to system action. This chain is frozen and constitutes the core accountability mechanism of CP.
+
+```
+┌─────────────┐     ┌─────────────┐     ┌─────
