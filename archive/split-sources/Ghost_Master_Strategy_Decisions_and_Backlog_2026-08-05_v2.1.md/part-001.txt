@@ -1,0 +1,237 @@
+ work.
+
+Working competitive feeling:
+
+> Ghost gives the user an unfair operational advantage, while literal peer-superiority claims remain prohibited until evidence supports them.
+
+Working north-star metric:
+
+> Intent-faithful accepted outcomes per hour of human attention and per unit of AI cost.
+
+The metric must later define accepted outcome, intent fidelity, human attention, AI cost, invalidating authority failures, and safety failures.
+
+---
+
+# 3. FOUNDER DECISION REGISTER
+
+## FD-01 - Product essence
+
+**Decision:** Staged combination.
+
+Ghost combines continuity, governed delegation, Presence, protection, action, and long-term ambient intelligence in stages. The product must not reduce itself to only memory, only guardrails, only a companion, only an agent, or only a protocol.
+
+**Implication:** One capability must lead each version commercially, while the other layers support the experience and long-term thesis.
+
+## FD-02 - Buyer and value direction
+
+**Founder direction:** Ghost is for people who need to save time and money using AI and achieve materially higher results than their peers.
+
+**Refined behavioral first-buyer thesis:**
+
+An AI-intensive operator whose attention has become the bottleneck, including founders, consultants, agency owners, engineering leads, researchers, product leaders, operations leaders, and executives who:
+
+- use several AI systems;
+- manage long-running consequential work;
+- repeatedly reconstruct context;
+- personally review outputs because mistakes matter;
+- pay for multiple tools already;
+- lose time through rework, wrong scope, repeated corrections, and forgotten rules;
+- want to delegate more safely.
+
+**Still open:** First profession, first recurring costly event, first connector, and willingness-to-pay proof.
+
+## FD-03 - Ghost action ability
+
+**Founder decision in principle:**
+
+- Connected tools execute under Ghost's direction.
+- Ghost may perform simple native actions when needed to prevent waste or damage.
+- Ghost must retain a useful minimum action path in any app or environment.
+- Ghost must not remain only a monitor or alert system.
+
+**For-you resolution:** Adopt a Universal Action Grammar and three action domains.
+
+### Domain 1 - Ghost-native actions
+
+Ghost can always, within its own controlled boundary:
+
+- preserve;
+- prepare;
+- route;
+- request;
+- resume;
+- protect;
+- verify;
+- prove.
+
+### Domain 2 - Connected simple actions
+
+Where supported by an operating system, application intent, MCP tool, API, OAuth scope, or approved connector, Ghost may perform bounded actions such as:
+
+- create a draft;
+- create a task or reminder;
+- save a non-destructive copy;
+- organize or label approved material;
+- open or focus a destination;
+- queue without sending;
+- create tentative personal blocks;
+- pause Ghost-managed automation;
+- restore Ghost-owned state;
+- revoke a pending Ghost-issued permit.
+
+### Domain 3 - Consequential external actions
+
+Actions such as sending, publishing, buying, paying, deleting, overwriting, changing permissions, committing, pushing, merging, deploying, disclosing sensitive information, or affecting another person's rights require an Execution Permit or a narrow approved standing rule.
+
+### Automatic-action rule
+
+Ghost may act without asking at that moment only when all are true:
+
+- active confirmed Context;
+- explicit standing authority for the action class;
+- low materiality;
+- reversible;
+- no new external commitment;
+- no meaningful third-party effect;
+- no new data access;
+- bounded time and resource cost;
+- outcome can be verified;
+- recovery path exists.
+
+## FD-04 - Rightness and intervention control
+
+**Founder direction:** Use the research inventions and methodologies to create a modifiable controller that changes how Ghost acts according to confidence, risk, context, and other relevant factors.
+
+**For-you resolution:** Create a Ghost Intervention and Authority Controller with two non-collapsible layers.
+
+### Layer A - Deterministic hard floors
+
+These cannot be averaged away by a favorable score:
+
+- no valid authority;
+- self-expansion of permissions;
+- unapproved sensitive-data disclosure;
+- consent on behalf of another person;
+- Safety Floor violation;
+- irreversible out-of-scope action;
+- unapproved new sensor, account, data destination, or executor;
+- claimed gating where Ghost technically cannot gate;
+- prohibited child, bystander, or workplace surveillance.
+
+### Layer B - Adaptive semantic intervention
+
+After hard floors pass, evaluate:
+
+- interpretation uncertainty;
+- Context confidence;
+- authority confidence;
+- semantic materiality;
+- severity;
+- reversibility;
+- third-party impact;
+- data sensitivity;
+- scope deviation;
+- resource exposure;
+- urgency;
+- user control profile;
+- actual connector capability;
+- applicable Safety Floor.
+
+Possible outputs:
+
+- record;
+- whisper;
+- disclose and proceed;
+- disclose and wait;
+- discuss;
+- request approval;
+- hold;
+- stop;
+- recover;
+- escalate.
+
+User-facing modes may include Quiet, Advisor, Gatekeeper, Protected, and Custom, while the internal controller remains multidimensional.
+
+## FD-05 - CP and Ghost relationship
+
+**Decision in principle:** Ghost is the sole customer-facing product. CP is a protected internal governance kernel and intellectual source inside Ghost.
+
+### Product consequence
+
+Customers experience one Ghost product, not multiple protocols.
+
+Internally:
+
+- frozen CP v1.0.1 remains historically intact;
+- Ghost uses CP-derived governance for material ambiguity, verified intent, human ownership of ambiguity, friction, reversibility, and accountability;
+- long-term continuity, Presence, learning, action, supervision, recovery, and ambient intelligence remain Ghost product systems;
+- product implementation versions do not silently rewrite research versions;
+- product claims must identify which subsystem provides which guarantee.
+
+### Canonical rule
+
+> One product outside; separated responsibilities inside.
+
+## FD-06 - Family and enterprise supervision
+
+**Founder direction:**
+
+- Parents should be able to supervise children.
+- Enterprises should be able to govern employees on company PCs or laptops.
+
+**Working product rule:** Use explicit Supervision Contracts rather than unrestricted surveillance.
+
+### Family edition direction
+
+Possible parent controls:
+
+- tools and models;
+- time and spending budgets;
+- external contacts and purchases;
+- high-risk actions;
+- new permissions and sensors;
+- age-appropriate Safety Floors;
+- serious safety alerts;
+- shared family Contexts.
+
+Parent access must not automatically include every conversation, inferred thought, relationship, dream, raw audio/video record, or unrestricted browsing history.
+
+Use age-progressive control and visible child explanations.
+
+### Enterprise edition direction
+
+Enterprise governance may cover:
+
+- company data;
+- company accounts;
+- company apps;
+- company-owned device work Contexts;
+- work permissions;
+- spending;
+- external work communication;
+- security, compliance, and company evidence.
+
+It must not automatically include personal phone, home Context, personal health, family, religious, relationship, or non-work activity.
+
+Personal Ghost, Family Context, and Enterprise Context must remain logically and cryptographically separable.
+
+**Still open:** Exact legal, age, jurisdiction, rights, appeal, visibility, and audit specifications.
+
+## FD-07 - Presence
+
+**Founder decision:** Presence is central; personification is optional.
+
+### Mandatory Presence functions
+
+- show or communicate current Context;
+- support Come;
+- communicate actual capability;
+- surface approvals, holds, and stops;
+- accept correction;
+- support departure and privacy;
+- preserve continuity across supported surfaces;
+- communicate limits honestly.
+
+### Optional manifestation
+
+- avatar or no avatar
