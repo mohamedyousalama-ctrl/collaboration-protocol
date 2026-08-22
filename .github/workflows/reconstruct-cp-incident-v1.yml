@@ -1,4 +1,4 @@
-name: Reconstruct and inventory CP incident corpus v1
+name: Reconstruct and inventory authoritative CP incident corpus v1
 
 on:
   push:
@@ -6,9 +6,8 @@ on:
       - research/fan-corpus-validation-2026-08-22
     paths:
       - '.github/workflows/reconstruct-cp-incident-v1.yml'
-      - 'research/fan-corpus-validation/tools/reconstruct_and_inventory.py'
-      - 'archive/research-lineage-2026-01/binary/CP_Incident_Database_v1.xlsx.b64.part-*'
-      - 'archive/research-lineage-2026-01/binary/CP_Incident_Database_v1_RECONSTRUCTION.md'
+      - 'research/fan-corpus-validation/tools/reconstruct_authoritative_v1.py'
+      - 'research/fan-corpus-validation/recovered-source/CP_Incident_Database_v1.xlsx.b64.part-*'
 
 permissions:
   contents: write
@@ -23,10 +22,10 @@ jobs:
           ref: research/fan-corpus-validation-2026-08-22
           fetch-depth: 1
 
-      - name: Reconstruct, verify, and inventory workbook
-        run: python3 research/fan-corpus-validation/tools/reconstruct_and_inventory.py
+      - name: Reconstruct exact v1, verify identity, and inventory workbook
+        run: python3 research/fan-corpus-validation/tools/reconstruct_authoritative_v1.py
 
-      - name: Commit verified working copy and inventory
+      - name: Commit verified working copy and audit inputs
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -34,6 +33,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No generated changes to commit."
           else
-            git commit -m "research: reconstruct and inventory 52-record corpus v1 [skip ci]"
+            git commit -m "research: verify and inventory authoritative 52-record corpus v1 [skip ci]"
             git push origin HEAD:research/fan-corpus-validation-2026-08-22
           fi
