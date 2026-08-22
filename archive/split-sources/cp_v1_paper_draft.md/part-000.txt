@@ -1,0 +1,89 @@
+# The Collaboration Protocol: Structural Accountability for Human–AI Interaction
+
+**Mohamed Salama**
+
+*Submitted to: ACM Conference on Fairness, Accountability, and Transparency (FAccT)*
+
+---
+
+## Abstract
+
+Current human–AI interaction systems lack structural mechanisms for accountability. When an AI system takes an action, users often cannot determine what they requested, whether they confirmed the request, or how the system interpreted their input. This accountability gap undermines trust and prevents meaningful human oversight. We present the Collaboration Protocol (CP), a pre-hoc interaction protocol that treats intent and context as first-class computational objects. CP operates as an execution-time mediation layer that gates AI execution, verifies user intent before action, enforces context boundaries, and maintains complete audit trails. Unlike approaches that attempt to model user preferences or optimize outcomes, CP is intentionally complete only at the interaction level—it guarantees semantic closure, intent traceability, and accountability for each human–AI decision cycle, while remaining composable with external governance systems that operate at larger scales. We present the system model, formal object definitions, and an evaluation framework designed to test whether CP fulfills its accountability claims through trace reconstruction and failure injection methods.
+
+---
+
+## 1. Introduction
+
+Human–AI collaboration systems increasingly take actions on behalf of users: generating content, making recommendations, executing commands, and modifying work products. Yet these systems rarely provide structural mechanisms for accountability. When a user asks "Why did the system do that?" or "Did I actually ask for this?", the answer is often unavailable or requires forensic reconstruction from scattered interaction logs. This accountability gap is not merely an inconvenience—it represents a fundamental barrier to meaningful human oversight of AI systems.
+
+The problem is not that AI systems lack logging capabilities or that interfaces are poorly designed. The problem is architectural: most human–AI interaction systems treat user input as a stream of instructions to be interpreted and executed, rather than as signals that require explicit verification before action. The system's interpretation of user intent remains implicit, unverifiable, and unreconstructible.
+
+### 1.1 The Collaboration Protocol
+
+We present the Collaboration Protocol (CP), a pre-hoc interaction protocol that governs the boundary between human intent and AI execution. CP operates as an execution-time mediation layer, positioned between user signals and system actions. It does not modify model weights, alter training data, or replace system prompts. Instead, it gates execution, verifies intent, enforces context boundaries, and assigns accountability.
+
+The protocol treats intent and context as first-class computational objects—explicit, inspectable, and governable—ensuring that every action traces to a verified human decision and every decision can be reconstructed from the audit trail. CP introduces three core mechanisms:
+
+**Context** establishes bounded, user-declared semantic and operational scopes within which reasoning and actions are permitted. Context is not all available information; it is the explicit subset the user has designated as relevant.
+
+**Intent** requires explicit, verified declarations of what the user wants the system to do, under defined constraints, before execution. Intent is not inferred from text, behavior, or pattern recognition—it must be confirmed by the user.
+
+**Friction** introduces deliberate pause at critical decision points when ambiguity, risk, or missing verification is detected. Friction surfaces failures rather than allowing them to proceed silently.
+
+### 1.2 What CP Does NOT Do
+
+To establish clear scope boundaries, we state explicitly what CP does not attempt:
+
+CP does NOT:
+- Model long-term cognition or belief evolution
+- Infer latent, hidden, or subconscious user goals
+- Optimize outcomes, performance, or correctness
+- Learn preferences across sessions
+- Predict future intent
+- Replace institutional, legal, or organizational governance
+- Claim alignment, safety, or ethics guarantees beyond interaction accountability
+
+**Interpretation rule:**
+If a consideration cannot be resolved at the interaction level, CP does not attempt to solve it.
+
+This explicit scoping is essential. CP addresses accountability at the interaction level—the moment-to-moment decisions between human and AI system. Broader questions of long-term value alignment, organizational policy, or societal impact require different mechanisms operating at different scales.
+
+### 1.3 Paper Organization
+
+Section 2 reviews related work in human–AI interaction accountability. Section 3 presents the CP system design, including the core object model, responsibility chain, Guardian logic, and friction mechanism. Section 4 describes our evaluation framework for testing CP's accountability claims. Section 5 discusses scope boundaries and composability. Section 6 concludes.
+
+---
+
+## 2. Related Work
+
+### 2.1 Accountability in Human–AI Interaction
+
+The question of accountability in AI systems has received substantial attention, particularly in contexts involving consequential decisions. Research on explainable AI (XAI) has focused primarily on making model decisions interpretable after the fact [1, 2]. However, post-hoc explanation differs fundamentally from structural accountability—knowing why a model produced an output does not establish whether a user authorized that output or what they intended.
+
+Work on human-in-the-loop systems has explored how to maintain human oversight during AI operation [3, 4]. These approaches typically focus on approval workflows or intervention points, but rarely formalize the relationship between user intent and system action as a structural constraint.
+
+### 2.2 Intent Modeling in HCI
+
+Intent modeling has a long history in human-computer interaction, from early work on plan recognition [5] to contemporary research on conversational agents [6, 7]. Most approaches treat intent as something to be inferred from user behavior—the system observes actions and reconstructs probable goals. CP takes the opposite approach: intent must be explicitly declared and verified, never inferred.
+
+This design choice reflects a fundamental philosophical position. When systems infer intent, they assume responsibility for interpretation. When users declare intent, they retain authority over their own goals. CP prioritizes user authority over system convenience.
+
+### 2.3 Friction as Design Pattern
+
+The concept of friction as a deliberate design element has been explored in contexts ranging from privacy interfaces [8] to financial transactions [9]. Friction slows users down at critical moments, creating space for reflection and reducing errors. CP extends this concept to human–AI interaction, using friction to surface ambiguity and missing verification rather than allowing potentially misaligned actions to proceed.
+
+Unlike friction patterns designed to prevent user errors, CP's friction mechanism serves an accountability function: it creates observable, logged checkpoints that establish what information was available and what confirmations were obtained before action.
+
+---
+
+## 3. System Design
+
+CP defines formal objects and mechanisms that structure all human–AI interaction. These are not implementation details; they are the semantic primitives upon which accountability depends.
+
+### 3.1 Core Object Model
+
+CP defines three foundational objects that structure human–AI interaction.
+
+#### 3.1.1 Context
+
+A **Context** is a bounded, user-declared semantic and operati
