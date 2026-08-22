@@ -1,0 +1,168 @@
+re Overview
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        INTERFACE LAYER                          │
+│                 (Signal Input / Response Output)                │
+└─────────────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                        PROTOCOL LAYER                           │
+│          (Guardian, Gate Logic, Friction Management)            │
+└─────────────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                        EXECUTION LAYER                          │
+│            (Intent Processing, Agent Dispatch, Actions)         │
+└─────────────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                         STATE LAYER                             │
+│        (Context Store, Intent Store, Node Store, Logs)          │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 6.2 Component Inventory
+
+| Component | Layer | Responsibility |
+|-----------|-------|----------------|
+| **Signal Receiver** | Interface | Captures user input as raw signal |
+| **Response Emitter** | Interface | Delivers system responses |
+| **Signal Classifier** | Protocol | Classifies clarity, intent, context fit |
+| **CP Guardian** | Protocol | Evaluates constraints, issues gate decisions |
+| **Friction Manager** | Protocol | Creates and tracks FrictionEvents |
+| **Intent Processor** | Execution | Constructs and manages Intent lifecycle |
+| **Agent Dispatcher** | Execution | Routes verified intents to agents |
+| **Action Executor** | Execution | Executes allowed actions |
+| **Context Store** | State | Persists Context objects |
+| **Intent Store** | State | Persists Intent objects |
+| **Node Store** | State | Persists Node and Pivot objects |
+| **Action Store** | State | Persists Action records |
+| **Log Store** | State | Append-only event log |
+
+---
+
+## 6.3 Execution Flow
+
+```
+User Input
+    │
+    ▼
+┌──────────────────┐
+│  Signal Receiver │
+└────────┬─────────┘
+         │
+         ▼
+┌──────────────────┐
+│ Signal Classifier│
+└────────┬─────────┘
+         │
+         ▼
+┌──────────────────┐
+│   CP Guardian    │ ◄── Checkpoint 1 (Post-Classification)
+└────────┬─────────┘
+         │
+         ├── ambiguous ──► Friction Manager ──► User
+         ├── out_of_scope ──► Friction Manager ──► User
+         ├── clear, no action ──► Response Emitter ──► User
+         └── clear, action ──► Intent Processor
+                                    │
+                                    ▼
+                           [Intent Verification]
+                                    │
+                                    ▼
+                           ┌──────────────────┐
+                           │ Agent Dispatcher │
+                           └────────┬─────────┘
+                                    │
+                                    ▼
+                           ┌──────────────────┐
+                           │ Action Executor  │
+                           └────────┬─────────┘
+                                    │
+                                    ▼
+                           ┌──────────────────┐
+                           │   CP Guardian    │ ◄── Checkpoint 2 (Pre-Execution)
+                           └────────┬─────────┘
+                                    │
+                                    ├── Allow ──► Execute ──► Log ──► User
+                                    └── Refuse ──► Friction Manager ──► User
+```
+
+---
+
+## 6.4 Guardian Placement
+
+**Checkpoint 1 — Post-Classification**
+- Location: Between Signal Classifier and Execution Layer
+- Function: Determines routing based on classification
+
+**Checkpoint 2 — Pre-Execution**
+- Location: Between Action Executor and actual execution
+- Function: Final gate decision before action takes effect
+
+---
+
+## 6.5 State Boundaries
+
+| Store | Owns | Cannot Access Directly |
+|-------|------|------------------------|
+| Context Store | Context objects | Intent, Node, Action data |
+| Intent Store | Intent objects | Node, Action data |
+| Node Store | Node, Pivot objects | Intent, Action data |
+| Action Store | Action objects | Context, Intent definitions |
+| Log Store | All event logs | Cannot modify any object |
+
+---
+
+## 6.6 Architecture Constraints
+
+| Constraint | Rationale |
+|------------|-----------|
+| Guardian has no write access | Cannot modify what it evaluates |
+| All writes generate log entries | Ensures reconstructibility |
+| Stores accessed by ID only | Maintains state boundaries |
+| Friction Manager cannot auto-resolve | User must resolve |
+| Log Store is append-only | Prevents tampering |
+
+---
+
+# PHASE 1 — STATE SKELETON
+
+Minimal concrete representations for all CP objects. No behavior, no UI, no agents, no Guardian logic.
+
+---
+
+## 1.1 Context (Skeleton)
+
+```
+Context {
+    context_id:         string (unique)
+    parent_context_id:  string | null
+    description:        string
+    scope_inclusions:   list of strings
+    scope_exclusions:   list of strings
+    constraints:        list of strings
+    active_goals:       list of strings
+    active_intents:     list of intent_id references
+    allowed_agents:     list of agent_id references
+    state:              enum [open, committed, archived]
+    created_at:         timestamp
+    created_by:         string (user_id)
+}
+```
+
+**Example:**
+```
+{
+    context_id:         "ctx_001"
+    parent_context_id:  null
+    description:        "Literature Review — AI Transparency in Healthcare"
+    scope_inclusions:   ["AI in clinical settings", "transparency research"]
+    scope_exclusions:   ["non-healthcare AI", "publications before 2018"]
+    constraints:  
