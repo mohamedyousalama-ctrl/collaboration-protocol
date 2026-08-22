@@ -1,0 +1,53 @@
+GID	Family	Sanitized_Summary	Assistant_SII_Recommendation	Provisional_Class_or_Type	Evidence_State	C9_Status	Researcher_Final_Status
+GPT-001	GPT	Standing governance instruction treated as authority to dispatch new work while execution window was occupied.	LIKELY	STANDING-INSTRUCTION_INTENT	SOURCE_EXTRACT_ONLY	UNVERIFIED	PENDING
+GPT-002	GPT	Status synthesis used only one of two supplied workstream handbacks and required a reread.	NO	COMPETENCE_OMISSION	SOURCE_EXTRACT_ONLY	UNVERIFIED	PENDING
+GPT-003	GPT	Coordination reply mixed immediate and dependency-gated actions without clearly separating sequence.	LIKELY	TEMPORAL_INTENT	SOURCE_EXTRACT_ONLY	UNVERIFIED	PENDING
+GPT-004	GPT	Open-ended vendor-question request expanded into a large diligence pack when a short urgent screen was wanted.	POSSIBLE	ABSTRACTION_INTENT	SOURCE_EXTRACT_ONLY	UNVERIFIED	PENDING
+GPT-005	GPT	External brief reused stale project scope instead of revalidating against the new audience and context.	LIKELY	SCOPE_INTENT	SOURCE_EXTRACT_ONLY	UNVERIFIED	PENDING
+AUD-001	AUD	Source-declared database columns were treated as proven live schema and forced a specification rewrite.	NO	COMPETENCE	PRIMARY_FAMILY_SOURCE_INCOMPLETE	UNVERIFIED	PENDING
+AUD-002	AUD	Contradictory rules were allowed to coexist in a specification rather than being reconciled.	NO	COMPETENCE	PRIMARY_FAMILY_SOURCE_INCOMPLETE	UNVERIFIED	PENDING
+AUD-003	AUD	Invalid SQL uniqueness syntax was treated as valid until corrected.	NO	COMPETENCE	PRIMARY_FAMILY_SOURCE_INCOMPLETE	UNVERIFIED	PENDING
+AUD-004	AUD	Inline transport was assumed byte-preserving and the received artifact failed fingerprint checks.	NO	PREMISE	PRIMARY_FAMILY_SOURCE_INCOMPLETE	UNVERIFIED	PENDING
+AUD-005	AUD	A byte-line discrepancy was attributed to blank-line loss without sufficient evidence and later withdrawn.	NO	COMPETENCE	PRIMARY_FAMILY_SOURCE_INCOMPLETE	UNVERIFIED	PENDING
+AUD-006	AUD	Observation from one execution context was generalized to a different production service context.	NO	COMPETENCE	PRIMARY_FAMILY_SOURCE_INCOMPLETE	UNVERIFIED	PENDING
+AUD-007	AUD	A blocking-lock mechanism was described as compatible with a non-blocking concurrency claim.	NO	COMPETENCE	PRIMARY_FAMILY_SOURCE_INCOMPLETE	UNVERIFIED	PENDING
+AUD-008	AUD	A data structure recording alert intent was treated as if it proved the full operational alert capability.	NO	COMPETENCE	PRIMARY_FAMILY_SOURCE_INCOMPLETE	UNVERIFIED	PENDING
+AUD-009	AUD	The term additive was interpreted as net-new capability despite revocations backfills and destructive changes.	LIKELY	DEFINITION_INTENT	PRIMARY_FAMILY_SOURCE_INCOMPLETE	UNVERIFIED	PENDING
+AUD-010	AUD	A design problem was reduced to a false binary choice despite a wider intended solution space.	NO	COMPETENCE_MODELING	PRIMARY_FAMILY_SOURCE_INCOMPLETE	UNVERIFIED	PENDING
+AUD-011	AUD	Byte-identical was interpreted as preservation of prior values even though new populated fields changed the row.	LIKELY	DEFINITION_INTENT	PRIMARY_FAMILY_SOURCE_INCOMPLETE	UNVERIFIED	PENDING
+AUD-012	AUD	A fingerprinted artifact was treated as unavailable because the delivered attachment was not recognized at that moment.	NO	PREMISE	PRIMARY_FAMILY_SOURCE_INCOMPLETE	UNVERIFIED	PENDING
+AUD-013	AUD	Search-command context lines were counted as mutation sites creating a false inventory discrepancy.	NO	COMPETENCE	PRIMARY_FAMILY_SOURCE_INCOMPLETE	UNVERIFIED	PENDING
+AUD-014	AUD	A pinned review revision was assumed current without a final currency check causing review of the wrong revision.	NO	COMPETENCE_PROCESS	PRIMARY_FAMILY_SOURCE_INCOMPLETE	UNVERIFIED	PENDING
+AUD-015	AUD	A strict approval-threshold interpretation produced no observable user mismatch and is retained as comparison.	CONTROL	COUNTER_PATTERN_THRESHOLD	PRIMARY_FAMILY_SOURCE_INCOMPLETE	UNVERIFIED	PENDING
+AUD-016	AUD	A later attached artifact was again treated as missing because its identity could not be matched to a delivered file.	NO	PREMISE	PRIMARY_FAMILY_SOURCE_INCOMPLETE	UNVERIFIED	PENDING
+AUD-017	AUD	Two plausible diff-count interpretations were explicitly disclosed rather than silently resolved.	CONTROL	SURFACED_AMBIGUITY	PRIMARY_FAMILY_SOURCE_INCOMPLETE	UNVERIFIED	PENDING
+AUD-018	AUD	Extraction instruction was interpreted to include a raw transcript recovered from disk rather than only retained chat context.	NO	META	PRIMARY_FAMILY_SOURCE_INCOMPLETE	UNVERIFIED	PENDING
+AUD-019	AUD	A persistent role-header convention was retained while executing a neutral-extractor instruction.	NO	META	PRIMARY_FAMILY_SOURCE_INCOMPLETE	UNVERIFIED	PENDING
+AUD-020	AUD	Permission for a read-only probe was interpreted narrowly so existing surfaces were searched without constructing a new request path.	POSSIBLE	AUTHORITY_INTENT	PRIMARY_BEHAVIOR_FRAGMENT_CORROBORATED	UNVERIFIED	PENDING
+AUD-021	AUD	Platform helper functions were treated as outside a pre-inspection prohibition then called before definition inspection and later disclosed.	LIKELY	DEFINITION_INTENT	PRIMARY_SEQUENCE_AND_DISCLOSURE_PARTLY_CORROBORATED	UNVERIFIED	PENDING
+AUD-022	AUD	Multiple ambiguities were surfaced explicitly before commitment and produced no rework.	CONTROL	COUNTER_PATTERN	PRIMARY_FAMILY_SOURCE_INCOMPLETE	UNVERIFIED	PENDING
+CDX-001	CDX	Branch instruction was interpreted as permitting a fresh clone because the expected repository was not at the working path.	NO	PREMISE	EXTRACT_REFERENCED_NOT_RECOVERED	UNVERIFIED	PENDING
+CDX-002	CDX	A proof requirement was interpreted as satisfiable with focused pure checks and source assertions.	POSSIBLE	OUTPUT_FORM_INTENT	EXTRACT_REFERENCED_NOT_RECOVERED	UNVERIFIED	PENDING
+CDX-003	CDX	Deterministic action-ID requirement was interpreted as needing handling changes but no separate generation change.	POSSIBLE	SCOPE_INTENT	EXTRACT_REFERENCED_NOT_RECOVERED	UNVERIFIED	PENDING
+CDX-004	CDX	Not merged was interpreted as still permitting a push of the unmerged handoff branch.	POSSIBLE	AUTHORITY_INTENT	EXTRACT_REFERENCED_NOT_RECOVERED	UNVERIFIED	PENDING
+CDX-005	CDX	Extraction-protocol attachment was interpreted as applying to the current thread and authorizing creation of an extraction file.	NO	META	EXTRACT_REFERENCED_NOT_RECOVERED	UNVERIFIED	PENDING
+W38-001	W38	Strict rebase-before-push rule was not followed as the base advanced creating deletion risk.	NO	COMPETENCE_PROCESS	A3_PRIMARY_TASK_ARTIFACT_CORROBORATED	UNVERIFIED	PENDING
+W38-002	W38	Intentionally failing proof suite was interpreted as something that should remain outside default CI discovery.	POSSIBLE	SCOPE_INTENT	A3_PRIMARY_TASK_ARTIFACT_CORROBORATED	UNVERIFIED	PENDING
+W38-003	W38	Passing one ordinary reproduction shape was treated as disproving a broader failure class requiring multiple shapes.	LIKELY	SCOPE_INTENT	A3_PRIMARY_TASK_ARTIFACT_CORROBORATED	UNVERIFIED	PENDING
+W38-004	W38	Seven-case proof order was interpreted as permitting a new dedicated proof file even though no filename was specified.	POSSIBLE	OUTPUT_FORM_INTENT	A3_PRIMARY_TASK_ARTIFACT_CORROBORATED	UNVERIFIED	PENDING
+W38-005	W38	Mirror the real configuration exactly was interpreted as exact values without timestamp-hash provenance.	POSSIBLE	DEFINITION_INTENT	A3_PRIMARY_TASK_ARTIFACT_CORROBORATED	UNVERIFIED	PENDING
+W38-006	W38	Requirement that defect assertions be marked was interpreted as satisfied by names-footer rather than adjacent labels.	LIKELY	OUTPUT_FORM_INTENT	A3_PRIMARY_TASK_ARTIFACT_CORROBORATED	UNVERIFIED	PENDING
+W38-007	W38	A timestamp proxy was disclosed before use and no later mismatch occurred.	CONTROL	DISCLOSED_PROCEED_COUNTER_PATTERN	SOURCE_INTERACTION_NOT_RECOVERED	UNVERIFIED	PENDING
+W38-008	W38	Type-checking and building were run concurrently causing transient generated-file errors fixed by sequential rerun.	NO	COMPETENCE	SOURCE_INTERACTION_NOT_RECOVERED	UNVERIFIED	PENDING
+W39-001	W39	A branch became stale despite a rebase-before-push rule again creating deletion risk.	NO	COMPETENCE_PROCESS	A3_PRIMARY_TASK_ARTIFACT_CORROBORATED	UNVERIFIED	PENDING
+W39-002	W39	Local configuration approximations were used as stand-in for production values before a frozen fixture existed.	POSSIBLE	SCOPE_INTENT	SOURCE_INTERACTION_NOT_RECOVERED	UNVERIFIED	PENDING
+W39-003	W39	Correct-only-six-call-sites instruction was treated as excluding other mismatches despite a parallel verify-every-argument instruction.	LIKELY	SCOPE_INTENT	A3_PRIMARY_TASK_ARTIFACT_CORROBORATED	UNVERIFIED	PENDING
+W39-004	W39	Deliver-the-complete-file instruction was interpreted as satisfied by a local path-link rather than a transferable artifact.	LIKELY	MIXED_OUTPUT_FORM_PREMISE	A3_PRIMARY_TASK_ARTIFACT_CORROBORATED	UNVERIFIED	PENDING
+W39-005	W39	Bare attachment-request label was interpreted conservatively as permission to inspect and compare but not edit or execute.	POSSIBLE	AUTHORITY_INTENT	SOURCE_INTERACTION_NOT_RECOVERED	UNVERIFIED	PENDING
+W39-006	W39	Send-only-three-things instruction was interpreted as restricting final handback but not execution-time commentary.	POSSIBLE	SCOPE_INTENT	SOURCE_INTERACTION_NOT_RECOVERED	UNVERIFIED	PENDING
+W39-007	W39	SQL content supplied without explicit imperative was treated as authorization to execute read-only production queries.	LIKELY	AUTHORITY_INTENT	SOURCE_CONTENT_CORROBORATED_CHRONOLOGY_INCOMPLETE	UNVERIFIED	PENDING
+KBD-001	KBD	Installation authorization was assumed to cover all filesystem paths the package manager needed but a required path was not writable.	NO	PREMISE	NOT_FOUND_CURRENT_PRESERVATION_SCOPE	UNVERIFIED	PENDING
+KBD-002	KBD	Browser-auth flow relied on terminal-tool output to expose a one-time code the user could not actually see.	NO	PREMISE_INTERFACE	NOT_FOUND_CURRENT_PRESERVATION_SCOPE	UNVERIFIED	PENDING
+KBD-003	KBD	Authorization for a child configuration path was assumed sufficient although its parent directory could not be created.	NO	PREMISE	NOT_FOUND_CURRENT_PRESERVATION_SCOPE	UNVERIFIED	PENDING
+KBD-004	KBD	Requested outcome of one commit and one draft PR was treated as requiring a particular local CLI auth method and stalled for several exchanges.	LIKELY	ABSTRACTION_MEANS_VS_OUTCOME_INTENT	NOT_FOUND_CURRENT_PRESERVATION_SCOPE	UNVERIFIED	PENDING
+KPF-001	KPF	Strict rebase-no-deletion rule was not kept current as the base advanced creating stale-base deletion risk.	NO	COMPETENCE_PROCESS	A3_PRIMARY_TASK_ARTIFACT_CORROBORATED	UNVERIFIED	PENDING
